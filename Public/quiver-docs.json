@@ -1,0 +1,1058 @@
+{
+  "-" : {
+    "signature" : "static func - (lhs: [Element], rhs: Element) -> [Element]",
+    "summary" : "Broadcasts scalar subtraction from each element of the vector - Parameters: - lhs: The vector - rhs: The scalar value to subtract - Returns: A new vector with the scalar subtracted from each element"
+  },
+  "!=" : {
+    "signature" : "static func != (lhs: Self, rhs: Self) -> Bool",
+    "summary" : "Returns a Boolean value indicating whether two values are not equal."
+  },
+  "*" : {
+    "signature" : "static func * (lhs: Element, rhs: [Element]) -> [Element]",
+    "summary" : "Broadcasts scalar multiplication to each element of the vector (commutative) - Parameters: - lhs: The scalar value to multiply - rhs: The vector - Returns: A new vector with each element multiplied by the scalar"
+  },
+  "\/" : {
+    "signature" : "static func \/ (lhs: [Element], rhs: Element) -> [Element]",
+    "summary" : "Broadcasts scalar division to each element of the vector - Parameters: - lhs: The vector - rhs: The scalar value to divide by - Returns: A new vector with each element divided by the scalar"
+  },
+  "+" : {
+    "signature" : "static func + (lhs: Element, rhs: [Element]) -> [Element]",
+    "summary" : "Broadcasts scalar addition to each element of the vector (commutative) - Parameters: - lhs: The scalar value to add - rhs: The vector - Returns: A new vector with the scalar added to each element"
+  },
+  "accuracy" : {
+    "signature" : "func accuracy(actual: [Int], positiveLabel: Int = 1) -> Double",
+    "summary" : "Fraction of predictions that match the actual labels: (TP + TN) \/ total."
+  },
+  "add" : {
+    "signature" : "func add(_ other: [[Float]]) -> [[Float]]",
+    "summary" : "Element-wise addition of two matrices - Parameter other: The second matrix - Returns: A new matrix where each element is the sum of corresponding elements"
+  },
+  "AggregationMethod" : {
+    "signature" : "enum AggregationMethod",
+    "summary" : "Specifies how values within a group or window are combined into a single result."
+  },
+  "AggregationMethod.count" : {
+    "signature" : "case count",
+    "summary" : "Count the number of values in the group"
+  },
+  "AggregationMethod.max" : {
+    "signature" : "case max",
+    "summary" : "Select the maximum value in the group"
+  },
+  "AggregationMethod.mean" : {
+    "signature" : "case mean",
+    "summary" : "Calculate the arithmetic mean of the group"
+  },
+  "AggregationMethod.min" : {
+    "signature" : "case min",
+    "summary" : "Select the minimum value in the group"
+  },
+  "AggregationMethod.percentage" : {
+    "signature" : "case percentage",
+    "summary" : "Sum all values per group, then normalize so all groups sum to 100"
+  },
+  "AggregationMethod.sum" : {
+    "signature" : "case sum",
+    "summary" : "Sum all values in the group"
+  },
+  "allSatisfy" : {
+    "signature" : "func allSatisfy(_ predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
+    "summary" : "Returns a Boolean value indicating whether every element of a sequence satisfies a given predicate."
+  },
+  "and" : {
+    "signature" : "func and(_ other: [Bool]) -> [Bool]",
+    "summary" : "Performs element-wise logical AND with another boolean array."
+  },
+  "angle" : {
+    "signature" : "func angle(with other: [Double]) -> Double",
+    "summary" : "Returns the angle between two vectors in radians."
+  },
+  "angleInDegrees" : {
+    "signature" : "func angleInDegrees(with other: [Double]) -> Double",
+    "summary" : "Returns the angle between two vectors in degrees."
+  },
+  "arange" : {
+    "signature" : "static func arange(_ start: Element, _ stop: Element, step: Element) -> [Element] where Element : Comparable",
+    "summary" : "Creates a sequence of evenly spaced values within a half-open interval."
+  },
+  "areValidVectorDimensions" : {
+    "signature" : "func areValidVectorDimensions() -> Bool",
+    "summary" : "Returns whether all vectors in the collection have the same dimension count. Used to validate that a collection of vectors can be used together in mathematical operations."
+  },
+  "argmax" : {
+    "signature" : "func argmax() -> Int?",
+    "summary" : "Returns the index of the largest element in the array."
+  },
+  "argMax" : {
+    "signature" : "func argMax() -> Int?",
+    "summary" : "Returns the index of the largest element in the array."
+  },
+  "argmin" : {
+    "signature" : "func argmin() -> Int?",
+    "summary" : "Returns the index of the smallest element in the array."
+  },
+  "argMin" : {
+    "signature" : "func argMin() -> Int?",
+    "summary" : "Returns the index of the smallest element in the array."
+  },
+  "Array" : {
+    "signature" : "extension Array where Element == Double",
+    "summary" : null
+  },
+  "asFraction" : {
+    "signature" : "func asFraction(maxDenominator: Int = 1000) -> Fraction",
+    "summary" : "Converts this value to its simplest fractional representation."
+  },
+  "asFractions" : {
+    "signature" : "func asFractions(maxDenominator: Int = 1000) -> [Fraction]",
+    "summary" : "Converts each element to its simplest fractional representation."
+  },
+  "asPercentages" : {
+    "signature" : "func asPercentages() -> [Element]",
+    "summary" : "Converts each value to its percentage of the total sum."
+  },
+  "averaged" : {
+    "signature" : "func averaged() -> [Double]?",
+    "summary" : "Calculates the element-wise average of a collection of vectors."
+  },
+  "bestFit" : {
+    "signature" : "static func bestFit(data: [[Double]], k: Int, maxIterations: Int = 100, attempts: Int = 10) -> KMeans",
+    "summary" : "Fits multiple K-Means models with different seeds and returns the best one."
+  },
+  "broadcast" : {
+    "signature" : "func broadcast(with value: Element, operation: (Element, Element) -> Element) -> [Element]",
+    "summary" : "Broadcasts a custom operation with a scalar value to each element - Parameters: - value: The scalar value to use in the operation - operation: A closure that defines the operation to perform - Returns: A new array with the operation applied to each element"
+  },
+  "ceil" : {
+    "signature" : "func ceil() -> [Double]",
+    "summary" : "Returns the ceiling of each element in the array."
+  },
+  "centroid" : {
+    "signature" : "let centroid: [Double]",
+    "summary" : "The centroid position for this cluster."
+  },
+  "centroids" : {
+    "signature" : "let centroids: [[Double]]",
+    "summary" : "The final centroid positions after convergence."
+  },
+  "choose" : {
+    "signature" : "func choose(where condition: [Bool], otherwise other: [Element]) -> [Element]",
+    "summary" : "Returns a new array with elements conditionally chosen from this array or another - Parameters: - condition: Boolean mask determining which array to choose from - other: The alternative array to choose elements from when condition is false - Returns: Array with elements chosen conditionally from this array or other"
+  },
+  "classDistribution" : {
+    "signature" : "func classDistribution() -> [Int : Int]",
+    "summary" : "Returns the number of samples per class as a dictionary."
+  },
+  "classes" : {
+    "signature" : "let classes: [ClassStats]",
+    "summary" : "The learned statistics for each class, one entry per unique label."
+  },
+  "Classification" : {
+    "signature" : "struct Classification",
+    "summary" : "A group of data points sharing the same predicted class label."
+  },
+  "classificationReport" : {
+    "signature" : "func classificationReport(actual: [Int]) -> String",
+    "summary" : "Returns a formatted per-class classification report comparing these predictions against actual labels."
+  },
+  "Classifier" : {
+    "signature" : "protocol Classifier",
+    "summary" : "A protocol for supervised classification models that predict discrete class labels."
+  },
+  "classify" : {
+    "signature" : "func classify(_ features: [[Double]]) -> [Classification]",
+    "summary" : "Groups input features by their predicted class label."
+  },
+  "Cluster" : {
+    "signature" : "struct Cluster",
+    "summary" : "A single cluster from a K-Means model, containing a centroid and its assigned data points."
+  },
+  "clusterCohesion" : {
+    "signature" : "func clusterCohesion() -> Double",
+    "summary" : "Calculate average pairwise similarity as a measure of cluster cohesion."
+  },
+  "clusters" : {
+    "signature" : "func clusters(from data: [[Double]]) -> [Cluster]",
+    "summary" : "Groups the original training data into clusters with their centroids."
+  },
+  "coefficients" : {
+    "signature" : "let coefficients: [Double]",
+    "summary" : "The fitted coefficient vector."
+  },
+  "column" : {
+    "signature" : "func column(at index: Element.Index) -> [Element.Element]",
+    "summary" : "Extracts a column from a matrix at the specified index"
+  },
+  "columnNames" : {
+    "signature" : "let columnNames: [String]",
+    "summary" : "Column names in insertion order."
+  },
+  "compactMap" : {
+    "signature" : "func compactMap<ElementOfResult>(_ transform: (Self.Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult]",
+    "summary" : "Returns an array containing the non-`nil` results of calling the given transformation with each element of this sequence."
+  },
+  "compare" : {
+    "signature" : "func compare<Comparator>(_ lhs: Comparator.Compared, _ rhs: Comparator.Compared) -> ComparisonResult where Comparator : SortComparator, Comparator == Self.Element",
+    "summary" : "If `lhs` is ordered before `rhs` in the ordering described by the given sequence of `SortComparator`s"
+  },
+  "conditionNumber" : {
+    "signature" : "var conditionNumber: Double { get }",
+    "summary" : "Returns the condition number of the matrix using the 1-norm."
+  },
+  "confusionMatrix" : {
+    "signature" : "func confusionMatrix(actual: [Int], positiveLabel: Int = 1) -> ConfusionMatrix",
+    "summary" : "Builds a confusion matrix comparing these predictions against actual labels."
+  },
+  "ConfusionMatrix" : {
+    "signature" : "struct ConfusionMatrix",
+    "summary" : "Captures the four outcomes of a binary classifier — true positives, false positives, true negatives, and false negatives — and derives standard evaluation metrics from them."
+  },
+  "contains" : {
+    "signature" : "func contains(where predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
+    "summary" : "Returns a Boolean value indicating whether the sequence contains an element that satisfies the given predicate."
+  },
+  "correlationMatrix" : {
+    "signature" : "func correlationMatrix() -> [[Double]]",
+    "summary" : "Calculates the Pearson correlation matrix for multiple data series."
+  },
+  "cos" : {
+    "signature" : "func cos() -> [Double]",
+    "summary" : "Returns the cosine of each element in the array."
+  },
+  "cosineOfAngle" : {
+    "signature" : "func cosineOfAngle(with other: [Element]) -> Element",
+    "summary" : "Returns the cosine of the angle between two vectors."
+  },
+  "cosineSimilarities" : {
+    "signature" : "func cosineSimilarities(to target: [Double]) -> [Double]",
+    "summary" : "Calculates cosine similarity between each vector in the array and a target vector."
+  },
+  "count" : {
+    "signature" : "func count<E>(where predicate: (Self.Element) throws(E) -> Bool) throws(E) -> Int where E : Error",
+    "summary" : "Returns the number of elements in the sequence that satisfy the given predicate."
+  },
+  "cumulativeProduct" : {
+    "signature" : "func cumulativeProduct() -> [Element]",
+    "summary" : "Returns the running product at each position in the array."
+  },
+  "cumulativeSum" : {
+    "signature" : "func cumulativeSum() -> [Element]",
+    "summary" : "Returns the running total at each position in the array."
+  },
+  "denominator" : {
+    "signature" : "let denominator: Int",
+    "summary" : "The denominator of the fraction (always positive)"
+  },
+  "derivative" : {
+    "signature" : "func derivative(sampleRate: Element) -> [Element]",
+    "summary" : "Computes the numerical derivative by dividing consecutive differences by the sample rate (time between measurements)."
+  },
+  "describe" : {
+    "signature" : "func describe() -> String",
+    "summary" : "Returns per-column summary statistics as a formatted string."
+  },
+  "description" : {
+    "signature" : "var description: String { get }",
+    "summary" : "Displays the fraction as \"a\/b\", or just \"a\" for whole numbers"
+  },
+  "determinant" : {
+    "signature" : "var determinant: Element.Element { get }",
+    "summary" : "Returns the determinant of a square matrix."
+  },
+  "diag" : {
+    "signature" : "static func diag(_ diagonal: [Element]) -> [[Element]]",
+    "summary" : "Creates a diagonal matrix from a vector of diagonal values."
+  },
+  "diff" : {
+    "signature" : "func diff(lag: Int = 1) -> [Element]",
+    "summary" : "Calculates the difference between each element and the element a fixed number of periods before it."
+  },
+  "distance" : {
+    "signature" : "func distance(to other: [Element]) -> Element",
+    "summary" : "Calculates the Euclidean distance between two points or vectors."
+  },
+  "DistanceMetric" : {
+    "signature" : "enum DistanceMetric",
+    "summary" : "The distance metric used to compare samples in K-Nearest Neighbors."
+  },
+  "DistanceMetric.cosine" : {
+    "signature" : "case cosine",
+    "summary" : "Cosine distance: 1 − cosine similarity."
+  },
+  "DistanceMetric.euclidean" : {
+    "signature" : "case euclidean",
+    "summary" : "Euclidean distance: √Σ(aᵢ − bᵢ)²."
+  },
+  "divide" : {
+    "signature" : "func divide(_ other: [[Float]]) -> [[Float]]",
+    "summary" : "Element-wise division of two matrices - Parameter other: The second matrix - Returns: A new matrix where each element is the quotient of corresponding elements"
+  },
+  "dot" : {
+    "signature" : "func dot(_ other: [Element]) -> Element",
+    "summary" : "Calculates the dot product of two vectors."
+  },
+  "Double" : {
+    "signature" : "extension Double",
+    "summary" : null
+  },
+  "downsample" : {
+    "signature" : "func downsample(factor: Int, using method: AggregationMethod) -> [Element]",
+    "summary" : "Reduces the array size by grouping consecutive elements into fixed-size windows and aggregating each window into a single value."
+  },
+  "drop" : {
+    "signature" : "func drop(while predicate: (Self.Element) throws -> Bool) rethrows -> DropWhileSequence<Self>",
+    "summary" : "Returns a sequence by skipping the initial, consecutive elements that satisfy the given predicate."
+  },
+  "dropFirst" : {
+    "signature" : "func dropFirst(_ k: Int = 1) -> DropFirstSequence<Self>",
+    "summary" : "Returns a sequence containing all but the given number of initial elements."
+  },
+  "dropLast" : {
+    "signature" : "func dropLast(_ k: Int = 1) -> [Self.Element]",
+    "summary" : "Returns a sequence containing all but the given number of final elements."
+  },
+  "elbowMethod" : {
+    "signature" : "static func elbowMethod(data: [[Double]], kRange: ClosedRange<Int>, maxIterations: Int = 100, seed: UInt64? = nil) -> [(k: Int, inertia: Double)]",
+    "summary" : "Computes inertia for a range of k values (elbow method)."
+  },
+  "elementsEqual" : {
+    "signature" : "func elementsEqual<OtherSequence>(_ other: OtherSequence, by areEquivalent: (Self.Element, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence",
+    "summary" : "Returns a Boolean value indicating whether this sequence and another sequence contain equivalent elements in the same order, using the given predicate as the equivalence test."
+  },
+  "embed" : {
+    "signature" : "func embed(using embeddings: [String : [Double]]) -> [[Double]]",
+    "summary" : "Converts an array of words to their vector embeddings by looking up each word in the embeddings dictionary."
+  },
+  "enumerated" : {
+    "signature" : "func enumerated() -> EnumeratedSequence<Self>",
+    "summary" : "Returns a sequence of pairs (*n*, *x*), where *n* represents a consecutive integer starting at zero and *x* represents an element of the sequence."
+  },
+  "exp" : {
+    "signature" : "func exp() -> [Double]",
+    "summary" : "Returns e raised to the power of each element in the array."
+  },
+  "exponentialMean" : {
+    "signature" : "func exponentialMean(alpha: Element) -> [Element]",
+    "summary" : "Computes the exponential moving average, where recent values carry more weight."
+  },
+  "f1Score" : {
+    "signature" : "func f1Score(actual: [Int], positiveLabel: Int = 1) -> Double?",
+    "summary" : "Harmonic mean of precision and recall: 2 * P * R \/ (P + R)."
+  },
+  "falseNegatives" : {
+    "signature" : "let falseNegatives: Int",
+    "summary" : "Positive samples the model incorrectly identified as negative."
+  },
+  "falsePositives" : {
+    "signature" : "let falsePositives: Int",
+    "summary" : "Negative samples the model incorrectly identified as positive."
+  },
+  "featureCount" : {
+    "signature" : "let featureCount: Int",
+    "summary" : "Number of feature columns the scaler was fitted on."
+  },
+  "FeatureScaler" : {
+    "signature" : "struct FeatureScaler",
+    "summary" : "A column-wise min-max scaler for feature matrices."
+  },
+  "filter" : {
+    "signature" : "func filter(_ isIncluded: (Self.Element) throws -> Bool) rethrows -> [Self.Element]",
+    "summary" : "Returns an array containing, in order, the elements of the sequence that satisfy the given predicate."
+  },
+  "filtered" : {
+    "signature" : "func filtered(where mask: [Bool]) -> Panel",
+    "summary" : "Returns a new panel containing only the rows where the mask is true."
+  },
+  "findDuplicates" : {
+    "signature" : "func findDuplicates(threshold: Double = 0.95) -> [(index1: Int, index2: Int, similarity: Double)]",
+    "summary" : "Find pairs of vectors with similarity above the specified threshold."
+  },
+  "first" : {
+    "signature" : "func first(where predicate: (Self.Element) throws -> Bool) rethrows -> Self.Element?",
+    "summary" : "Returns the first element of the sequence that satisfies the given predicate."
+  },
+  "fit" : {
+    "signature" : "static func fit(features: [[Double]], labels: [Int]) -> Pipeline<GaussianNaiveBayes>",
+    "summary" : "Fits a scaler, trains a Gaussian Naive Bayes classifier, and bundles them into a Pipeline."
+  },
+  "flatMap" : {
+    "signature" : "func flatMap<SegmentOfResult>(_ transform: (Self.Element) throws -> SegmentOfResult) rethrows -> [SegmentOfResult.Element] where SegmentOfResult : Sequence",
+    "summary" : "Returns an array containing the concatenated results of calling the given transformation with each element of this sequence."
+  },
+  "flattened" : {
+    "signature" : "func flattened() -> [Element.Element]",
+    "summary" : "Flattens a two-dimensional matrix into a one-dimensional array by concatenating rows in row-major order."
+  },
+  "floor" : {
+    "signature" : "func floor() -> [Double]",
+    "summary" : "Returns the floor of each element in the array."
+  },
+  "forEach" : {
+    "signature" : "func forEach(_ body: (Self.Element) throws -> Void) rethrows",
+    "summary" : "Calls the given closure on each element in the sequence in the same order as a `for`-`in` loop."
+  },
+  "formatted" : {
+    "signature" : "func formatted<S>(_ style: S) -> S.FormatOutput where Self == S.FormatInput, S : FormatStyle",
+    "summary" : null
+  },
+  "fourierDominantFrequency" : {
+    "signature" : "func fourierDominantFrequency(sampleRate: Double) -> Double?",
+    "summary" : "Returns the frequency with the highest amplitude in the spectrum, excluding the DC component (0 Hz)."
+  },
+  "fourierFrequencies" : {
+    "signature" : "func fourierFrequencies(sampleRate: Double) -> [Double]",
+    "summary" : "Maps each output bin to its corresponding frequency in Hz."
+  },
+  "fourierFrequenciesHalf" : {
+    "signature" : "func fourierFrequenciesHalf(sampleRate: Double) -> [Double]",
+    "summary" : "Returns only the positive-frequency half of the frequency axis."
+  },
+  "fourierInverse" : {
+    "signature" : "func fourierInverse() -> [Double]",
+    "summary" : "Performs an inverse Fourier transform on real-valued input."
+  },
+  "fourierMagnitude" : {
+    "signature" : "func fourierMagnitude() -> [Double]",
+    "summary" : "Returns the amplitude at each frequency bin."
+  },
+  "fourierMagnitudeHalf" : {
+    "signature" : "func fourierMagnitudeHalf() -> [Double]",
+    "summary" : "Returns the amplitude spectrum for only the positive-frequency half."
+  },
+  "fourierPhase" : {
+    "signature" : "func fourierPhase() -> [Double]",
+    "summary" : "Returns the phase angle (in radians) at each frequency bin."
+  },
+  "fourierSpectrum" : {
+    "signature" : "func fourierSpectrum(sampleRate: Double, windowed: Bool = false) -> [(frequency: Double, magnitude: Double)]",
+    "summary" : "Returns the positive-frequency spectrum as paired frequency and magnitude values, with automatic padding and optional windowing."
+  },
+  "Fraction" : {
+    "signature" : "struct Fraction",
+    "summary" : "A rational number representation for educational display of numeric results."
+  },
+  "full" : {
+    "signature" : "static func full(_ count: Int, value: Element) -> [Element]",
+    "summary" : "Creates a 1D array filled with a specific value."
+  },
+  "GaussianNaiveBayes" : {
+    "signature" : "struct GaussianNaiveBayes",
+    "summary" : "A trained Gaussian Naive Bayes classifier."
+  },
+  "GaussianNaiveBayes.ClassStats" : {
+    "signature" : "struct ClassStats",
+    "summary" : "Statistics learned from the training data for a single class."
+  },
+  "groupBy" : {
+    "signature" : "func groupBy(_ categories: [String], using method: AggregationMethod) -> [String : Element]",
+    "summary" : "Groups values by category labels and aggregates each group using the specified method."
+  },
+  "groupedData" : {
+    "signature" : "func groupedData(by categories: [String], using method: AggregationMethod) -> [(category: String, value: Element)]",
+    "summary" : "Groups values by category and returns chart-ready tuples sorted by category name."
+  },
+  "hannWindowed" : {
+    "signature" : "func hannWindowed() -> [Double]",
+    "summary" : "Applies a Hann window to reduce spectral leakage before computing the Fourier transform."
+  },
+  "hasIntercept" : {
+    "signature" : "let hasIntercept: Bool",
+    "summary" : "Whether this model includes an intercept (bias) term."
+  },
+  "head" : {
+    "signature" : "func head(n: Int = 10) -> String",
+    "summary" : "Returns the first rows of the panel as a formatted table."
+  },
+  "heatmapData" : {
+    "signature" : "func heatmapData(labels: [String]) -> [(x: String, y: String, value: Double)]",
+    "summary" : "Computes a correlation matrix and flattens it into labeled tuples for heatmap rendering."
+  },
+  "histogram" : {
+    "signature" : "func histogram(bins: Int) -> [(midpoint: Element, count: Int)] where Element : BinaryFloatingPoint",
+    "summary" : "Divides data into evenly spaced bins and counts the frequency of values in each."
+  },
+  "identity" : {
+    "signature" : "static func identity(_ n: Int) -> [[Element]]",
+    "summary" : "Creates an identity matrix of size n × n."
+  },
+  "imbalanceRatio" : {
+    "signature" : "func imbalanceRatio() -> Double?",
+    "summary" : "Returns the ratio of the largest class to the smallest class."
+  },
+  "inertia" : {
+    "signature" : "let inertia: Double",
+    "summary" : "Sum of squared distances from each point to its assigned centroid."
+  },
+  "info" : {
+    "signature" : "func info() -> String",
+    "summary" : "Returns a statistical summary of a 2D matrix including shape, size, type, and aggregate statistics computed across all elements."
+  },
+  "init" : {
+    "signature" : "init(_ value: Double, maxDenominator: Int = 1000, tolerance: Double = 1e-9)",
+    "summary" : "Converts a Double to its simplest fractional representation using continued fraction expansion."
+  },
+  "inverted" : {
+    "signature" : "func inverted() throws -> [[Element.Element]]",
+    "summary" : "Returns the inverse of a square matrix."
+  },
+  "isEqual" : {
+    "signature" : "func isEqual(to other: [Element]) -> [Bool]",
+    "summary" : "Checks if this array is equal to another array element-wise - Parameter other: The array to compare with - Returns: An array of boolean values indicating equality at each position"
+  },
+  "isGreaterThan" : {
+    "signature" : "func isGreaterThan(_ value: Element) -> [Bool]",
+    "summary" : "Checks if each element in this array is greater than the specified value - Parameter value: The value to compare against - Returns: An array of boolean values"
+  },
+  "isGreaterThanOrEqual" : {
+    "signature" : "func isGreaterThanOrEqual(_ value: Element) -> [Bool]",
+    "summary" : "Checks if each element in this array is greater than or equal to the specified value - Parameter value: The value to compare against - Returns: An array of boolean values"
+  },
+  "isLessThan" : {
+    "signature" : "func isLessThan(_ value: Element) -> [Bool]",
+    "summary" : "Checks if each element in this array is less than the specified value - Parameter value: The value to compare against - Returns: An array of boolean values"
+  },
+  "isLessThanOrEqual" : {
+    "signature" : "func isLessThanOrEqual(_ value: Element) -> [Bool]",
+    "summary" : "Checks if each element in this array is less than or equal to the specified value - Parameter value: The value to compare against - Returns: An array of boolean values"
+  },
+  "iterations" : {
+    "signature" : "let iterations: Int",
+    "summary" : "The number of iterations the algorithm ran before stopping."
+  },
+  "joined" : {
+    "signature" : "func joined<Separator>(separator: Separator) -> JoinedSequence<Self> where Separator : Sequence, Separator.Element == Self.Element.Element",
+    "summary" : "Returns the concatenated elements of this sequence of sequences, inserting the given separator between each element."
+  },
+  "k" : {
+    "signature" : "let k: Int",
+    "summary" : "The number of neighbors to consider for each prediction."
+  },
+  "KMeans" : {
+    "signature" : "struct KMeans",
+    "summary" : "A trained K-Means clustering model."
+  },
+  "KNearestNeighbors" : {
+    "signature" : "struct KNearestNeighbors",
+    "summary" : "A trained K-Nearest Neighbors classifier."
+  },
+  "label" : {
+    "signature" : "let label: Int",
+    "summary" : "The predicted class label for this group."
+  },
+  "labels" : {
+    "signature" : "let labels: [Int]",
+    "summary" : "The cluster label assigned to each training sample (0 to k-1)."
+  },
+  "lazy" : {
+    "signature" : "var lazy: LazySequence<Self> { get }",
+    "summary" : "A sequence containing the same elements as this sequence, but on which some operations, such as `map` and `filter`, are implemented lazily."
+  },
+  "lexicographicallyPrecedes" : {
+    "signature" : "func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence, by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, Self.Element == OtherSequence.Element",
+    "summary" : "Returns a Boolean value indicating whether the sequence precedes another sequence in a lexicographical (dictionary) ordering, using the given predicate to compare elements."
+  },
+  "LinearRegression" : {
+    "signature" : "struct LinearRegression",
+    "summary" : "A trained ordinary least squares regression model."
+  },
+  "linspace" : {
+    "signature" : "static func linspace(_ start: Element, _ stop: Element, num: Int) -> [Element]",
+    "summary" : "Creates evenly spaced numbers over a specified closed interval."
+  },
+  "localizedDescription" : {
+    "signature" : "var localizedDescription: String { get }",
+    "summary" : "Retrieve the localized description for this error."
+  },
+  "log" : {
+    "signature" : "func log() -> [Double]",
+    "summary" : "Returns the natural logarithm of each element in the array."
+  },
+  "log10" : {
+    "signature" : "func log10() -> [Double]",
+    "summary" : "Returns the base-10 logarithm of each element in the array."
+  },
+  "logAbsValue" : {
+    "signature" : "let logAbsValue: Double",
+    "summary" : "The natural logarithm of the absolute determinant value"
+  },
+  "logDeterminant" : {
+    "signature" : "var logDeterminant: LogDeterminant { get }",
+    "summary" : "Returns the sign and natural logarithm of the absolute determinant."
+  },
+  "LogDeterminant" : {
+    "signature" : "struct LogDeterminant",
+    "summary" : "Represents the sign and natural logarithm of a matrix determinant."
+  },
+  "magnitude" : {
+    "signature" : "var magnitude: Element { get }",
+    "summary" : "Calculates the magnitude (length) of the vector."
+  },
+  "makeIterator" : {
+    "signature" : "func makeIterator() -> IndexingIterator<[[Double]]>",
+    "summary" : "Returns an iterator over the data points in this classification group."
+  },
+  "map" : {
+    "signature" : "func map<T, E>(_ transform: (Self.Element) throws(E) -> T) throws(E) -> [T] where E : Error",
+    "summary" : "Returns an array containing the results of mapping the given closure over the sequence's elements."
+  },
+  "masked" : {
+    "signature" : "func masked(by mask: [Bool]) -> [Element]",
+    "summary" : "Returns elements where the mask is true (like NumPy's array[mask]) - Parameter mask: The boolean mask to apply - Returns: Array containing only elements where the mask is true"
+  },
+  "maskedWithIndices" : {
+    "signature" : "func maskedWithIndices(by mask: [Bool]) -> [(index: Int, value: Element)]",
+    "summary" : "Returns elements where the mask is true, along with their original indices."
+  },
+  "MatrixError" : {
+    "signature" : "enum MatrixError",
+    "summary" : "Errors thrown by matrix operations that can fail at runtime."
+  },
+  "MatrixError.notSquare" : {
+    "signature" : "case notSquare",
+    "summary" : "The operation requires a square matrix but received a non-square one."
+  },
+  "MatrixError.singular" : {
+    "signature" : "case singular",
+    "summary" : "The matrix is singular (determinant = 0) and cannot be inverted."
+  },
+  "max" : {
+    "signature" : "@warn_unqualified_access func max(by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Self.Element?",
+    "summary" : "Returns the maximum element in the sequence, using the given predicate as the comparison between elements."
+  },
+  "maximums" : {
+    "signature" : "let maximums: [Double]",
+    "summary" : "Per-column maximum values learned from the training data."
+  },
+  "mean" : {
+    "signature" : "func mean() -> Element?",
+    "summary" : "Returns the arithmetic mean (average) of all elements in the array."
+  },
+  "means" : {
+    "signature" : "let means: [Double]",
+    "summary" : "Per-column mean values learned from the training data."
+  },
+  "meanSquaredError" : {
+    "signature" : "func meanSquaredError(actual: [Double]) -> Double",
+    "summary" : "Mean squared error comparing these predicted values against actuals."
+  },
+  "meanVector" : {
+    "signature" : "func meanVector() -> [Double]?",
+    "summary" : "Computes the element-wise mean across multiple vectors, producing a single vector where each dimension is the average of the corresponding dimensions across all inputs."
+  },
+  "median" : {
+    "signature" : "func median() -> Element?",
+    "summary" : "Returns the median (middle value) of the array."
+  },
+  "metric" : {
+    "signature" : "let metric: DistanceMetric",
+    "summary" : "The distance metric used to compare samples."
+  },
+  "min" : {
+    "signature" : "@warn_unqualified_access func min(by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Self.Element?",
+    "summary" : "Returns the minimum element in the sequence, using the given predicate as the comparison between elements."
+  },
+  "minimums" : {
+    "signature" : "let minimums: [Double]",
+    "summary" : "Per-column minimum values learned from the training data."
+  },
+  "model" : {
+    "signature" : "let model: Model",
+    "summary" : "The trained model that produces predictions from scaled features."
+  },
+  "multiply" : {
+    "signature" : "func multiply(_ other: [[Float]]) -> [[Float]]",
+    "summary" : "Element-wise multiplication of two matrices (Hadamard product) - Parameter other: The second matrix - Returns: A new matrix where each element is the product of corresponding elements"
+  },
+  "multiplyMatrix" : {
+    "signature" : "func multiplyMatrix(_ other: [[Element.Element]]) -> [[Element.Element]]",
+    "summary" : "Multiplies this matrix by another matrix to compose transformations."
+  },
+  "normalized" : {
+    "signature" : "var normalized: [Element] { get }",
+    "summary" : "Returns a normalized version of the vector (unit vector)."
+  },
+  "not" : {
+    "signature" : "var not: [Bool] { get }",
+    "summary" : "Returns the element-wise logical negation of the boolean array."
+  },
+  "numerator" : {
+    "signature" : "let numerator: Int",
+    "summary" : "The numerator of the fraction"
+  },
+  "ones" : {
+    "signature" : "static func ones(_ count: Int) -> [Element]",
+    "summary" : "Creates a 1D array filled with ones."
+  },
+  "or" : {
+    "signature" : "func or(_ other: [Bool]) -> [Bool]",
+    "summary" : "Performs element-wise logical OR with another boolean array."
+  },
+  "orthogonalComponent" : {
+    "signature" : "func orthogonalComponent(to vector: [Element]) -> [Element]",
+    "summary" : "Returns the component of this vector that is perpendicular to another vector."
+  },
+  "outlierMask" : {
+    "signature" : "func outlierMask(threshold: Element = 2.0, mean: Element? = nil, std: Element? = nil) -> [Bool]",
+    "summary" : "Detects outliers using the z-score method and returns a boolean mask."
+  },
+  "oversample" : {
+    "signature" : "func oversample(labels: [Int]) -> (features: [[Double]], labels: [Int])",
+    "summary" : "Balances an imbalanced dataset by generating synthetic samples for smaller classes."
+  },
+  "padded" : {
+    "signature" : "func padded(toPowerOfTwo value: Double = 0.0) -> [Double]",
+    "summary" : "Zero-pads the signal to the next power of two, satisfying the Fourier transform's input requirement."
+  },
+  "Panel" : {
+    "signature" : "struct Panel",
+    "summary" : "A Quiver type that organizes named columns of numeric data into a single container."
+  },
+  "percentChange" : {
+    "signature" : "func percentChange(lag: Int = 1) -> [Element]",
+    "summary" : "Calculates the percentage change between each element and the element a fixed number of periods before it."
+  },
+  "percentile" : {
+    "signature" : "func percentile(_ p: Double) -> Element? where Element : BinaryFloatingPoint",
+    "summary" : "Calculates the value at a specific percentile using linear interpolation."
+  },
+  "percentileRank" : {
+    "signature" : "func percentileRank(of value: Element) -> Element",
+    "summary" : "Calculates the percentile rank of a specific value within the array."
+  },
+  "percentileRanks" : {
+    "signature" : "func percentileRanks() -> [Element]",
+    "summary" : "Calculates the percentile rank for every value in the array."
+  },
+  "Pipeline" : {
+    "signature" : "struct Pipeline<Model> where Model : Decodable, Model : Encodable, Model : Equatable, Model : Sendable",
+    "summary" : "A matched pair of scaler and model that travel together."
+  },
+  "points" : {
+    "signature" : "let points: [[Double]]",
+    "summary" : "The input data points assigned to this class."
+  },
+  "power" : {
+    "signature" : "func power(_ exponent: Double) -> [Double]",
+    "summary" : "Raises each element to the specified power."
+  },
+  "precision" : {
+    "signature" : "var precision: Double? { get }",
+    "summary" : "Of all predicted positives, what fraction were actually positive: TP \/ (TP + FP)."
+  },
+  "predict" : {
+    "signature" : "func predict(_ features: [[Double]]) -> [Int]",
+    "summary" : "Predicts class labels for the given feature vectors. - Parameter features: 2D array where each row is a sample to classify. - Returns: An array of predicted class labels, one per sample."
+  },
+  "predictLogProbabilities" : {
+    "signature" : "func predictLogProbabilities(_ features: [[Double]]) -> [[Double]]",
+    "summary" : "Returns log-probabilities for each class for each sample."
+  },
+  "prefix" : {
+    "signature" : "func prefix(_ maxLength: Int) -> PrefixSequence<Self>",
+    "summary" : "Returns a sequence, up to the specified maximum length, containing the initial elements of the sequence."
+  },
+  "prior" : {
+    "signature" : "let prior: Double",
+    "summary" : "Prior probability P(class), computed as count \/ totalSamples."
+  },
+  "product" : {
+    "signature" : "func product() -> Element",
+    "summary" : "Returns the product of all elements in the array."
+  },
+  "publisher" : {
+    "signature" : "var publisher: Publishers.Sequence<Self, Never> { get }",
+    "summary" : null
+  },
+  "quartiles" : {
+    "signature" : "func quartiles() -> (min: Element, q1: Element, median: Element, q3: Element, max: Element, iqr: Element)? where Element : BinaryFloatingPoint",
+    "summary" : "Calculates the five-number summary and interquartile range of the data."
+  },
+  "Quiver" : {
+    "signature" : "enum Quiver",
+    "summary" : "Quiver: Vector mathematics, numerical computing, and machine learning for Swift"
+  },
+  "random" : {
+    "signature" : "static func random(_ count: Int, in range: ClosedRange<Double>) -> [Double]",
+    "summary" : "Creates a 1D array of random values uniformly distributed in the given range."
+  },
+  "randomNormal" : {
+    "signature" : "static func randomNormal(_ count: Int, mean: Double = 0.0, std: Double = 1.0) -> [Double]",
+    "summary" : "Creates a 1D array of random values from a normal (Gaussian) distribution."
+  },
+  "range" : {
+    "signature" : "let range: ClosedRange<Double>",
+    "summary" : "The target range that scaled values are mapped to."
+  },
+  "recall" : {
+    "signature" : "func recall(actual: [Int], positiveLabel: Int = 1) -> Double?",
+    "summary" : "Of all actual positives, what fraction did the model catch: TP \/ (TP + FN)."
+  },
+  "reduce" : {
+    "signature" : "func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, Self.Element) throws -> Result) rethrows -> Result",
+    "summary" : "Returns the result of combining the elements of the sequence using the given closure."
+  },
+  "Regressor" : {
+    "signature" : "protocol Regressor",
+    "summary" : "A protocol for supervised regression models that predict continuous values."
+  },
+  "reshaped" : {
+    "signature" : "func reshaped(rows: Int, columns: Int) -> [[Element]]",
+    "summary" : "Reshapes a one-dimensional array into a two-dimensional matrix with the specified dimensions using row-major order."
+  },
+  "reversed" : {
+    "signature" : "func reversed() -> [Self.Element]",
+    "summary" : "Returns an array containing the elements of this sequence in reverse order."
+  },
+  "rollingMean" : {
+    "signature" : "func rollingMean(window: Int) -> [Element]",
+    "summary" : "Calculates a rolling mean (moving average) over a specified window."
+  },
+  "rootMeanSquaredError" : {
+    "signature" : "func rootMeanSquaredError(actual: [Double]) -> Double",
+    "summary" : "Root mean squared error comparing these predicted values against actuals."
+  },
+  "round" : {
+    "signature" : "func round() -> [Double]",
+    "summary" : "Returns the rounded value of each element in the array."
+  },
+  "rounded" : {
+    "signature" : "func rounded(to places: Int) -> [Double]",
+    "summary" : "Returns each element rounded to a specified number of decimal places."
+  },
+  "rowCount" : {
+    "signature" : "let rowCount: Int",
+    "summary" : "Number of rows (shared across all columns)."
+  },
+  "rSquared" : {
+    "signature" : "func rSquared(actual: [Double]) -> Double",
+    "summary" : "Coefficient of determination R² comparing these predicted values against actuals."
+  },
+  "scalarProjection" : {
+    "signature" : "func scalarProjection(onto vector: [Element]) -> Element",
+    "summary" : "Calculates the scalar projection of this vector onto another vector."
+  },
+  "scaled" : {
+    "signature" : "func scaled(to range: ClosedRange<Element>) -> [Element]",
+    "summary" : "Scales values to a target range using min-max normalization."
+  },
+  "scaler" : {
+    "signature" : "let scaler: StandardScaler",
+    "summary" : "The scaler that normalizes raw inputs before prediction."
+  },
+  "shape" : {
+    "signature" : "var shape: (rows: Int, columns: Int) { get }",
+    "summary" : "Returns the shape of a two-dimensional array as a `(rows, columns)` tuple."
+  },
+  "shuffled" : {
+    "signature" : "func shuffled<T>(using generator: inout T) -> [Self.Element] where T : RandomNumberGenerator",
+    "summary" : "Returns the elements of the sequence, shuffled using the given generator as a source for randomness."
+  },
+  "sigmoid" : {
+    "signature" : "func sigmoid() -> [Double]",
+    "summary" : "Applies the sigmoid function to each element: σ(x) = 1 \/ (1 + e⁻ˣ)."
+  },
+  "sign" : {
+    "signature" : "let sign: Double",
+    "summary" : "The sign of the determinant: -1, 0, or 1"
+  },
+  "sin" : {
+    "signature" : "func sin() -> [Double]",
+    "summary" : "Returns the sine of each element in the array."
+  },
+  "sineWave" : {
+    "signature" : "static func sineWave(frequency: Double, sampleRate: Double, count: Int, amplitude: Double = 1.0, offset: Double = 0.0) -> [Double]",
+    "summary" : "Generates a sine wave signal at a given frequency and sample rate."
+  },
+  "size" : {
+    "signature" : "var size: Int { get }",
+    "summary" : "Returns the total number of elements across all dimensions."
+  },
+  "softmax" : {
+    "signature" : "func softmax() -> [Double]",
+    "summary" : "Converts raw scores into a probability distribution that sums to 1.0."
+  },
+  "softMax" : {
+    "signature" : "func softMax() -> [Double]",
+    "summary" : "Converts raw scores into a probability distribution that sums to 1.0."
+  },
+  "sorted" : {
+    "signature" : "func sorted<S, Comparator>(using comparators: S) -> [Self.Element] where S : Sequence, Comparator : SortComparator, Comparator == S.Element, Self.Element == Comparator.Compared",
+    "summary" : "Returns the elements of the sequence, sorted using the given array of `SortComparator`s to compare elements."
+  },
+  "sortedIndices" : {
+    "signature" : "func sortedIndices() -> [Int]",
+    "summary" : "Returns the indices that would sort the array in ascending order."
+  },
+  "split" : {
+    "signature" : "func split(maxSplits: Int = Int.max, omittingEmptySubsequences: Bool = true, whereSeparator isSeparator: (Self.Element) throws -> Bool) rethrows -> [ArraySlice<Self.Element>]",
+    "summary" : "Returns the longest possible subsequences of the sequence, in order, that don't contain elements satisfying the given predicate. Elements that are used to split the sequence are not returned as part of any subsequence."
+  },
+  "sqrt" : {
+    "signature" : "func sqrt() -> [Double]",
+    "summary" : "Returns the square root of each element in the array."
+  },
+  "square" : {
+    "signature" : "func square() -> [Double]",
+    "summary" : "Returns the square of each element in the array."
+  },
+  "stackedCumulative" : {
+    "signature" : "func stackedCumulative() -> [[Double]]",
+    "summary" : "Stacks multiple data series cumulatively so each series builds on the one below it."
+  },
+  "stackedPercentage" : {
+    "signature" : "func stackedPercentage() -> [[Double]]",
+    "summary" : "Converts multiple data series into percentage-based stacking where each time point sums to 100%."
+  },
+  "standardized" : {
+    "signature" : "func standardized() -> [Element]",
+    "summary" : "Standardizes values using z-score normalization so the result has a mean of 0 and a standard deviation of 1."
+  },
+  "StandardScaler" : {
+    "signature" : "struct StandardScaler",
+    "summary" : "A column-wise z-score scaler for feature matrices."
+  },
+  "starts" : {
+    "signature" : "func starts<PossiblePrefix>(with possiblePrefix: PossiblePrefix, by areEquivalent: (Self.Element, PossiblePrefix.Element) throws -> Bool) rethrows -> Bool where PossiblePrefix : Sequence",
+    "summary" : "Returns a Boolean value indicating whether the initial elements of the sequence are equivalent to the elements in another sequence, using the given predicate as the equivalence test."
+  },
+  "std" : {
+    "signature" : "func std(ddof: Int = 0) -> Element?",
+    "summary" : "Returns the standard deviation of all elements in the array."
+  },
+  "stds" : {
+    "signature" : "let stds: [Double]",
+    "summary" : "Per-column standard deviation values learned from the training data."
+  },
+  "stratifiedSplit" : {
+    "signature" : "func stratifiedSplit<L>(labels: [L], testRatio: Double, seed: UInt64) -> (trainFeatures: [Element], testFeatures: [Element], trainLabels: [L], testLabels: [L]) where L : Hashable",
+    "summary" : "Splits paired feature and label arrays into training and testing subsets, preserving the class distribution from the labels in both sets."
+  },
+  "String" : {
+    "signature" : "extension String",
+    "summary" : null
+  },
+  "subscript" : {
+    "signature" : "subscript(column: String) -> [Double] { get }",
+    "summary" : "Returns the values for the named column as a Quiver vector."
+  },
+  "subtract" : {
+    "signature" : "func subtract(_ other: [[Float]]) -> [[Float]]",
+    "summary" : "Element-wise subtraction of two matrices - Parameter other: The second matrix - Returns: A new matrix where each element is the difference of corresponding elements"
+  },
+  "suffix" : {
+    "signature" : "func suffix(_ maxLength: Int) -> [Self.Element]",
+    "summary" : "Returns a subsequence, up to the given maximum length, containing the final elements of the sequence."
+  },
+  "sum" : {
+    "signature" : "func sum() -> Element",
+    "summary" : "Returns the sum of all elements in the array."
+  },
+  "summary" : {
+    "signature" : "func summary() -> String",
+    "summary" : "Returns per-column summary statistics as a formatted string."
+  },
+  "tan" : {
+    "signature" : "func tan() -> [Double]",
+    "summary" : "Returns the tangent of each element in the array."
+  },
+  "tokenize" : {
+    "signature" : "func tokenize() -> [String]",
+    "summary" : "Tokenizes text into individual words for text analysis and embedding workflows."
+  },
+  "toMatrix" : {
+    "signature" : "func toMatrix(columns: [String]? = nil) -> [[Double]]",
+    "summary" : "Extracts selected columns as a matrix."
+  },
+  "topIndices" : {
+    "signature" : "func topIndices(k: Int) -> [(index: Int, score: Double)]",
+    "summary" : "Returns the indices and values of the top K highest elements."
+  },
+  "trainingFeatures" : {
+    "signature" : "let trainingFeatures: [[Double]]",
+    "summary" : "The training feature vectors, stored for distance computation at prediction time."
+  },
+  "trainingLabels" : {
+    "signature" : "let trainingLabels: [Int]",
+    "summary" : "The training labels, one per feature vector."
+  },
+  "trainTestSplit" : {
+    "signature" : "func trainTestSplit(testRatio: Double, seed: UInt64) -> (train: [Element], test: [Element])",
+    "summary" : "Splits the array into training and testing subsets using a seeded shuffle for reproducible results."
+  },
+  "transform" : {
+    "signature" : "func transform(_ vector: [Element.Element]) -> [Element.Element]",
+    "summary" : "Transforms a vector by this matrix (matrix-vector multiplication)"
+  },
+  "transformedBy" : {
+    "signature" : "func transformedBy(_ matrix: [[Element]]) -> [Element]",
+    "summary" : "Transforms this vector using a matrix (matrix-vector multiplication)."
+  },
+  "transpose" : {
+    "signature" : "func transpose() -> [[Element.Element]]",
+    "summary" : "Returns the transpose of a matrix"
+  },
+  "transposed" : {
+    "signature" : "func transposed() -> [[Element.Element]]",
+    "summary" : "Returns the transpose of a matrix (convenience method matching Swift naming conventions)"
+  },
+  "trueIndices" : {
+    "signature" : "var trueIndices: [Int] { get }",
+    "summary" : "Returns the indices of all `true` elements in the boolean array."
+  },
+  "trueNegatives" : {
+    "signature" : "let trueNegatives: Int",
+    "summary" : "Negative samples the model correctly identified as negative."
+  },
+  "truePositives" : {
+    "signature" : "let truePositives: Int",
+    "summary" : "Positive samples the model correctly identified as positive."
+  },
+  "underestimatedCount" : {
+    "signature" : "var underestimatedCount: Int { get }",
+    "summary" : "A value less than or equal to the number of elements in the sequence, calculated nondestructively."
+  },
+  "value" : {
+    "signature" : "var value: Double { get }",
+    "summary" : "Reconstructs the determinant value (sign times exp of log absolute value)"
+  },
+  "variance" : {
+    "signature" : "func variance(ddof: Int = 0) -> Element?",
+    "summary" : "Returns the variance of all elements in the array."
+  },
+  "variances" : {
+    "signature" : "let variances: [Double]",
+    "summary" : "Variance of each feature for samples in this class."
+  },
+  "vectorProjection" : {
+    "signature" : "func vectorProjection(onto vector: [Element]) -> [Element]",
+    "summary" : "Calculates the vector projection of this vector onto another vector."
+  },
+  "version" : {
+    "signature" : "static let version: String",
+    "summary" : "Library version. Keep in sync with the package tag at release time."
+  },
+  "VoteWeight" : {
+    "signature" : "enum VoteWeight",
+    "summary" : "The weighting strategy for neighbor votes in K-Nearest Neighbors."
+  },
+  "VoteWeight.distance" : {
+    "signature" : "case distance",
+    "summary" : "Closer neighbors get more influence: weight = 1 \/ distance."
+  },
+  "VoteWeight.uniform" : {
+    "signature" : "case uniform",
+    "summary" : "Each neighbor gets one vote regardless of distance."
+  },
+  "weight" : {
+    "signature" : "let weight: VoteWeight",
+    "summary" : "The weighting strategy for neighbor votes."
+  },
+  "withContiguousStorageIfAvailable" : {
+    "signature" : "func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Self.Element>) throws -> R) rethrows -> R?",
+    "summary" : "Executes a closure on the sequence’s contiguous storage."
+  },
+  "zeros" : {
+    "signature" : "static func zeros(_ count: Int) -> [Element]",
+    "summary" : "Creates a 1D array filled with zeros."
+  }
+}

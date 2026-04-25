@@ -1,0 +1,25 @@
+# Swift / SwiftPM
+.build/
+Packages/
+*.xcodeproj
+*.xcworkspace
+Package.resolved
+
+# Sandbox build artifacts
+sandbox/.build/
+sandbox/Package.resolved
+
+# macOS
+.DS_Store
+
+# Editor caches
+.swiftpm/
+*.swp
+.vscode/
+.idea/
+
+# Vapor
+Public/uploads/
+
+# Internal planning / drafts
+Planning/

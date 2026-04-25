@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#(title)</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script>
+        // Set theme before CSS paints to avoid flash of wrong theme.
+        (function () {
+            var stored = null;
+            try { stored = localStorage.getItem('quiver-notebook-theme'); } catch (e) {}
+            var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+    <div class="top-bar" aria-hidden="true"></div>
+    <header class="app-header">
+        <div class="brand">
+            <span class="brand-mark">Quiver</span>
+            <span class="brand-sub">Notebook</span>
+        </div>
+        <div class="header-status">
+            <span id="kernel-status" class="kernel-status">
+                <span class="kernel-dot"></span>
+                Swift &middot; Ready
+            </span>
+            <span id="save-indicator" class="save-indicator">Saved</span>
+        </div>
+        <div class="header-actions">
+            <button id="sidebar-toggle" class="btn btn-icon" type="button" title="Toggle examples panel (&#8984;B)" aria-label="Toggle examples panel" aria-pressed="false">&#9776;</button>
+            <button id="new-btn" class="btn" title="Start with a blank editor">New</button>
+            <button id="clear-btn" class="btn" title="Clear output">Clear</button>
+            <button id="copy-btn" class="btn" title="Copy code to clipboard">Copy</button>
+            <button id="run-btn" class="btn btn-primary" title="Run (Shift&#8629; or &#8984;&#8629;)">
+                <span class="run-icon">&#9654;</span>
+                Run
+            </button>
+
+            <div class="menu-wrap">
+                <button id="menu-btn" class="btn btn-icon" type="button" title="More actions" aria-haspopup="true" aria-expanded="false">&#8942;</button>
+                <div id="menu-dropdown" class="menu-dropdown" role="menu" hidden>
+                    <button class="menu-item" role="menuitem" id="menu-rename">
+                        <span class="menu-item-label">Rename&hellip;</span>
+                    </button>
+                    <button class="menu-item" role="menuitem" id="menu-download">
+                        <span class="menu-item-label">Download .swift</span>
+                    </button>
+                    <button class="menu-item" role="menuitem" id="menu-upload">
+                        <span class="menu-item-label">Open .swift file...</span>
+                    </button>
+                    <div class="menu-separator"></div>
+                    <button class="menu-item" role="menuitem" id="menu-toggle-line-numbers">
+                        <span class="menu-item-label">Hide line numbers</span>
+                    </button>
+                    <div class="menu-submenu" id="menu-font-size">
+                        <button class="menu-item menu-submenu-trigger" role="menuitem" aria-haspopup="true" aria-expanded="false" type="button">
+                            <span class="menu-item-label">Font size</span>
+                            <span class="menu-submenu-caret" aria-hidden="true">&rsaquo;</span>
+                        </button>
+                        <div class="menu-submenu-panel" role="menu" hidden>
+                            <button class="menu-item menu-font-size-option" role="menuitemradio" data-size="normal" aria-checked="true" type="button">
+                                <span class="menu-item-check" aria-hidden="true">&#10003;</span>
+                                <span class="menu-item-label">Normal</span>
+                                <span class="menu-item-shortcut">&#8984;0</span>
+                            </button>
+                            <button class="menu-item menu-font-size-option" role="menuitemradio" data-size="large" aria-checked="false" type="button">
+                                <span class="menu-item-check" aria-hidden="true">&#10003;</span>
+                                <span class="menu-item-label">Large</span>
+                                <span class="menu-item-shortcut">&#8984;=</span>
+                            </button>
+                            <button class="menu-item menu-font-size-option" role="menuitemradio" data-size="presenter" aria-checked="false" type="button">
+                                <span class="menu-item-check" aria-hidden="true">&#10003;</span>
+                                <span class="menu-item-label">Presenter</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="menu-separator"></div>
+                    <a class="menu-item" role="menuitem" id="menu-quiver-docs"
+                       href="https://waynewbishop.github.io/quiver/documentation/quiver/"
+                       target="_blank" rel="noopener noreferrer">
+                        <span class="menu-item-label">Quiver docs</span>
+                        <span class="menu-item-shortcut" aria-hidden="true">&#8599;</span>
+                    </a>
+                    <button class="menu-item" role="menuitem" id="menu-shortcuts">
+                        <span class="menu-item-label">Keyboard shortcuts</span>
+                        <span class="menu-item-shortcut">?</span>
+                    </button>
+                </div>
+            </div>
+
+            <button id="theme-toggle" class="theme-toggle" type="button"
+                    aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span class="theme-icon-text theme-icon-sun" aria-hidden="true">&#9728;</span>
+                <span class="theme-icon-text theme-icon-moon" aria-hidden="true">&#9790;</span>
+            </button>
+        </div>
+
+        <input type="file" id="file-upload-input" accept=".swift,text/plain" hidden>
+    </header>
+
+    <main class="app-main">
+        <aside class="sidebar" id="sidebar">
+            <h2 class="sidebar-title">Examples</h2>
+            <div class="sidebar-filter">
+                <input type="text" id="examples-filter" class="examples-filter" placeholder="Filter examples..." autocomplete="off">
+            </div>
+            <ul id="examples-list" class="examples-list">
+                <li class="examples-loading">Loading...</li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Click an example to load it into the editor.</p>
+            </div>
+        </aside>
+
+        <div class="resize-handle resize-handle-v" id="sidebar-resize" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
+
+        <div class="main-content" id="main-content">
+            <section class="editor-pane" id="editor-pane">
+                <div id="breadcrumb" class="breadcrumb">
+                    <span class="breadcrumb-crumb" id="breadcrumb-source">Examples</span>
+                    <span class="breadcrumb-separator">&rsaquo;</span>
+                    <span class="breadcrumb-current" id="breadcrumb-current" role="button" tabindex="0" title="Click to rename (Enter)">Untitled</span>
+                    <span class="breadcrumb-modified" id="breadcrumb-modified" hidden>(modified)</span>
+                </div>
+                <div id="monaco-editor" class="monaco-host"></div>
+                <div id="drop-zone" class="drop-zone" hidden>
+                    <div class="drop-zone-inner">
+                        <div class="drop-zone-icon">&#8681;</div>
+                        <div class="drop-zone-text">Drop a .swift file to load it</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="resize-handle resize-handle-h" id="output-resize" role="separator" aria-orientation="horizontal" aria-label="Resize output" tabindex="0"></div>
+
+            <section class="output-pane" id="output-pane">
+                <div class="output-header">
+                    <h2>Output</h2>
+                    <span id="duration-pill" class="duration-pill" hidden></span>
+                    <span id="status" class="status">Ready.</span>
+                </div>
+                <pre id="output" class="output"></pre>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <span>Running locally on Quiver #(quiverVersion). No code is sent to the cloud.</span>
+        <span id="cursor-position" class="cursor-position">Line 1, Col 1</span>
+    </footer>
+
+    <div id="shortcuts-overlay" class="shortcuts-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+        <div class="shortcuts-panel">
+            <div class="shortcuts-header">
+                <h2 id="shortcuts-title">Keyboard Shortcuts</h2>
+                <button class="shortcuts-close" id="shortcuts-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="shortcuts-body">
+                <div class="shortcuts-group">
+                    <h3>Running</h3>
+                    <dl class="shortcuts-list">
+                        <dt><kbd>Shift</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code (Mac)</dd>
+                        <dt><kbd>Ctrl</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code (Linux / Win)</dd>
+                    </dl>
+                </div>
+                <div class="shortcuts-group">
+                    <h3>Editor</h3>
+                    <dl class="shortcuts-list">
+                        <dt><kbd>&#8984;</kbd> + <kbd>S</kbd></dt><dd>Autosaved continuously &mdash; no action needed</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>Z</kbd></dt><dd>Undo</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>&#8679;</kbd> + <kbd>Z</kbd></dt><dd>Redo</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>F</kbd></dt><dd>Find in code</dd>
+                    </dl>
+                </div>
+                <div class="shortcuts-group">
+                    <h3>App</h3>
+                    <dl class="shortcuts-list">
+                        <dt><kbd>&#8984;</kbd> + <kbd>B</kbd></dt><dd>Toggle examples panel</dd>
+                        <dt><kbd>Ctrl</kbd> + <kbd>B</kbd></dt><dd>Toggle examples panel (Linux / Win)</dd>
+                        <dt><kbd>?</kbd></dt><dd>Show this cheatsheet</dd>
+                        <dt><kbd>Esc</kbd></dt><dd>Close this cheatsheet</dd>
+                    </dl>
+                </div>
+                <div class="shortcuts-group">
+                    <h3>Presenter</h3>
+                    <dl class="shortcuts-list">
+                        <dt><kbd>&#8984;</kbd> + <kbd>=</kbd></dt><dd>Increase font size</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>-</kbd></dt><dd>Decrease font size</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>0</kbd></dt><dd>Reset to normal</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="shortcuts-footer">
+                <span>Drag a <code>.swift</code> file onto the editor to open it.</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
