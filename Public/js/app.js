@@ -1281,6 +1281,39 @@ function setupGlobalShortcuts() {
             return;
         }
 
+        // Cmd/Ctrl+S: suppress the browser's "Save Page As" dialog. Notebooks
+        // autosave continuously, so the gesture is a no-op — but we still need
+        // to swallow the default to avoid surprising the user.
+        if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && (e.key === 's' || e.key === 'S')) {
+            if (inInput) return;
+            e.preventDefault();
+            return;
+        }
+
+        // Cmd/Ctrl+Enter: run code from anywhere. Monaco's addCommand covers the
+        // editor; this branch covers the case where focus is on a button, the
+        // breadcrumb, or anywhere else in the page chrome.
+        if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && e.key === 'Enter') {
+            if (inInput || inEditor) return;
+            e.preventDefault();
+            runCode();
+            return;
+        }
+
+        // Cmd/Ctrl+F: route the find shortcut to Monaco's find widget when focus
+        // is outside the editor. Without this, the browser's native Find-in-Page
+        // bar opens and searches the rendered HTML rather than the code.
+        if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && (e.key === 'f' || e.key === 'F')) {
+            if (inInput || inEditor) return;
+            if (editor && typeof editor.focus === 'function') {
+                e.preventDefault();
+                editor.focus();
+                const findAction = typeof editor.getAction === 'function' ? editor.getAction('actions.find') : null;
+                if (findAction) findAction.run();
+                return;
+            }
+        }
+
         // Cmd/Ctrl + =/-/0: presenter font sizing. Same suppression rules;
         // Monaco's own addCommand handles these when focus is in the editor.
         if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && !inInput) {

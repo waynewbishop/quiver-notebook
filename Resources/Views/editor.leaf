@@ -172,8 +172,8 @@
                     <h3>Editor</h3>
                     <dl class="shortcuts-list">
                         <dt><kbd>&#8984;</kbd> + <kbd>S</kbd></dt><dd>Autosaved continuously &mdash; no action needed</dd>
-                        <dt><kbd>&#8984;</kbd> + <kbd>Z</kbd></dt><dd>Undo</dd>
-                        <dt><kbd>&#8984;</kbd> + <kbd>&#8679;</kbd> + <kbd>Z</kbd></dt><dd>Redo</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>Z</kbd></dt><dd>Undo (in code editor)</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>&#8679;</kbd> + <kbd>Z</kbd></dt><dd>Redo (in code editor)</dd>
                         <dt><kbd>&#8984;</kbd> + <kbd>F</kbd></dt><dd>Find in code</dd>
                     </dl>
                 </div>
