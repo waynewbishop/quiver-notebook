@@ -38,10 +38,11 @@ enum Runner {
         return try await invokeSwiftRun(in: sandboxDir, logger: app.logger)
     }
 
-    /// Injects `import Quiver`, Foundation, and a `@main` entry point around user code.
+    /// Injects `import Quiver`, `import Structures`, Foundation, and a `@main` entry point around user code.
     private static func wrap(userCode: String) -> String {
         return """
         import Quiver
+        import Structures
         import Foundation
 
         // --- user code begins ---

@@ -15,7 +15,7 @@ Quiver Notebook is designed for classroom use:
 * **Works offline** — once cloned, no internet connection is needed to write or run code
 * **Forkable curriculum** — drop your own `.swift` files into the `examples/` folder and they appear in the sidebar
 * **Free to distribute at any scale** — students clone the repo themselves, so there is no per-seat cost
-* **The two-package stack** — Quiver and Structures cover a full college ML course in Swift, as an alternative to Python + NumPy
+* **The two-package stack** — Quiver and Structures together cover a full college ML course in Swift. Add `import Structures` when you need data structures and algorithms; `import Quiver` is wired in by default
 
 ### Adding your own examples
 
@@ -58,9 +58,9 @@ The first launch compiles Quiver and Structures and caches them — this takes a
   * Execution time shown for performance discussions
 
 * **Pre-wired two-package stack**
-  * `Quiver` — vectors, matrices, statistics, ML models (Linear Regression, K-Means, Naive Bayes, K-Nearest Neighbors)
-  * `Structures` — data structures and algorithms from *Swift Algorithms & Data Structures*: heaps, tries, graphs, stacks, queues, binary search trees
-  * `Foundation` — Date, JSON, file reading, strings, regular expressions
+  * `Quiver` — vectors, matrices, statistics, ML models (Linear Regression, K-Means, Naive Bayes, K-Nearest Neighbors). Auto-imported.
+  * `Structures` — data structures and algorithms from *Swift Algorithms & Data Structures*: heaps, tries, graphs, stacks, queues, binary search trees. Add `import Structures` when you need it.
+  * `Foundation` — Date, JSON, file reading, strings, regular expressions. Auto-imported.
   * No other libraries — the whole ML course fits in these three
 
 * **Curated examples sidebar**
@@ -115,16 +115,16 @@ print("cluster labels:", model.predict(points))
 
 * **Local-first** — runs entirely on the student's machine, never phones home
 * **Frictionless** — clone, `swift run`, write code. No accounts, no setup rituals
-* **Two-package discipline** — Quiver and Structures are enough for a college ML course. More libraries would dilute the pedagogical story
+* **Two-package discipline** — Quiver and Structures are enough for a college ML course. More libraries would dilute the focus
 * **Transparent** — students read the source of everything they use, including this notebook itself
 * **Educational** — the tool is built to be inspected, modified, and taught from
 
 ## When to Use Quiver Notebook
 
-* **Teaching a Swift-based ML course** — replace Python + Jupyter with a pure-Swift classroom environment
+* **Teaching a Swift-based ML course** — a pure-Swift classroom environment that runs on every student's machine
 * **Running exercises in restricted networks** — air-gapped labs, K-12 classrooms, exam environments
 * **Student self-study** — anyone reading *Swift Algorithms & Data Structures* who wants to experiment alongside the book
-* **Rapid prototyping** — quick Swift + Quiver experiments without creating an Xcode project
+* **Prototyping ML for Apple devices** — sketch a model in pure Swift before dropping it into an iOS, watchOS, or visionOS app, without creating an Xcode project
 * **Workshops and tutorials** — a shared environment attendees install in under a minute
 
 ## What's in this Repository
@@ -169,19 +169,70 @@ The next `swift run` rebuilds against the new version, and the footer updates au
 
 ## Running the Notebook Safely
 
-Quiver Notebook is built to run on your own computer, one user per instance. The defaults keep it that way:
+Quiver Notebook is a local-first tool. It runs on the same computer the student or instructor is sitting at, with the same Swift toolchain a working developer uses. Code is written in the browser, executed by a small Vapor server on the same machine, and the output comes back to the same browser tab. Nothing leaves the computer.
 
-* **Localhost-only by default** — the server binds to `127.0.0.1`, so only the computer running the notebook can reach it. The app refuses to start if this is changed.
-* **No accounts, no telemetry, no cloud** — student code stays on the student's machine.
-* **Clone-and-run for classrooms** — each student runs their own copy. That is the intended deployment, and it works anywhere Swift runs.
+### Who it's for
 
-A note for anyone thinking about shared hosting: like any tool that runs code you write (Xcode, a REPL, a Python notebook), the notebook executes Swift with the permissions of the user who launched it. That is fine for a single-user laptop, and it is why the notebook is localhost-only. If you ever want to put it on a shared server or expose the port externally, reach out first — that is a different deployment model and a hosted Swift service is usually the better fit.
+* **Students** working through a course, a textbook, or self-study — they clone the repo to their own laptop and write code in their own browser
+* **Educators** preparing lectures or assignments — they fork the repo, drop their own examples into the `examples/` folder, and hand the fork URL to the class
+* **Developers** building ML models for Apple devices — a lightweight, focused environment for prototyping a model in pure Swift before dropping it into an iOS, watchOS, or visionOS app
+
+Each person runs their own copy. That is the design.
+
+### What's protected by default
+
+* **Localhost-only** — the server binds to `127.0.0.1`, so only the computer running the notebook can reach it. Other machines on the same Wi-Fi cannot connect. The app refuses to start if the bind address is changed.
+* **No accounts, no telemetry, no cloud** — student code, output, and errors stay on the student's machine. There is no analytics endpoint, no login, no crash reporter
+* **Pinned Quiver version** — every student who clones the repo gets the same Quiver release, recorded in `sandbox/Package.resolved`. A course built in September still works in May
+
+### What clone-and-run enables
+
+* **No IT review** — nothing leaves the student's machine, so there is no data-handling policy to clear with a university privacy office
+* **No vendor dependency** — there is no service that can change pricing, throttle a free tier, or shut down mid-semester
+* **Works offline** — once the repo is cloned and the sandbox is built, no internet connection is needed
+* **Free at any scale** — twenty students or two hundred students, the install path is the same `git clone`
+
+### A note on shared hosting
+
+Quiver Notebook executes Swift with the permissions of the user who launched it. That is the right model for one user on one laptop, which is why the default is localhost-only.
+
+A shared server, a department-wide URL, or any deployment where multiple people connect to the same instance is a different problem — it needs sandboxing, resource limits, and isolation between users. The notebook is not designed for that use case. If you want to run Quiver in a hosted environment, reach out first and I can point you in the right direction.
+
+## Troubleshooting
+
+### Port 8080 is already in use
+
+Something else on the machine — Docker, a Java app, another Vapor project — is bound to port 8080. The notebook's terminal log will show a `Could not bind to port 8080` error. Run on a different port instead:
+
+```bash
+PORT=8090 swift run
+```
+
+`PORT` accepts any value from 1 to 65535. The notebook logs which port it ended up using, so the URL to open in the browser will be in the startup output: `Server started on http://localhost:8090`.
+
+### The status chip in the top bar reads "Warming up"
+
+This is normal on the first run after cloning. The notebook compiles Quiver, Structures, and their dependencies into the sandbox so subsequent runs are fast — the build typically takes one to two minutes. The chip flips to "Ready" automatically when the warm-up completes. Code can be written and edited during warm-up; only Run is blocked until the sandbox is built.
+
+If warm-up takes longer than six minutes the chip will read "Warming up (taking longer than usual)" — that is honest reporting rather than a failure. Slow networks fetching package dependencies are the usual cause; the build will continue and Run will work once it finishes.
+
+### The status chip reads "Warm-up failed"
+
+The first build did not complete cleanly. The first Run will still work; it will just trigger the build at that point instead of in the background. Check the terminal log for the underlying compiler error — the most common causes are an outdated Swift toolchain (the notebook needs Swift 5.9+) or an interrupted package fetch.
+
+### The Run button does nothing
+
+Open the browser console (Option-Cmd-J on macOS, Ctrl-Shift-J on Linux) and look for fetch errors against `/api/run`. If the request is returning a non-JSON response, the Vapor server probably crashed — check the terminal where `swift run` is running. Restart with `swift run` if needed.
+
+### Examples sidebar is empty
+
+The notebook discovers examples by scanning the `examples/` directory at startup. If the directory is empty or missing, the sidebar shows "No examples found." This is also what new educators see right after deleting the bundled examples to make room for their own — drop one `.swift` file with a `// Title:` comment on the first line and refresh the page.
 
 ## Documentation
 
 * **Quiver** — full API documentation at [waynewbishop.github.io/quiver](https://waynewbishop.github.io/quiver/documentation/quiver/)
 * **Structures** — used throughout [Swift Algorithms & Data Structures](https://waynewbishop.github.io/swift-algorithms/)
-* **Cookbook** — 38 interactive Quiver recipes at [quiver-cookbook](https://github.com/waynewbishop/quiver-cookbook)
+* **Cookbook** — 44 interactive Quiver recipes at [quiver-cookbook](https://github.com/waynewbishop/quiver-cookbook)
 
 ## Status
 

@@ -756,6 +756,38 @@ function setKernelStatus(state, shortLabel) {
     el.appendChild(document.createTextNode(' Swift \u00B7 ' + shortLabel));
 }
 
+/* Polls /api/status until the sandbox pre-warm finishes, then flips the kernel status to Ready.
+ * The first build can take 1-2 minutes; without this poll the chip lies and reads "Ready" while
+ * the user's first Run silently waits on swift build. */
+async function pollPrewarmStatus() {
+    const intervalMs = 1500;
+    const maxAttempts = 240; // 6 minutes ceiling
+
+    for (let i = 0; i < maxAttempts; i++) {
+        try {
+            const res = await fetch('/api/status');
+            if (res.ok) {
+                const body = await res.json();
+                if (body.prewarm === 'ready') {
+                    setKernelStatus('ready', 'Ready');
+                    return;
+                }
+                if (body.prewarm === 'failed') {
+                    setKernelStatus('error', 'Warm-up failed (first Run will be slow)');
+                    return;
+                }
+            }
+        } catch (_) {
+            // Ignore — keep polling.
+        }
+        await new Promise(r => setTimeout(r, intervalMs));
+    }
+    // Timed out — be honest rather than silently flipping to Ready.
+    setKernelStatus('busy', 'Warming up (taking longer than usual)');
+}
+
+pollPrewarmStatus();
+
 /* --- Save indicator --- */
 
 let lastSavedAt = null;

@@ -24,9 +24,9 @@
             <span class="brand-sub">Notebook</span>
         </div>
         <div class="header-status">
-            <span id="kernel-status" class="kernel-status">
+            <span id="kernel-status" class="kernel-status busy">
                 <span class="kernel-dot"></span>
-                Swift &middot; Ready
+                Swift &middot; Warming up
             </span>
             <span id="save-indicator" class="save-indicator">Saved</span>
         </div>

@@ -20,6 +20,12 @@ func routes(_ app: Application) throws {
         )
     }
 
+    // Report the sandbox pre-warm status so the frontend can show a "warming up" banner.
+    app.get("api", "status") { req async throws -> StatusResponse in
+        let status = PrewarmStatus.shared
+        return StatusResponse(prewarm: status.state.rawValue, reason: status.reason)
+    }
+
     // List example snippets discovered in the examples/ directory
     app.get("api", "examples") { req async throws -> [ExampleSummary] in
         try Examples.list(app: req.application)
@@ -48,6 +54,11 @@ struct RunResponse: Content {
     let stderr: String
     let exitCode: Int32
     let durationMs: Int
+}
+
+struct StatusResponse: Content {
+    let prewarm: String
+    let reason: String?
 }
 
 struct ExampleSummary: Content {
