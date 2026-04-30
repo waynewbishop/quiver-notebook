@@ -265,6 +265,79 @@ require(['vs/editor/editor.main'], () => {
         });
     });
 
+    // Quiver completion provider — surfaces every symbol in quiverDocs as a
+    // Monaco autocomplete suggestion with signature, summary, and a snippet
+    // insertion that drops parameter labels with tab stops. Built once on
+    // load (cached in baseSuggestions); the per-call work is just attaching
+    // a fresh `range` from getWordUntilPosition. triggerCharacters: ['.']
+    // means typing `vector.` opens the menu without waiting for more keys.
+    // Operator-only keys (+, -, !=, etc.) and dotted enum-case keys
+    // (AggregationMethod.count) are skipped so the top-level menu stays
+    // clean — the parent enum entry covers discoverability.
+    quiverDocsReady.then(() => {
+        const baseSuggestions = [];
+        for (const key of Object.keys(quiverDocs)) {
+            if (!/^[A-Za-z_]/.test(key)) continue;     // skip operator-only labels
+            if (key.indexOf('.') !== -1) continue;     // skip dotted enum-case keys
+            const doc = quiverDocs[key] || {};
+            const sig = doc.signature || '';
+            baseSuggestions.push(buildQuiverSuggestion(key, sig, doc.summary || ''));
+        }
+        console.info('[Quiver] Registered completion provider with ' + baseSuggestions.length + ' suggestions');
+
+        monaco.languages.registerCompletionItemProvider('swift', {
+            triggerCharacters: ['.'],
+            provideCompletionItems(model, position) {
+                const word = model.getWordUntilPosition(position);
+                const range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn
+                };
+                const suggestions = baseSuggestions.map(s => Object.assign({}, s, { range }));
+                // incomplete: true tells Monaco to re-query on every keystroke
+                // instead of filtering a cached list. Slight perf cost (~250
+                // items rebuilt per keystroke) but avoids stale-range bugs
+                // where suggestions silently drop after typing past the dot.
+                return { suggestions, incomplete: true };
+            }
+        });
+
+        // Quiver signature help — the floating "(arg1: Type, arg2: Type)" panel
+        // that appears while typing a call, with the current parameter bolded.
+        // Triggers on `(` (open call) and re-triggers on `,` (next param).
+        // Walks backward from the cursor through balanced parens to find the
+        // identifier being called, looks it up in quiverDocs, and returns one
+        // SignatureInformation with parameters split out so Monaco can
+        // highlight activeParameter.
+        monaco.languages.registerSignatureHelpProvider('swift', {
+            signatureHelpTriggerCharacters: ['(', ','],
+            signatureHelpRetriggerCharacters: [','],
+            provideSignatureHelp(model, position) {
+                const info = findEnclosingCall(model, position);
+                if (!info) return null;
+                const doc = quiverDocs[info.name];
+                if (!doc || !doc.signature) return null;
+                const params = parseSignatureParams(doc.signature);
+                if (params.length === 0) return null;
+
+                return {
+                    value: {
+                        signatures: [{
+                            label: doc.signature,
+                            documentation: doc.summary || '',
+                            parameters: params.map(p => ({ label: p }))
+                        }],
+                        activeSignature: 0,
+                        activeParameter: Math.min(info.argIndex, params.length - 1)
+                    },
+                    dispose() {}
+                };
+            }
+        });
+    });
+
     // Xcode-style Option+click (Alt+click elsewhere) — opens a persistent
     // popup with the same Quiver doc content the hover shows. Works even
     // if hover fails; useful for presenter mode where a lingering tooltip
@@ -274,6 +347,135 @@ require(['vs/editor/editor.main'], () => {
     // Initial cursor position render
     updateCursorPosition(1, 1);
 });
+
+/* --- Quiver completion suggestion builder ---
+ * Turns one quiverDocs entry into a Monaco CompletionItem-shaped object
+ * (minus `range`, which the provider attaches per call). For function-like
+ * signatures we synthesize a snippet with tab stops so call-site labels
+ * land correctly: `cosineSimilarity(with: ${1:other})`. Anything we can't
+ * confidently parse falls back to inserting the bare label.
+ */
+function buildQuiverSuggestion(label, signature, summary) {
+    const sig = signature || '';
+    let kind;
+    if (/^enum\s/.test(sig)) {
+        kind = monaco.languages.CompletionItemKind.Enum;
+    } else if (/^(struct|class|protocol)\s/.test(sig)) {
+        kind = monaco.languages.CompletionItemKind.Class;
+    } else if (/^case\s/.test(sig)) {
+        kind = monaco.languages.CompletionItemKind.EnumMember;
+    } else if (/^(var|let)\s/.test(sig)) {
+        kind = monaco.languages.CompletionItemKind.Property;
+    } else if (/\bfunc\s/.test(sig)) {
+        kind = monaco.languages.CompletionItemKind.Function;
+    } else {
+        kind = monaco.languages.CompletionItemKind.Function;
+    }
+
+    const item = {
+        label,
+        detail: sig,
+        documentation: summary,
+        kind,
+        insertText: label,
+        // sortText '0_' prefix forces our items above Monaco's default
+        // word-based suggester. filterText matches against the bare label
+        // so snippet-shaped insertText doesn't confuse the fuzzy matcher.
+        sortText: '0_' + label,
+        filterText: label
+    };
+
+    // Only synthesize a snippet for function-like entries.
+    if (kind !== monaco.languages.CompletionItemKind.Function) return item;
+
+    const params = parseSignatureParams(sig);
+    if (params.length === 0) {
+        // Zero-arg function (signature has `()`) vs. unparseable signature
+        // (no parens at all). Distinguish by checking for `(` in the source.
+        if (sig.indexOf('(') >= 0) item.insertText = label + '()';
+        return item;
+    }
+
+    const parts = [];
+    for (let i = 0; i < params.length; i++) {
+        const colon = params[i].indexOf(':');
+        if (colon < 0) return item;     // unparseable — bare label insertion
+        const tokens = params[i].substring(0, colon).trim().split(/\s+/);
+        // Swift forms: `name`, `external internal`, or `_ internal`.
+        const externalLabel = tokens[0];
+        const internalName = tokens.length >= 2 ? tokens[1] : tokens[0];
+        const tabStop = '${' + (i + 1) + ':' + internalName + '}';
+        parts.push(externalLabel === '_' ? tabStop : externalLabel + ': ' + tabStop);
+    }
+    item.insertText = label + '(' + parts.join(', ') + ')';
+    item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+    return item;
+}
+
+/* --- Quiver signature help helpers ---
+ * findEnclosingCall walks backward from the cursor through the current line,
+ * tracking paren depth, to find the identifier that opened the innermost
+ * unclosed `(` and how many top-level commas the user has typed inside it.
+ * That gives us both the function name and which parameter is active.
+ * parseSignatureParams takes a raw Quiver signature string and returns
+ * the textual chunks for each parameter (used as Monaco parameter labels).
+ */
+function findEnclosingCall(model, position) {
+    const line = model.getLineContent(position.lineNumber);
+    const upto = line.substring(0, position.column - 1);
+    let depth = 0;
+    let argIndex = 0;
+    let openIndex = -1;
+    for (let i = upto.length - 1; i >= 0; i--) {
+        const c = upto[i];
+        if (c === ')') {
+            depth++;
+        } else if (c === '(') {
+            if (depth === 0) {
+                openIndex = i;
+                break;
+            }
+            depth--;
+        } else if (c === ',' && depth === 0) {
+            argIndex++;
+        }
+    }
+    if (openIndex < 0) return null;
+
+    // Walk back from openIndex over an identifier (letters, digits, underscore).
+    let end = openIndex;
+    let start = end;
+    while (start > 0 && /[A-Za-z0-9_]/.test(upto[start - 1])) start--;
+    if (start === end) return null;
+    const name = upto.substring(start, end);
+    return { name, argIndex };
+}
+
+function parseSignatureParams(signature) {
+    const open = signature.indexOf('(');
+    const close = open >= 0 ? signature.lastIndexOf(')') : -1;
+    if (open < 0 || close <= open) return [];
+    const inside = signature.substring(open + 1, close).trim();
+    if (inside.length === 0) return [];
+    // Split on top-level commas — track angle/bracket/paren depth so generic
+    // parameters like `Array<Int, String>` don't get split mid-type.
+    const out = [];
+    let depth = 0;
+    let buf = '';
+    for (let i = 0; i < inside.length; i++) {
+        const c = inside[i];
+        if (c === '<' || c === '[' || c === '(') depth++;
+        else if (c === '>' || c === ']' || c === ')') depth--;
+        if (c === ',' && depth === 0) {
+            out.push(buf.trim());
+            buf = '';
+        } else {
+            buf += c;
+        }
+    }
+    if (buf.trim().length > 0) out.push(buf.trim());
+    return out;
+}
 
 /* --- Option+click doc popup (Xcode-style quick help) ---
  * Single-instance Monaco content widget. Alt/Option+clicking a word looks
