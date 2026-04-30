@@ -3,21 +3,19 @@ import Structures
 import Foundation
 
 // --- user code begins ---
-// Title: Normalize a Vector
+// Title: Cosine Similarity
 //
-// A vector's magnitude is its Euclidean length. A normalized vector has
-// the same direction but a magnitude of 1.0, which lets it be compared
-// against other vectors by angle alone. Normalization is the foundation
-// of cosine similarity.
+// Cosine similarity measures the angle between two vectors. Values near
+// 1.0 mean the vectors point in the same direction; values near 0 mean
+// they are unrelated. The magnitude of each vector is factored out, so
+// two vectors of different lengths can still be judged as similar if
+// their directions align.
 
-let v = [3.0, 4.0]
+let a = [1.0, 2.0, 3.0]
+let b = [2.0, 4.0, 6.0]   // parallel to a
+let c = [1.0, 0.0, 0.0]   // a very different direction
 
-print("vector:   ", v)
-print("magnitude:", v.magnitude)
-
-let unit = v.normalized
-
-print("normalized:          ", unit)
-print("magnitude of unit:   ", unit.magnitude)
+print("a vs b:", a.cosineOfAngle(with: b))
+print("a vs c:", a.cosineOfAngle(with: c))
 
 // --- user code ends ---

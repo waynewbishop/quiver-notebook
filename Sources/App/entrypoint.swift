@@ -17,7 +17,13 @@ struct Entrypoint {
         }
 
         do {
-            try await app.execute()
+            // Inline the body of `app.execute()` so we can print the startup banner
+            // *between* server-start (which logs "Server started on ...") and the
+            // long-lived wait on `running.onStop`. This makes the banner the last
+            // thing on screen, with the URL visible to the user.
+            try await app.startup()
+            StartupBanner.print(app: app)
+            try await app.running?.onStop.get()
         } catch {
             // Most common failure here is bind-to-port. Surface the workaround inline.
             let message = "\(error)"
