@@ -195,31 +195,44 @@ The Notebook executes Swift with the permissions of the user who launched it, wh
 
 ## FAQ
 
-**Will code I write also run in Xcode?** Yes. Every snippet is pure Swift against Quiver and Structures, both of which are ordinary Swift packages. Copy a working snippet into an Xcode project that depends on those packages and it will run unchanged.
+**Will code I write also run in Xcode?** 
+Yes. Every snippet is pure Swift against Quiver and Structures, both of which are ordinary Swift packages. Copy a working snippet into an Xcode project that depends on those packages and it will run unchanged.
 
-**Can I just do all of this in Xcode instead?** Yes — an Xcode project that depends on Quiver and Structures runs the same code the notebook does. What we lose by working in Xcode alone is the bundled dataset library: the tabular sets (`Dataset.iris`, `Dataset.titanic`, `Dataset.californiaHousing`, `Dataset.bikeSharing`, `Dataset.studentPerformance`), the embeddings set (`Dataset.glove50d`), `Dataset.load(path:)` for user CSVs, and the boot-log catalog all live inside the notebook's sandbox target and are not part of Quiver. We also lose the auto-injected imports, the curated examples sidebar, and the clone-and-distribute model that lets an instructor hand a fork to a class. For shipping an app, Xcode is the right tool.
+**Can I just do all of this in Xcode instead?** 
+Yes — an Xcode project that depends on Quiver and Structures runs the same code the notebook does. What we lose by working in Xcode alone is the bundled dataset library: the tabular sets (`Dataset.iris`, `Dataset.titanic`, `Dataset.californiaHousing`, `Dataset.bikeSharing`, `Dataset.studentPerformance`), the embeddings set (`Dataset.glove50d`), `Dataset.load(path:)` for user CSVs, and the boot-log catalog all live inside the notebook's sandbox target and are not part of Quiver. We also lose the auto-injected imports, the curated examples sidebar, and the clone-and-distribute model that lets an instructor hand a fork to a class. For shipping an app, Xcode is the right tool.
 
-**Is this pure Swift code or some variant?** Pure Swift. The code written in the editor is the code the Swift compiler sees. The notebook auto-imports Quiver and Foundation so those lines do not need to appear in every snippet, and that is the extent of the work it does on our behalf.
+**Is this pure Swift code or some variant?** 
+Pure Swift. The code written in the editor is the code the Swift compiler sees. The notebook auto-imports Quiver and Foundation so those lines do not need to appear in every snippet, and that is the extent of the work it does on our behalf.
 
-**Why can't I import my own libraries or other Apple frameworks?** The two-package discipline is intentional. Adding more libraries to the sandbox would change what the notebook is — a focused teaching and prototyping environment becomes another general-purpose Swift workspace, which Xcode already does well. For libraries beyond Quiver and Structures, an Xcode project is the right tool. The notebook stays small on purpose.
+**Why can't I import my own libraries or other Apple frameworks?** 
+The two-package discipline is intentional. Adding more libraries to the sandbox would change what the notebook is — a focused teaching and prototyping environment becomes another general-purpose Swift workspace, which Xcode already does well. For libraries beyond Quiver and Structures, an Xcode project is the right tool. The notebook stays small on purpose.
 
-**Can I build apps with Quiver Notebook?** No. The notebook runs free-form Swift code that prints output to a pane — it is not a project workspace, has no UI canvas, and does not produce shippable binaries. The goal of the notebook is to produce code that goes *inside* an app's data and model layers, prototyped before the project exists.
+**Can I build apps with Quiver Notebook?** 
+No. The notebook runs free-form Swift code that prints output to a pane — it is not a project workspace, has no UI canvas, and does not produce shippable binaries. The goal of the notebook is to produce code that goes *inside* an app's data and model layers, prototyped before the project exists.
 
-**Does this work with Swift Playgrounds?** Quiver Notebook is a separate tool. Overall, Playgrounds and the notebook serve different audiences and are not interoperable. A snippet from one can be copied to the other if it only uses Foundation and standard library types, but Quiver and Structures are not available inside Swift Playgrounds.
+**Does this work with Swift Playgrounds?** 
+Quiver Notebook is a separate tool. Overall, Playgrounds and the notebook serve different audiences and are not interoperable. A snippet from one can be copied to the other if it only uses Foundation and standard library types, but Quiver and Structures are not available inside Swift Playgrounds.
 
-**Where is the debugger?** There is no step debugger or breakpoint UI in the notebook. The intended workflow is the print-and-inspect loop — write a snippet, click Run, read the output, edit, run again. For real debugging needs (breakpoints, variable inspection, call stack), Xcode is the right tool, and snippets transfer there cleanly.
+**Where is the debugger?** 
+There is no step debugger or breakpoint UI in the notebook. The intended workflow is the print-and-inspect loop — write a snippet, click Run, read the output, edit, run again. For real debugging needs (breakpoints, variable inspection, call stack), Xcode is the right tool, and snippets transfer there cleanly.
 
-**Can I save my work?** The editor auto-saves to the browser's local storage, so refreshing the page does not lose code. For longer-term storage, copy the snippet into an `examples/` file or into a separate notes file — local storage is convenient but not durable across browser profiles or machine moves.
+**Can I save my work?** 
+The editor auto-saves to the browser's local storage, so refreshing the page does not lose code. For longer-term storage, copy the snippet into an `examples/` file or into a separate notes file — local storage is convenient but not durable across browser profiles or machine moves.
 
-**Does the notebook work offline?** Yes, after the first build. The first `swift run` fetches Quiver, Structures, and the Vapor framework from their package repositories; subsequent runs are entirely local. A class running in an air-gapped lab can clone-and-build once on a connected machine, then distribute.
+**Does the notebook work offline?** 
+Yes, after the first build. The first `swift run` fetches Quiver, Structures, and the Vapor framework from their package repositories; subsequent runs are entirely local. A class running in an air-gapped lab can clone-and-build once on a connected machine, then distribute.
 
-**What is the network and storage footprint?** The Vapor server listens only on `127.0.0.1:8080` (or the port set by `PORT=`) and accepts connections only from the same machine. No outbound calls are made once the initial `swift package` fetch is complete. Code typed in the editor is held in the browser's local storage and is scoped to that browser profile on that machine — closing the tab keeps it, switching browsers does not. The bundled datasets ship with the repository and are read from disk by the local process; CSVs loaded via `Dataset.load(path:)` are also read locally and never transmitted.
+**What is the network and storage footprint?** 
+The Vapor server listens only on `127.0.0.1:8080` (or the port set by `PORT=`) and accepts connections only from the same machine. No outbound calls are made once the initial `swift package` fetch is complete. Code typed in the editor is held in the browser's local storage and is scoped to that browser profile on that machine — closing the tab keeps it, switching browsers does not. The bundled datasets ship with the repository and are read from disk by the local process; CSVs loaded via `Dataset.load(path:)` are also read locally and never transmitted.
 
-**Will my code or data leave the machine?** No. There are no accounts, no telemetry, and no analytics.
+**Will my code or data leave the machine?** 
+No. There are no accounts, no telemetry, and no analytics.
 
-**Can multiple students share one notebook server?** No, by design. Quiver Notebook executes Swift with the permissions of the user who launched it, which is the right model for one person on one laptop. Each student runs their own copy. A shared-server deployment would need sandboxing, resource limits, and per-user isolation that the v0 scope does not include.
+**Can multiple students share one notebook server?** 
+No, by design. Quiver Notebook executes Swift with the permissions of the user who launched it, which is the right model for one person on one laptop. Each student runs their own copy. A shared-server deployment would need sandboxing, resource limits, and per-user isolation that the v0 scope does not include.
 
-**How does this compare to Google Colab or Jupyter notebooks?** Colab is hosted in the cloud and good when we want a workspace in the browser without installing anything. Jupyter is the older browser-based notebook, runs locally or hosted, and is built around cells and kernels.
+**How does this compare to Google Colab or Jupyter notebooks?** 
+Colab is hosted in the cloud and good when we want a workspace in the browser without installing anything. Jupyter is the older browser-based notebook, runs locally or hosted, and is built around cells and kernels.
 
 Quiver Notebook is the Swift counterpart for this kind of work — a local environment that lives on the same machine as the Apple-platform project it feeds. Each snippet is a whole Swift program that compiles and runs end-to-end, which fits how Swift code is actually shipped.
 
