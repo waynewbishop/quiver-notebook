@@ -4,9 +4,15 @@ import Foundation
 
 // --- user code begins ---
 
-let a = [3.0, 4.0]
-let b = [4.0, 5.0]
 
-print(a.dot(b))
+guard let glove = Dataset.glove50d else {
+    exit(0)
+}
+
+// A Panel is Quiver's named-column container for tabular data — each
+// column is a labeled [Double], and rows align across columns.
+let panel = glove.toPanel()
+print(panel.head(n: 3))
+print()
 
 // --- user code ends ---

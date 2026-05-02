@@ -29,6 +29,9 @@ public func configure(_ app: Application) async throws {
 
     try routes(app)
 
+    // Read the bundled dataset manifest and log what loaded successfully.
+    DatasetLoader.logBundledDatasets(app: app)
+
     app.logger.notice("Server started on http://localhost:\(port)")
     app.logger.notice("If port \(port) is already in use, set the PORT env var: PORT=8090 swift run App")
 

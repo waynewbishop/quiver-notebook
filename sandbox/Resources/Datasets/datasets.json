@@ -1,0 +1,38 @@
+[
+  {
+    "name": "iris",
+    "kind": "classification",
+    "description": "150 iris flowers across three species (setosa, versicolor, virginica), 50 of each. Four numeric features describe sepal and petal dimensions in centimetres. The classic introductory classification dataset, originally collected by Edgar Anderson and published by R. A. Fisher in 1936.",
+    "csvFile": "iris.csv"
+  },
+  {
+    "name": "titanic",
+    "kind": "classification",
+    "description": "889 passengers from the 1912 Titanic disaster with eight features per row (Survived, Pclass, Sex, Age, SibSp, Parch, Fare, Embarked). Cleaned from the standard Kaggle competition training set: identifier and high-cardinality string columns dropped, missing Age values median-filled, and rows with missing Embarked dropped.",
+    "csvFile": "titanic.csv"
+  },
+  {
+    "name": "californiaHousing",
+    "kind": "regression",
+    "description": "20,640 California housing districts from the 1990 census with ten features per row, including longitude, latitude, median income, and median house value. Missing total_bedrooms values were median-filled and the ocean_proximity categorical column was recoded to snake_case tokens.",
+    "csvFile": "california-housing.csv"
+  },
+  {
+    "name": "bikeSharing",
+    "kind": "regression",
+    "description": "731 daily ride totals from Capital Bikeshare with 16 features per row, including weather, temperature, humidity, holiday, and day-of-week. Standard UCI Bike Sharing Dataset (day.csv) shipped in its upstream form — no missing values, no quoting issues.",
+    "csvFile": "bike-sharing.csv"
+  },
+  {
+    "name": "studentPerformance",
+    "kind": "regression",
+    "description": "395 secondary-school students from a Portuguese-language course with 33 features per row covering family background, study habits, and three sequential grade columns (G1, G2, G3). Converted from the upstream UCI semicolon-delimited format to comma-separated and stripped of inconsistent quoting; no missing values.",
+    "csvFile": "student-performance.csv"
+  },
+  {
+    "name": "glove50d",
+    "kind": "embeddings",
+    "description": "5,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word` plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 5,000 frequency-sorted lines; no other modifications. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift.",
+    "csvFile": "glove-50d.csv"
+  }
+]

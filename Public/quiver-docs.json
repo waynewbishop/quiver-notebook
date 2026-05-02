@@ -119,9 +119,29 @@
     "signature" : "static func bestFit(data: [[Double]], k: Int, maxIterations: Int = 100, attempts: Int = 10) -> KMeans",
     "summary" : "Fits multiple K-Means models with different seeds and returns the best one."
   },
+  "bikeSharing" : {
+    "signature" : "public static var bikeSharing: Dataset?",
+    "summary" : "731 rows, 16 columns. Regression. Target column: `cnt` (total daily rides)."
+  },
   "broadcast" : {
     "signature" : "func broadcast(with value: Element, operation: (Element, Element) -> Element) -> [Element]",
     "summary" : "Broadcasts a custom operation with a scalar value to each element - Parameters: - value: The scalar value to use in the operation - operation: A closure that defines the operation to perform - Returns: A new array with the operation applied to each element"
+  },
+  "bundledURL" : {
+    "signature" : "private static func bundledURL(for csvFile: String) -> URL",
+    "summary" : "Resolves a bundled CSV path relative to the sandbox's working directory."
+  },
+  "californiaHousing" : {
+    "signature" : "public static var californiaHousing: Dataset?",
+    "summary" : "20,640 rows, 10 columns. Regression. Target column: `median_house_value`."
+  },
+  "catalog" : {
+    "signature" : "public static func catalog() -> String",
+    "summary" : "Returns a human-readable listing of every bundled accessor."
+  },
+  "categoricalMappings" : {
+    "signature" : "public let categoricalMappings: [String: [String]]",
+    "summary" : "Maps an original column name to the ordered class names produced when that column's strings were alphabetically encoded into `Double` indices."
   },
   "ceil" : {
     "signature" : "func ceil() -> [Double]",
@@ -239,6 +259,14 @@
     "signature" : "func cumulativeSum() -> [Element]",
     "summary" : "Returns the running total at each position in the array."
   },
+  "Dataset" : {
+    "signature" : "public struct Dataset: Sendable",
+    "summary" : "A bundled dataset wrapping a Quiver `Panel` of numeric columns."
+  },
+  "DatasetLoader" : {
+    "signature" : "internal enum DatasetLoader",
+    "summary" : "Single chokepoint that converts a CSV file into a `Dataset`."
+  },
   "denominator" : {
     "signature" : "let denominator: Int",
     "summary" : "The denominator of the fraction (always positive)"
@@ -252,8 +280,8 @@
     "summary" : "Returns per-column summary statistics as a formatted string."
   },
   "description" : {
-    "signature" : "var description: String { get }",
-    "summary" : "Displays the fraction as \"a\/b\", or just \"a\" for whole numbers"
+    "signature" : "public let description: String",
+    "summary" : "Human-readable summary of the dataset's origin, row count, columns, and any cleaning that was applied. For example, the bundled `iris` dataset's description records that it holds 150 rows across three species, four numeric features, and was originally published by R. A. Fisher in 1936."
   },
   "determinant" : {
     "signature" : "var determinant: Element.Element { get }",
@@ -443,6 +471,10 @@
     "signature" : "struct ClassStats",
     "summary" : "Statistics learned from the training data for a single class."
   },
+  "glove50d" : {
+    "signature" : "public static var glove50d: Dataset?",
+    "summary" : "5,000 rows, 51 columns. Embeddings. Lookup column: `word`."
+  },
   "groupBy" : {
     "signature" : "func groupBy(_ categories: [String], using method: AggregationMethod) -> [String : Element]",
     "summary" : "Groups values by category labels and aggregates each group using the specified method."
@@ -494,6 +526,10 @@
   "inverted" : {
     "signature" : "func inverted() throws -> [[Element.Element]]",
     "summary" : "Returns the inverse of a square matrix."
+  },
+  "iris" : {
+    "signature" : "public static var iris: Dataset?",
+    "summary" : "150 rows, 5 columns. Classification. Label column: `species` (encoded alphabetically as setosa→0, versicolor→1, virginica→2)."
   },
   "isEqual" : {
     "signature" : "func isEqual(to other: [Element]) -> [Bool]",
@@ -558,6 +594,10 @@
   "linspace" : {
     "signature" : "static func linspace(_ start: Element, _ stop: Element, num: Int) -> [Element]",
     "summary" : "Creates evenly spaced numbers over a specified closed interval."
+  },
+  "load" : {
+    "signature" : "public static func load(path: String) -> Dataset?",
+    "summary" : "Loads a `Dataset` from any CSV file on disk."
   },
   "localizedDescription" : {
     "signature" : "var localizedDescription: String { get }",
@@ -667,6 +707,10 @@
     "signature" : "func multiplyMatrix(_ other: [[Element.Element]]) -> [[Element.Element]]",
     "summary" : "Multiplies this matrix by another matrix to compose transformations."
   },
+  "name" : {
+    "signature" : "public let name: String",
+    "summary" : "Short identifier — `\"iris\"`, `\"titanic\"`, etc., or for `load(path:)`, the input filename without its extension."
+  },
   "normalized" : {
     "signature" : "var normalized: [Element] { get }",
     "summary" : "Returns a normalized version of the vector (unit vector)."
@@ -702,6 +746,10 @@
   "padded" : {
     "signature" : "func padded(toPowerOfTwo value: Double = 0.0) -> [Double]",
     "summary" : "Zero-pads the signal to the next power of two, satisfying the Fourier transform's input requirement."
+  },
+  "panel" : {
+    "signature" : "private let panel: Panel",
+    "summary" : null
   },
   "Panel" : {
     "signature" : "struct Panel",
@@ -931,6 +979,10 @@
     "signature" : "extension String",
     "summary" : null
   },
+  "studentPerformance" : {
+    "signature" : "public static var studentPerformance: Dataset?",
+    "summary" : "395 rows, 33 columns. Regression (or classification on a thresholded `G3`). Target column: `G3` (final grade, 0–20)."
+  },
   "subscript" : {
     "signature" : "subscript(column: String) -> [Double] { get }",
     "summary" : "Returns the values for the named column as a Quiver vector."
@@ -955,6 +1007,10 @@
     "signature" : "func tan() -> [Double]",
     "summary" : "Returns the tangent of each element in the array."
   },
+  "titanic" : {
+    "signature" : "public static var titanic: Dataset?",
+    "summary" : "889 rows, 8 columns. Classification. Label column: `Survived` (0\/1)."
+  },
   "tokenize" : {
     "signature" : "func tokenize() -> [String]",
     "summary" : "Tokenizes text into individual words for text analysis and embedding workflows."
@@ -962,6 +1018,10 @@
   "toMatrix" : {
     "signature" : "func toMatrix(columns: [String]? = nil) -> [[Double]]",
     "summary" : "Extracts selected columns as a matrix."
+  },
+  "toPanel" : {
+    "signature" : "public func toPanel() -> Panel",
+    "summary" : "Returns the underlying Quiver `Panel` so the rest of the Quiver API (`head()`, `summary()`, `trainTestSplit()`, `toMatrix()`, etc.) is available on the dataset's columns."
   },
   "topIndices" : {
     "signature" : "func topIndices(k: Int) -> [(index: Int, score: Double)]",

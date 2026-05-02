@@ -27,7 +27,7 @@ There is no project to configure, no binaries to install, no account to create, 
 
 * **Bundled datasets.**
   * Classic teaching sets — Iris, Titanic, California Housing, Bike Sharing — accessible by name with no download step.
-  * Drop your own `.csv` into the `user/` folder and it appears under `Datasets.user`.
+  * Load any CSV from disk with `Dataset.load(path: "~/Desktop/sales.csv")`. Tilde paths expand to the user's home directory.
   * Every dataset extracts to a Quiver `Panel` with one call, so the same code transfers to any iOS, watchOS, or visionOS app.
 
 * **Curated examples sidebar.**
@@ -63,14 +63,14 @@ Then open [http://localhost:8080](http://localhost:8080) in a browser. The first
 A `Panel` is Quiver's named-column data structure for tabular data — think of it as a small table where each column is a labeled `[Double]`. Full reference at [Panel](https://waynewbishop.github.io/quiver/documentation/quiver/panel). The bundled datasets are accessible by name and extract to a `Panel` with one call:
 
 ```swift
-guard let dataset = Datasets.iris else { return }
+guard let dataset = Dataset.iris else { return }
 
 let panel = dataset.toPanel()
 print(dataset.description)
 print(panel.head())
 ```
 
-When coding, the `import Quiver` line is optional because the notebook injects it automatically. `Datasets.iris` returns a ready-to-use bundled dataset; `toPanel()` hands back a Quiver `Panel` we can explore when testing statistical or machine learning models.
+When coding, the `import Quiver` line is optional because the notebook injects it automatically. `Dataset.iris` returns a ready-to-use bundled dataset; `toPanel()` hands back a Quiver `Panel` we can explore when testing statistical or machine learning models.
 
 ### Statistics
 
@@ -162,7 +162,7 @@ The Notebook executes Swift with the permissions of the user who launched it, wh
 
 **Will code I write also run in Xcode?** Yes. Every snippet is pure Swift against Quiver and Structures, both of which are ordinary Swift packages. Copy a working snippet into an Xcode project that depends on those packages and it will run unchanged.
 
-**Can I just do all of this in Xcode instead?** Yes — an Xcode project that depends on Quiver and Structures runs the same code the notebook does. What we lose by working in Xcode alone is the bundled dataset library: `Datasets.iris`, `Datasets.titanic`, the `user/` drop folder, and the boot-log catalog all live inside the notebook's sandbox target and are not part of Quiver. We also lose the auto-injected imports, the curated examples sidebar, and the clone-and-distribute model that lets an instructor hand a fork to a class. For shipping an app, Xcode is the right tool.
+**Can I just do all of this in Xcode instead?** Yes — an Xcode project that depends on Quiver and Structures runs the same code the notebook does. What we lose by working in Xcode alone is the bundled dataset library: `Dataset.iris`, `Dataset.titanic`, `Dataset.load(path:)`, and the boot-log catalog all live inside the notebook's sandbox target and are not part of Quiver. We also lose the auto-injected imports, the curated examples sidebar, and the clone-and-distribute model that lets an instructor hand a fork to a class. For shipping an app, Xcode is the right tool.
 
 **Is this pure Swift code or some variant?** Pure Swift. The code written in the editor is the code the Swift compiler sees. The notebook auto-imports Quiver and Foundation so those lines do not need to appear in every snippet, and that is the extent of the work it does on our behalf.
 
@@ -178,7 +178,7 @@ The Notebook executes Swift with the permissions of the user who launched it, wh
 
 **Does the notebook work offline?** Yes, after the first build. The first `swift run` fetches Quiver, Structures, and the Vapor framework from their package repositories; subsequent runs are entirely local. A class running in an air-gapped lab can clone-and-build once on a connected machine, then distribute.
 
-**What is the network and storage footprint?** The Vapor server listens only on `127.0.0.1:8080` (or the port set by `PORT=`) and accepts connections only from the same machine. No outbound calls are made once the initial `swift package` fetch is complete. Code typed in the editor is held in the browser's local storage and is scoped to that browser profile on that machine — closing the tab keeps it, switching browsers does not. CSVs dropped into `user/` are read from disk by the local process and never transmitted.
+**What is the network and storage footprint?** The Vapor server listens only on `127.0.0.1:8080` (or the port set by `PORT=`) and accepts connections only from the same machine. No outbound calls are made once the initial `swift package` fetch is complete. Code typed in the editor is held in the browser's local storage and is scoped to that browser profile on that machine — closing the tab keeps it, switching browsers does not. CSVs loaded via `Dataset.load(path:)` are read from disk by the local process and never transmitted.
 
 **Will my code or data leave the machine?** No. There are no accounts, no telemetry, and no analytics.
 
