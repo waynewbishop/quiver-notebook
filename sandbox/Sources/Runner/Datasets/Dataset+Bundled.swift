@@ -3,12 +3,13 @@ import Foundation
 /// Public entry point for bundled datasets.
 ///
 /// Each dataset is exposed as `Dataset.<name>` (e.g. `Dataset.iris`).
-/// All accessors funnel through `DatasetLoader.load(name:csvURL:description:)`,
-/// which parses the CSV with TabularData and wraps the result in a Quiver `Panel`.
+/// Tabular accessors funnel through `DatasetLoader.loadTabular` and return
+/// `TabularDataset?`. The GloVe accessor funnels through
+/// `DatasetLoader.loadEmbeddings` and returns `EmbeddingsDataset?`.
 /// Instructors with their own CSVs call `Dataset.load(path:)`.
 extension Dataset {
 
-    // MARK: - Bundled datasets
+    // MARK: - Bundled tabular datasets
 
     /// 150 rows, 5 columns. Classification. Label column: `species` (encoded
     /// alphabetically as setosa→0, versicolor→1, virginica→2).
@@ -16,8 +17,8 @@ extension Dataset {
     /// The classic introductory classification dataset — three balanced classes
     /// of 50 flowers, four numeric sepal/petal measurements. Originally
     /// collected by Edgar Anderson and published by R. A. Fisher in 1936.
-    public static var iris: Dataset? {
-        DatasetLoader.load(
+    public static var iris: TabularDataset? {
+        DatasetLoader.loadTabular(
             name: "iris",
             csvURL: bundledURL(for: "iris.csv"),
             description: "150 iris flowers across three species (setosa, versicolor, virginica), 50 of each. Four numeric features describe sepal and petal dimensions in centimetres. The classic introductory classification dataset, originally collected by Edgar Anderson and published by R. A. Fisher in 1936."
@@ -29,8 +30,8 @@ extension Dataset {
     /// Cleaned passenger manifest from the 1912 Titanic disaster. Good for
     /// teaching mixed numeric and categorical features, missing-value handling,
     /// and class-imbalance trade-offs against a familiar binary outcome.
-    public static var titanic: Dataset? {
-        DatasetLoader.load(
+    public static var titanic: TabularDataset? {
+        DatasetLoader.loadTabular(
             name: "titanic",
             csvURL: bundledURL(for: "titanic.csv"),
             description: "889 passengers from the 1912 Titanic disaster with eight features per row (Survived, Pclass, Sex, Age, SibSp, Parch, Fare, Embarked). Cleaned from the standard Kaggle competition training set: identifier and high-cardinality string columns dropped, missing Age values median-filled, and rows with missing Embarked dropped."
@@ -42,8 +43,8 @@ extension Dataset {
     /// 1990 California census districts. The standard introductory regression
     /// dataset for teaching feature scaling, geographic features, and the gap
     /// between linear and tree-based models on real-world tabular data.
-    public static var californiaHousing: Dataset? {
-        DatasetLoader.load(
+    public static var californiaHousing: TabularDataset? {
+        DatasetLoader.loadTabular(
             name: "californiaHousing",
             csvURL: bundledURL(for: "california-housing.csv"),
             description: "20,640 California housing districts from the 1990 census with ten features per row, including longitude, latitude, median income, and median house value. Missing total_bedrooms values were median-filled and the ocean_proximity categorical column was recoded to snake_case tokens."
@@ -55,8 +56,8 @@ extension Dataset {
     /// Daily Capital Bikeshare ride counts paired with weather, calendar, and
     /// season features. A clean introduction to time-aware regression and to
     /// the seasonality patterns that make naive splits leak information.
-    public static var bikeSharing: Dataset? {
-        DatasetLoader.load(
+    public static var bikeSharing: TabularDataset? {
+        DatasetLoader.loadTabular(
             name: "bikeSharing",
             csvURL: bundledURL(for: "bike-sharing.csv"),
             description: "731 daily ride totals from Capital Bikeshare with 16 features per row, including weather, temperature, humidity, holiday, and day-of-week. Standard UCI Bike Sharing Dataset (day.csv) shipped in its upstream form — no missing values, no quoting issues."
@@ -70,32 +71,34 @@ extension Dataset {
     /// features alongside three sequential grade columns (G1, G2, G3). Useful
     /// for teaching feature selection and the leakage trap of training on G1
     /// and G2 to predict G3.
-    public static var studentPerformance: Dataset? {
-        DatasetLoader.load(
+    public static var studentPerformance: TabularDataset? {
+        DatasetLoader.loadTabular(
             name: "studentPerformance",
             csvURL: bundledURL(for: "student-performance.csv"),
             description: "395 secondary-school students from a Portuguese-language course with 33 features per row covering family background, study habits, and three sequential grade columns (G1, G2, G3). Converted from the upstream UCI semicolon-delimited format to comma-separated and stripped of inconsistent quoting; no missing values."
         )
     }
 
-    /// 5,000 rows, 51 columns. Embeddings. Lookup column: `word`.
+    // MARK: - Bundled embeddings dataset
+
+    /// 5,000 words, 50-dimensional vectors. Lookup column: `word`.
     ///
     /// The 5,000 most-frequent English words from Stanford's GloVe 6B-token
-    /// corpus, each represented as a 50-dimensional vector across columns
-    /// `dim_01` through `dim_50`. Useful for teaching cosine similarity,
-    /// semantic search, and word analogies (`king - man + woman ≈ queen`)
-    /// without bringing in an external embeddings download.
-    public static var glove50d: Dataset? {
-        DatasetLoader.load(
+    /// corpus, each represented as a 50-dimensional vector. Useful for
+    /// teaching cosine similarity, semantic search, and word analogies
+    /// (`king − man + woman ≈ queen`) without bringing in an external
+    /// embeddings download.
+    public static var glove50d: EmbeddingsDataset? {
+        DatasetLoader.loadEmbeddings(
             name: "glove50d",
             csvURL: bundledURL(for: "glove-50d.csv"),
-            description: "5,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word` plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 5,000 frequency-sorted lines; no other modifications. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift."
+            description: "5,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word`, `rank`, `magnitude`, `nearest`, plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 5,000 frequency-sorted lines. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift."
         )
     }
 
     // MARK: - User-supplied CSV
 
-    /// Loads a `Dataset` from any CSV file on disk.
+    /// Loads a `TabularDataset` from any CSV file on disk.
     ///
     /// Tilde paths are expanded (`~/Desktop/my.csv` resolves to the user's
     /// home directory). The resulting dataset's `name` is the filename without
@@ -112,12 +115,12 @@ extension Dataset {
     ///         return
     ///     }
     ///     dataset.toPanel().head()
-    public static func load(path: String) -> Dataset? {
+    public static func load(path: String) -> TabularDataset? {
         let expanded = (path as NSString).expandingTildeInPath
         let url = URL(fileURLWithPath: expanded)
         let name = url.deletingPathExtension().lastPathComponent
         let description = "Loaded from \(url.lastPathComponent)"
-        return DatasetLoader.load(name: name, csvURL: url, description: description)
+        return DatasetLoader.loadTabular(name: name, csvURL: url, description: description)
     }
 
     // MARK: - Catalog

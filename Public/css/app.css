@@ -590,6 +590,7 @@ body.resizing-horizontal {
     height: 220px;
     min-height: 80px;
     max-height: 80vh;
+    min-width: 0;
     background: var(--surface);
     display: flex;
     flex-direction: column;
@@ -668,8 +669,8 @@ body.resizing-horizontal {
     font-family: var(--mono);
     font-size: 13px;
     line-height: 1.5;
-    white-space: pre-wrap;
-    word-break: break-word;
+    white-space: pre;
+    overflow-x: auto;
     overflow-y: auto;
     color: var(--text);
 }

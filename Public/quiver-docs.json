@@ -59,6 +59,10 @@
     "signature" : "func allSatisfy(_ predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
     "summary" : "Returns a Boolean value indicating whether every element of a sequence satisfies a given predicate."
   },
+  "analogy" : {
+    "signature" : "public func analogy(_ a: String, _ b: String, _ c: String, k: Int = 1) -> [(rank: Int, word: String, score: Double)]",
+    "summary" : "Returns the `k` words that best complete the analogy \"a is to b as c is to ?\". The classic example is `analogy(\"king\", \"man\", \"woman\")`, which targets `king − man + woman` and typically returns `\"queen\"`. Returns `[]` if any of `a`, `b`, or `c` is not in the vocabulary."
+  },
   "and" : {
     "signature" : "func and(_ other: [Bool]) -> [Bool]",
     "summary" : "Performs element-wise logical AND with another boolean array."
@@ -99,6 +103,10 @@
     "signature" : "extension Array where Element == Double",
     "summary" : null
   },
+  "asDictionary" : {
+    "signature" : "public func asDictionary() -> [String: [Double]]",
+    "summary" : "Returns the full word-to-vector dictionary. Useful when an algorithm expects a `[String: [Double]]` directly."
+  },
   "asFraction" : {
     "signature" : "func asFraction(maxDenominator: Int = 1000) -> Fraction",
     "summary" : "Converts this value to its simplest fractional representation."
@@ -120,7 +128,7 @@
     "summary" : "Fits multiple K-Means models with different seeds and returns the best one."
   },
   "bikeSharing" : {
-    "signature" : "public static var bikeSharing: Dataset?",
+    "signature" : "public static var bikeSharing: TabularDataset?",
     "summary" : "731 rows, 16 columns. Regression. Target column: `cnt` (total daily rides)."
   },
   "broadcast" : {
@@ -132,7 +140,7 @@
     "summary" : "Resolves a bundled CSV path relative to the sandbox's working directory."
   },
   "californiaHousing" : {
-    "signature" : "public static var californiaHousing: Dataset?",
+    "signature" : "public static var californiaHousing: TabularDataset?",
     "summary" : "20,640 rows, 10 columns. Regression. Target column: `median_house_value`."
   },
   "catalog" : {
@@ -260,12 +268,12 @@
     "summary" : "Returns the running total at each position in the array."
   },
   "Dataset" : {
-    "signature" : "public struct Dataset: Sendable",
-    "summary" : "A bundled dataset wrapping a Quiver `Panel` of numeric columns."
+    "signature" : "public enum Dataset {}",
+    "summary" : "Public namespace for bundled datasets."
   },
   "DatasetLoader" : {
     "signature" : "internal enum DatasetLoader",
-    "summary" : "Single chokepoint that converts a CSV file into a `Dataset`."
+    "summary" : "Single chokepoint that converts a CSV file into a concrete dataset value."
   },
   "denominator" : {
     "signature" : "let denominator: Int",
@@ -294,6 +302,10 @@
   "diff" : {
     "signature" : "func diff(lag: Int = 1) -> [Element]",
     "summary" : "Calculates the difference between each element and the element a fixed number of periods before it."
+  },
+  "dimensions" : {
+    "signature" : "public let dimensions: Int",
+    "summary" : "Number of components in each embedding vector — `50` for the bundled GloVe-50d slice."
   },
   "distance" : {
     "signature" : "func distance(to other: [Element]) -> Element",
@@ -350,6 +362,10 @@
   "embed" : {
     "signature" : "func embed(using embeddings: [String : [Double]]) -> [[Double]]",
     "summary" : "Converts an array of words to their vector embeddings by looking up each word in the embeddings dictionary."
+  },
+  "EmbeddingsDataset" : {
+    "signature" : "public struct EmbeddingsDataset: Sendable",
+    "summary" : "A bundled word-embedding dataset — words mapped to fixed-length vectors."
   },
   "enumerated" : {
     "signature" : "func enumerated() -> EnumeratedSequence<Self>",
@@ -472,8 +488,8 @@
     "summary" : "Statistics learned from the training data for a single class."
   },
   "glove50d" : {
-    "signature" : "public static var glove50d: Dataset?",
-    "summary" : "5,000 rows, 51 columns. Embeddings. Lookup column: `word`."
+    "signature" : "public static var glove50d: EmbeddingsDataset?",
+    "summary" : "5,000 words, 50-dimensional vectors. Lookup column: `word`."
   },
   "groupBy" : {
     "signature" : "func groupBy(_ categories: [String], using method: AggregationMethod) -> [String : Element]",
@@ -528,7 +544,7 @@
     "summary" : "Returns the inverse of a square matrix."
   },
   "iris" : {
-    "signature" : "public static var iris: Dataset?",
+    "signature" : "public static var iris: TabularDataset?",
     "summary" : "150 rows, 5 columns. Classification. Label column: `species` (encoded alphabetically as setosa→0, versicolor→1, virginica→2)."
   },
   "isEqual" : {
@@ -596,8 +612,16 @@
     "summary" : "Creates evenly spaced numbers over a specified closed interval."
   },
   "load" : {
-    "signature" : "public static func load(path: String) -> Dataset?",
-    "summary" : "Loads a `Dataset` from any CSV file on disk."
+    "signature" : "public static func load(path: String) -> TabularDataset?",
+    "summary" : "Loads a `TabularDataset` from any CSV file on disk."
+  },
+  "loadEmbeddings" : {
+    "signature" : "static func loadEmbeddings(name: String, csvURL: URL, description: String) -> EmbeddingsDataset?",
+    "summary" : null
+  },
+  "loadTabular" : {
+    "signature" : "static func loadTabular(name: String, csvURL: URL, description: String) -> TabularDataset?",
+    "summary" : null
   },
   "localizedDescription" : {
     "signature" : "var localizedDescription: String { get }",
@@ -624,8 +648,12 @@
     "summary" : "Represents the sign and natural logarithm of a matrix determinant."
   },
   "magnitude" : {
-    "signature" : "var magnitude: Element { get }",
-    "summary" : "Calculates the magnitude (length) of the vector."
+    "signature" : "public func magnitude(of word: String) -> Double?",
+    "summary" : "Returns the precomputed magnitude (Euclidean norm) of a word's embedding vector, or `nil` if the word is not in the vocabulary."
+  },
+  "magnitudes" : {
+    "signature" : "private let magnitudes: [String: Double] private let nearestWords: [String: String]",
+    "summary" : null
   },
   "makeIterator" : {
     "signature" : "func makeIterator() -> IndexingIterator<[[Double]]>",
@@ -709,7 +737,15 @@
   },
   "name" : {
     "signature" : "public let name: String",
-    "summary" : "Short identifier — `\"iris\"`, `\"titanic\"`, etc., or for `load(path:)`, the input filename without its extension."
+    "summary" : "Short identifier — `\"iris\"`, `\"titanic\"`, etc., or for `Dataset.load(path:)`, the input filename without its extension."
+  },
+  "nearest" : {
+    "signature" : "public func nearest(to word: String, k: Int = 5) -> [(rank: Int, word: String, score: Double)]",
+    "summary" : "Returns the `k` nearest words to a query word by cosine similarity, excluding the query word itself. Returns `[]` when the query word is not in the vocabulary."
+  },
+  "nearestWord" : {
+    "signature" : "public func nearestWord(of word: String) -> String?",
+    "summary" : "Returns the precomputed nearest neighbour for a word — the closest other word by cosine similarity, computed once at load time. Returns `nil` if the word is not in the vocabulary."
   },
   "normalized" : {
     "signature" : "var normalized: [Element] { get }",
@@ -830,6 +866,10 @@
   "range" : {
     "signature" : "let range: ClosedRange<Double>",
     "summary" : "The target range that scaled values are mapped to."
+  },
+  "rank" : {
+    "signature" : "public func rank(of word: String) -> Int?",
+    "summary" : "Returns the frequency rank of a word, or `nil` if the word is not in the vocabulary. Rank `1` is the most-frequent word."
   },
   "recall" : {
     "signature" : "func recall(actual: [Int], positiveLabel: Int = 1) -> Double?",
@@ -980,7 +1020,7 @@
     "summary" : null
   },
   "studentPerformance" : {
-    "signature" : "public static var studentPerformance: Dataset?",
+    "signature" : "public static var studentPerformance: TabularDataset?",
     "summary" : "395 rows, 33 columns. Regression (or classification on a thresholded `G3`). Target column: `G3` (final grade, 0–20)."
   },
   "subscript" : {
@@ -1003,12 +1043,16 @@
     "signature" : "func summary() -> String",
     "summary" : "Returns per-column summary statistics as a formatted string."
   },
+  "TabularDataset" : {
+    "signature" : "public struct TabularDataset: Sendable",
+    "summary" : "A bundled tabular dataset wrapping a Quiver `Panel` of numeric columns."
+  },
   "tan" : {
     "signature" : "func tan() -> [Double]",
     "summary" : "Returns the tangent of each element in the array."
   },
   "titanic" : {
-    "signature" : "public static var titanic: Dataset?",
+    "signature" : "public static var titanic: TabularDataset?",
     "summary" : "889 rows, 8 columns. Classification. Label column: `Survived` (0\/1)."
   },
   "tokenize" : {
@@ -1026,6 +1070,10 @@
   "topIndices" : {
     "signature" : "func topIndices(k: Int) -> [(index: Int, score: Double)]",
     "summary" : "Returns the indices and values of the top K highest elements."
+  },
+  "topMatches" : {
+    "signature" : "private func topMatches( target: [Double], exclude: Set<String>, k: Int ) -> [(rank: Int, word: String, score: Double)]",
+    "summary" : "Scores every entry except those in `exclude` against `target` by cosine similarity, returns the top `k` sorted descending."
   },
   "trainingFeatures" : {
     "signature" : "let trainingFeatures: [[Double]]",
@@ -1087,9 +1135,17 @@
     "signature" : "func vectorProjection(onto vector: [Element]) -> [Element]",
     "summary" : "Calculates the vector projection of this vector onto another vector."
   },
+  "vectors" : {
+    "signature" : "private let vectors: [String: [Double]] private let ranks: [String: Int]",
+    "summary" : null
+  },
   "version" : {
     "signature" : "static let version: String",
     "summary" : "Library version. Keep in sync with the package tag at release time."
+  },
+  "vocabulary" : {
+    "signature" : "public let vocabulary: [String]",
+    "summary" : "Every word in the dataset, sorted by rank ascending. `vocabulary[0]` is the most-frequent word (`\"the\"` in the bundled GloVe slice)."
   },
   "VoteWeight" : {
     "signature" : "enum VoteWeight",

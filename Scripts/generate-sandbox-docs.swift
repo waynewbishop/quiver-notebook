@@ -47,6 +47,8 @@ let sources = [
 // entry; symbols outside this set only fill empty slots.
 let expectedKeys: Set<String> = [
     "Dataset",
+    "TabularDataset",
+    "EmbeddingsDataset",
     "DatasetLoader",
     "iris",
     "titanic",
@@ -59,7 +61,15 @@ let expectedKeys: Set<String> = [
     "toPanel",
     "categoricalMappings",
     "name",
-    "description"
+    "description",
+    "vocabulary",
+    "dimensions",
+    "asDictionary",
+    "nearest",
+    "analogy",
+    "rank",
+    "magnitude",
+    "nearestWord"
 ]
 
 struct Entry {
