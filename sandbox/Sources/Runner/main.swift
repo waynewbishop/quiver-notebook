@@ -3,50 +3,38 @@ import Structures
 import Foundation
 
 // --- user code begins ---
-// Title: Explore Word Embeddings
+// Title: K-Means Clustering with a Fixed Seed
 //
-// Word embeddings turn vocabulary into geometry. Each word becomes a
-// point in a high-dimensional space arranged so that words used in
-// similar contexts land near each other. Once words are vectors, the
-// usual vector tools — cosine similarity, addition, subtraction —
-// answer questions about meaning.
+// K-Means groups unlabeled points into k clusters. Passing a seed makes
+// the initial centroid placement deterministic — rerun the same code and
+// get the same clusters every time.
 //
-// Dataset.glove50d ships the 5,000 most-frequent English words from
-// Stanford's GloVe corpus, each a 50-dimensional vector, bundled with
-// the Notebook. No download, no setup. The same Quiver primitives that
-// score user-similarity in a recommender or align time-series readings
-// from a watch sensor are the ones doing the work below.
+// The fitted model conforms to CustomStringConvertible, so print(model)
+// gives a clean summary. Each Cluster also prints cleanly and conforms
+// to Sequence, so its points can be iterated with for-in.
 
-guard let glove = Dataset.glove50d else {
-    exit(0)
-}
+// Unlabeled 2D data — three natural groups.
+let data: [[Double]] = [
+    [1.0, 2.0], [1.5, 1.8], [1.2, 2.1],    // group A
+    [5.0, 5.0], [5.5, 4.8], [4.8, 5.2],    // group B
+    [9.0, 8.0], [8.5, 8.5], [9.2, 7.8]     // group C
+]
 
-// Peek at the first three words by frequency rank.
-print(glove.head(n: 3))
+let model = KMeans.fit(data: data, k: 3, seed: 1)
+
+// CustomStringConvertible — a one-line summary of the fitted model.
+print(model)
 print()
 
-// Look up a single word's vector.
-if let kingVector = glove["king"] {
-    print("king is a \(kingVector.count)-dimensional vector")
-    print("first three components:", kingVector.prefix(3).map { String(format: "%.4f", $0) })
-}
-print()
-
-// Nearest neighbours by cosine similarity. The query word is excluded
-// from results, so glove.nearest(to: "paris") returns the closest
-// other words in the vocabulary.
-print("nearest to paris:")
-for hit in glove.nearest(to: "paris", k: 5) {
-    print("  \(hit.rank). \(hit.word)  \(String(format: "%.4f", hit.score))")
+// Each cluster prints cleanly. Iterating with for-in uses Sequence
+// conformance on the cluster itself if you want to walk its points.
+let clusters = model.clusters(from: data)
+for cluster in clusters {
+    print(cluster)
 }
 print()
 
-// The classic analogy: king − man + woman ≈ ? The target vector lives
-// somewhere between male royalty and female non-royalty, and the closest
-// vocabulary entry typically lands on "queen".
-print("king − man + woman ≈")
-for hit in glove.analogy("king", "man", "woman", k: 1) {
-    print("  \(hit.rank). \(hit.word)  \(String(format: "%.4f", hit.score))")
-}
+// Individual properties remain available for detailed inspection.
+print("labels:", model.labels)
 
 // --- user code ends ---

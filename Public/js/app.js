@@ -15,11 +15,12 @@ let lineNumbersEnabled = true;
 // Three presets for presenter-friendly sizing. Editor size drives Monaco;
 // output size drives the .output pane via a data-attribute on <html>.
 const FONT_SIZES = {
+    tiny:      { editor: 11, label: 'Tiny' },
     normal:    { editor: 13, label: 'Normal' },
     large:     { editor: 18, label: 'Large' },
     presenter: { editor: 24, label: 'Presenter' },
 };
-const FONT_SIZE_ORDER = ['normal', 'large', 'presenter'];
+const FONT_SIZE_ORDER = ['tiny', 'normal', 'large', 'presenter'];
 let fontSize = 'normal';
 
 let editor = null;

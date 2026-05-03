@@ -62,6 +62,10 @@
                             <span class="menu-submenu-caret" aria-hidden="true">&rsaquo;</span>
                         </button>
                         <div class="menu-submenu-panel" role="menu" hidden>
+                            <button class="menu-item menu-font-size-option" role="menuitemradio" data-size="tiny" aria-checked="false" type="button">
+                                <span class="menu-item-check" aria-hidden="true">&#10003;</span>
+                                <span class="menu-item-label">Tiny</span>
+                            </button>
                             <button class="menu-item menu-font-size-option" role="menuitemradio" data-size="normal" aria-checked="true" type="button">
                                 <span class="menu-item-check" aria-hidden="true">&#10003;</span>
                                 <span class="menu-item-label">Normal</span>

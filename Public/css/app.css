@@ -851,6 +851,7 @@ a.menu-item:active {
    of a classroom stays readable. Editor itself is driven by Monaco's
    fontSize option, not CSS. Chrome (sidebar, breadcrumb, footer) stays
    at default size on purpose — presenter mode grows content, not UI. */
+html[data-font-size="tiny"] .output      { font-size: 11px; line-height: 1.45; }
 html[data-font-size="large"] .output     { font-size: 16px; line-height: 1.55; }
 html[data-font-size="presenter"] .output { font-size: 20px; line-height: 1.6; }
 
