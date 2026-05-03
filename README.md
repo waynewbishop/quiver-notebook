@@ -1,62 +1,43 @@
-# Quiver Notebook — A browser-based Swift environment for statistics and machine learning 
+# The Quiver Notebook
 
-The Quiver Notebook is a browser-based Swift development environment for writing numerical and machine learning code. It's a lightweight learning tool for working through statistics, linear algebra, and machine learning models in pure Swift.
+A browser-based Swift editor for exploring vectors, matrices, statistics, and machine learning with Quiver.
 
-To start:
+## Overview
 
-1. Clone the repo.
-2. Type `swift run` from the macOS terminal.
-3. A browser window opens with a Swift editor already wired to two libraries:
-   * [Quiver](https://github.com/waynewbishop/quiver) — vectors, matrices, statistics, and machine learning models.
-   * [Structures](https://github.com/waynewbishop/bishop-algorithms-swift-package) — the data structures and algorithms behind them.
+The Quiver Notebook provides a fast, lightweight environment for learning Quiver and for prototyping. Established as a standalone web-based IDE, it serves two audiences: students who want to learn statistics, linear algebra, and machine learning in Swift, and developers who want a quick iteration loop for testing and building their own models.
 
-There is no project to configure, no binaries to install, no account to create, and no service in the loop. Code runs on the same machine that hosts the browser, and the output comes back to the same tab. The entire environment is one repository on disk.
+To start, clone the repository and a browser opens with `Quiver`, `Foundation`, and a small library of teaching datasets ready to use. Nothing else needs to be installed beyond the Swift CLI.
 
-## Features
+## Who the Notebook is for
 
-* **Browser-based Swift editor.**
-  * Monaco editor with full Swift syntax highlighting.
-  * Cmd/Ctrl + Enter to run.
-  * Auto-save to local storage so work persists across refreshes.
-  * Copy-to-clipboard for sharing snippets in assignments and messages.
+**Educators** preparing lectures or assignments can fork the repository, drop custom example files into the `examples/` folder, and distribute the URL to a class. The bundled stack covers enough ground for an applied linear algebra unit, an introductory descriptive statistics segment, and an applied regression module — material that fits inside an existing course rather than replacing one. A short supervised learning survey covering k-nearest neighbors, k-means, and Naive Bayes also fits comfortably in a few weeks.
 
-* **Pre-wired two-package stack.**
-  * `Quiver` — vectors, matrices, statistics, similarity, machine learning models. Auto-imported in every snippet.
-  * `Structures` — heaps, tries, graphs, stacks, queues, binary search trees. One `import Structures` line away.
-  * `Foundation` — dates, JSON, file reading, regular expressions. Auto-imported.
+**Students** working through a course, textbook, or self-study get a Swift environment that does numerical work without installing additional binaries, configuring system packages, or downloading datasets separately. One clone and one command produce a working editor with `Quiver`, `Foundation`, and the bundled datasets already wired in.
 
-* **Bundled datasets.**
-  * Classic teaching sets — Iris, Titanic, California Housing, Bike Sharing, Student Performance — accessible by name with no download step. 
-  * Load any CSV from disk with `Dataset.load(path: "~/Desktop/sales.csv")`. Tilde paths expand to the user's home directory.
-  * `Dataset.glove50d` ships a 5,000-word slice of GloVe word vectors as a separate type for word lookup — no download required.
-  * Every tabular dataset extracts to a `Panel` with one call, so the same code transfers to any iOS, watchOS, or visionOS app.
+**iOS and Apple-platform developers** prototyping a model or testing an idea get a focused editor without a project workspace. Code that runs here compiles unchanged on any Apple platform — including iOS, watchOS, visionOS, and Vapor server-side targets.
 
-* **Curated examples sidebar.**
-  * Ready-to-run snippets ordered from simplest to most complex.
-  * Each example loads into the editor with one click.
-  * Educators extend the sidebar by dropping their own `.swift` files into `examples/`.
-
-* **Local-first and private.**
-  * Runs on `127.0.0.1` (localhost only) — refuses to start if the bind address is changed.
-  * No accounts, no telemetry, no analytics.
-  * Pinned Quiver release — every student gets the same known-good version.
-
-## What this is for
-
-1. **Teaching statistics** — descriptive statistics (`mean`, `median`, `std`, `variance`, `quartiles`, `percentile`, `iqr`), frequency distributions, rolling-window aggregations, outlier detection by z-score, and bootstrap confidence intervals. `Panel.summary()` runs descriptive stats column-by-column on a tabular dataset in one call. Real numbers, real datasets, no spreadsheet.
-2. **Teaching linear algebra** — vectors, matrices, magnitude, distance, cosine similarity, projections, dot products, and matrix arithmetic.
-3. **Teaching ML intuition** — `fit` / `predict` / evaluate against five models (linear regression, k-nearest neighbors, k-means, and naive Bayes).
-4. **Prototyping Quiver models before they land in an app** — inspect datasets, build Quiver ML models or create statistical algorithms.
+The Notebook itself runs from the Swift command-line toolchain, so Xcode is not required to use it. Any code written in the editor compiles unchanged inside an Xcode project that depends on Quiver, so a model prototyped here ships in an iOS, watchOS, visionOS, or Vapor app without translation.
 
 ## Quick Start
 
-Quiver Notebook runs on the Swift CLI, which is not preinstalled on macOS. Before cloning, confirm Swift 5.9 or newer is available:
+The Notebook runs on the Swift command-line toolchain. The lightest way to get Swift on macOS is **swiftly**, Swift's official toolchain installer. It runs as a normal Mac installer and does not require Homebrew or Xcode.
 
-```bash
-swift --version
-```
+1. Download the installer: [swiftly-1.1.1.pkg](https://download.swift.org/swiftly/darwin/swiftly-1.1.1.pkg)
+2. Double-click the downloaded file and follow the prompts.
+3. Open a new terminal tab and run:
 
-If the command is missing or the version is older than 5.9, install the Swift CLI from [swift.org/install](https://www.swift.org/install/). The page covers macOS and Linux, and Xcode is not required — you can run the notebook with the standalone toolchain alone. On macOS, Swift also ships with Xcode if it is already installed (`xcode-select --install` for the Command Line Tools), in which case no additional download is needed. Once Swift is in place:
+   ```bash
+   ~/.swiftly/bin/swiftly init
+   ```
+
+   This downloads the latest Swift toolchain into your home folder and configures your shell.
+4. Confirm the install:
+
+   ```bash
+   swift --version
+   ```
+
+Once Swift is in place, clone and run:
 
 ```bash
 git clone https://github.com/waynewbishop/quiver-notebook
@@ -64,194 +45,36 @@ cd quiver-notebook
 swift run
 ```
 
-Then open [http://localhost:8080](http://localhost:8080) in a browser. The first launch compiles the libraries and the editor framework, which takes a minute or two. Subsequent runs start in seconds. The notebook needs macOS 14+ or Linux with Swift 5.9+.
+Then open `http://localhost:8080` in a browser. The first launch compiles the libraries and the editor, which takes a minute or two on most machines. Every launch after that starts in seconds.
 
-### Load and inspect a dataset
+The local server binds to `127.0.0.1` by design and refuses to start if the address is changed. The Notebook is reachable only from the same machine that launched it.
 
-A `Panel` is Quiver's named-column data structure for tabular data — think of it as a small table where each column is a labeled `[Double]`. Full reference at [Panel](https://waynewbishop.github.io/quiver/documentation/quiver/panel). The bundled datasets are accessible by name and extract to a `Panel` with one call:
+## Bundled datasets
 
-```swift
-guard let dataset = Dataset.iris else { return }
+The Quiver Notebook ships with a small library of teaching datasets accessible by name from the editor — no download, no parsing, no setup. Iris, Titanic, California Housing, and a handful of others are ready to load with a single line of code, paired with sensible target columns for either classification or regression. A separate loader reads any CSV from disk in the same shape, so a class can move from bundled data to its own data without changing the rest of a snippet.
 
-let panel = dataset.toPanel()
-print(dataset.description)
-print(panel.head())
-```
+The full menu of datasets, the loading API, and the categorical-encoding behavior are documented at [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets).
 
-When coding, the `import Quiver` line is optional because the notebook supplies it automatically. `Dataset.iris` returns a ready-to-use bundled dataset; `toPanel()` hands back a Quiver `Panel` we can explore when testing statistical or machine learning models.
+## Bundled examples
 
-### Statistics
+The left sidebar of the editor lists ready-to-run snippets, ordered from simplest to most complex. Each example loads into the editor with one click. Educators extend the sidebar by dropping their own `.swift` files into the `examples/` folder — there is no plugin system, no manifest, and no rebuild required. Refresh the browser tab and the new entries appear.
 
-A typical workflow is summary statistics followed by outlier detection on the same array:
-
-```swift
-let sales = [45.0, 52.0, 48.0, 61.0, 55.0, 58.0, 49.0, 67.0, 145.0, 69.0]
-
-print("mean:", sales.mean() ?? .nan)
-print("median:", sales.median() ?? .nan)
-print("std:", sales.std() ?? .nan)
-
-let smoothed = sales.rollingMean(window: 3)
-let outliers = sales.outlierMask(threshold: 2.0).trueIndices
-print("outlier indices:", outliers)
-```
-
-### Linear algebra
-
-Magnitude and distance both use the Pythagorean theorem, but they answer different questions. Magnitude asks how far a point is from the origin; distance asks how far one point is from another. Same theorem, different starting points.
-
-```swift
-// Magnitude — how far from the origin?
-// For [3, 4], that's √(3² + 4²) = 5.0
-let position = [3.0, 4.0]
-let distanceFromHome = position.magnitude()  // 5.0
-
-// Distance — how far between two points?
-// From [1, 2] to [4, 6]: √((4-1)² + (6-2)²) = 5.0
-let library = [1.0, 2.0]
-let coffeeShop = [4.0, 6.0]
-let gap = library.distance(to: coffeeShop)  // 5.0
-
-// Magnitude is just distance from the origin
-let origin = [0.0, 0.0]
-let proof = origin.distance(to: position)  // 5.0
-```
-
-### Train a model
-
-The same pipeline — fit, predict, evaluate — covers every supervised model in Quiver.
-
-```swift
-// Training data: square footage → price
-let features: [[Double]] = [[1000], [1500], [2000], [2500], [3000]]
-let targets = [150000.0, 200000.0, 260000.0, 310000.0, 370000.0]
-
-let model = try LinearRegression.fit(features: features, targets: targets)
-let predictions = model.predict(features)
-let r2 = predictions.rSquared(actual: targets)  // ≈ 0.9988
-
-print("predictions:", predictions)
-print("R²:", r2)
-```
-
-### Explore word embeddings
-
-Word embeddings turn vocabulary into geometry. Each word becomes a point in a high-dimensional space arranged so that words used in similar contexts land near each other. Once words are vectors, the usual vector tools — cosine similarity, addition, subtraction — answer questions about meaning. `Dataset.glove50d` ships 5,000 of the most-frequent English words from Stanford's GloVe corpus, each a 50-dimensional vector:
-
-```swift
-guard let glove = Dataset.glove50d else { return }
-
-// Look up a single word's vector
-if let king = glove["king"] {
-    print("king is a \(king.count)-dimensional vector")
-}
-
-// Nearest neighbours by cosine similarity
-for hit in glove.nearest(to: "paris", k: 3) {
-    print("\(hit.rank). \(hit.word)  \(hit.score)")
-}
-// 1. france  0.80
-// 2. brussels  0.78
-// 3. french  0.77
-
-// The classic analogy
-let result = glove.analogy("king", "man", "woman", k: 1)
-print(result.first?.word ?? "")  // queen
-```
-
-## Design Philosophy
-
-* **Local-first** — runs entirely on the student's machine
-* **Frictionless** — clone, `swift run`, write code. No accounts, no setup rituals
-* **Two-package discipline** — Quiver and Structures are enough for many introductory college ML and stats courses.
-* **Transparent** — students read the source of everything they use, including this notebook itself
-* **Educational** — the tool is designed to be both functional and educational
-
-## Who this is for
-
-**Students** working through a course, textbook, or self-study get a Swift environment that does numerical work without having to install and configure binaries, operating system updates or datasets. 
-
-**iOS and Apple-platform developers** wanting a focused editor for designing a model or testing ideas. Code that works in the notebook runs unchanged on any Apple platform including iOS, watchOS, or a Swift on Server solution with Vapor.
-
-**Educators** preparing lectures or assignments can also fork the repository, drop their own example files into `examples/`, and distribute the URL to a class. The bundled stack is enough to support an applied linear algebra unit, an introductory descriptive statistics segment, and an applied regression module — the kind of material that fits inside an existing course rather than replacing one. A short supervised-learning survey using k-nearest neighbors, k-means, and naive Bayes is also workable.
-
-## When to Use Quiver Notebook
-
-* **Teaching a Swift-based ML course** — a pure-Swift classroom environment that runs on every student's machine
-* **Running exercises in restricted networks** — classroom environments, exam settings
-* **Student self-study** — anyone reading *Swift Algorithms & Data Structures* who wants to experiment alongside the book
-* **Prototyping ML for Apple devices** — design a model in pure Swift before dropping it into an iOS, watchOS, or visionOS app
-* **Workshops and tutorials** — a shared environment attendees
-
-## Keeping Quiver Current
-
-The notebook ships with a specific Quiver release pinned in `sandbox/Package.resolved`, so all users who clone the repository gets the same known-good version. The footer shows the active version. Pinning is the right default for a course: a class starts and finishes on the same release. New Quiver releases are bundled by us and pushed to the notebook's `main` branch — pull the latest from GitHub when you're ready to move forward, or stay on the version your course started with.
-
-## Running Safely
-
-The Quiver Notebook is local-first by construction. The Vapor server binds to `127.0.0.1`, so only the computer running the notebook can reach it. There are no accounts, no telemetry, and no analytics endpoint — code, output, and errors stay on the machine where they were written. Combined with the pinned Quiver release, this is what makes the tool safe to hand to a class without an IT review.
-
-The Notebook executes Swift with the permissions of the user who launched it, which is the right model for one person on one laptop. If a hosted environment is the goal, please reach out first.
-
-## FAQ
-
-**Will code I write also run in Xcode?** 
-Yes. Every snippet is pure Swift against Quiver and Structures, both of which are ordinary Swift packages. Copy a working snippet into an Xcode project that depends on those packages and it will run unchanged.
-
-**Can I just do all of this in Xcode instead?** 
-Yes — an Xcode project that depends on Quiver and Structures runs the same code the notebook does. What we lose by working in Xcode alone is the bundled dataset library: the tabular sets (`Dataset.iris`, `Dataset.titanic`, `Dataset.californiaHousing`, `Dataset.bikeSharing`, `Dataset.studentPerformance`), the embeddings set (`Dataset.glove50d`), `Dataset.load(path:)` for user CSVs, and the boot-log catalog all live inside the notebook's sandbox target and are not part of Quiver. We also lose the auto-injected imports, the curated examples sidebar, and the clone-and-distribute model that lets an instructor hand a fork to a class. For shipping an app, Xcode is the right tool.
-
-**Is this pure Swift code or some variant?** 
-Pure Swift. The code written in the editor is the code the Swift compiler sees. The notebook auto-imports Quiver and Foundation so those lines do not need to appear in every snippet, and that is the extent of the work it does on our behalf.
-
-**Why can't I import my own libraries or other Apple frameworks?** 
-The two-package discipline is intentional. Adding more libraries to the sandbox would change what the notebook is — a focused teaching and prototyping environment becomes another general-purpose Swift workspace, which Xcode already does well. For libraries beyond Quiver and Structures, an Xcode project is the right tool. The notebook stays small on purpose.
-
-**Can I build apps with Quiver Notebook?** 
-No. The notebook runs free-form Swift code that prints output to a pane — it is not a project workspace, has no UI canvas, and does not produce shippable binaries. The goal of the notebook is to produce code that goes *inside* an app's data and model layers, prototyped before the project exists.
-
-**Does this work with Swift Playgrounds?** 
-Quiver Notebook is a separate tool. Overall, Playgrounds and the notebook serve different audiences and are not interoperable. A snippet from one can be copied to the other if it only uses Foundation and standard library types, but Quiver and Structures are not available inside Swift Playgrounds.
-
-**Where is the debugger?** 
-There is no step debugger or breakpoint UI in the notebook. The intended workflow is the print-and-inspect loop — write a snippet, click Run, read the output, edit, run again. For real debugging needs (breakpoints, variable inspection, call stack), Xcode is the right tool, and snippets transfer there cleanly.
-
-**Can I save my work?** 
-The editor auto-saves to the browser's local storage, so refreshing the page does not lose code. For longer-term storage, copy the snippet into an `examples/` file or into a separate notes file — local storage is convenient but not durable across browser profiles or machine moves.
-
-**Does the notebook work offline?** 
-Yes, after the first build. The first `swift run` fetches Quiver, Structures, and the Vapor framework from their package repositories; subsequent runs are entirely local. A class running in an air-gapped lab can clone-and-build once on a connected machine, then distribute.
-
-**What is the network and storage footprint?** 
-The Vapor server listens only on `127.0.0.1:8080` (or the port set by `PORT=`) and accepts connections only from the same machine. No outbound calls are made once the initial `swift package` fetch is complete. Code typed in the editor is held in the browser's local storage and is scoped to that browser profile on that machine — closing the tab keeps it, switching browsers does not. The bundled datasets ship with the repository and are read from disk by the local process; CSVs loaded via `Dataset.load(path:)` are also read locally and never transmitted.
-
-**Will my code or data leave the machine?** 
-No. There are no accounts, no telemetry, and no analytics.
-
-**Can multiple students share one notebook server?** 
-No, by design. Quiver Notebook executes Swift with the permissions of the user who launched it, which is the right model for one person on one laptop. Each student runs their own copy. A shared-server deployment would need sandboxing, resource limits, and per-user isolation that the v0 scope does not include.
-
-**How does this compare to Google Colab or Jupyter notebooks?** 
-Colab is hosted in the cloud and good when we want a workspace in the browser without installing anything. Jupyter is the older browser-based notebook, runs locally or hosted, and is built around cells and kernels.
-
-Quiver Notebook is the Swift counterpart for this kind of work — a local environment that lives on the same machine as the Apple-platform project it feeds. Each snippet is a whole Swift program that compiles and runs end-to-end, which fits how Swift code is actually shipped.
-
-## Troubleshooting
-
-* **Port 8080 is already in use** — launch on a different port: `PORT=8090 swift run`
-* **Status chip reads "Warming up"** — normal on first run; the build typically takes one to two minutes
-* **Status chip reads "Warm-up failed"** — the first run will still work and trigger the build then; check the terminal for the compiler error
-* **The Run button does nothing** — open the browser console and check for fetch errors against `/api/run`; restart `swift run` if the Vapor server crashed
-* **Examples sidebar is empty** — drop one `.swift` file with a `// Title:` comment on the first line into `examples/` and refresh
-
-## Stay in the loop
-
-[The Feature Vector](https://featurevector.substack.com) is a newsletter about ML intuition for engineers, built in Swift. One idea per issue, with a recipe that runs in the notebook.
+Each example file begins with a `// Title:` comment on the first line, and the text after the colon becomes the sidebar label.
 
 ## Documentation
 
-Full Quiver API documentation at [waynewbishop.github.io/quiver](https://waynewbishop.github.io/quiver/documentation/quiver/). The Structures package is used throughout [Swift Algorithms & Data Structures](https://waynewbishop.github.io/swift-algorithms/), and the [Quiver Cookbook](https://github.com/waynewbishop/quiver-cookbook) collects 45 interactive recipes that run as-is in the notebook.
+The Notebook's full reference documentation lives in the Quiver DocC catalog:
 
-## Contributing, license, questions
+- [Quiver Notebook](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook) — overview, setup, snippet rules, app handoff
+- [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets) — the bundled dataset library and CSV loader
+- [Quiver Notebook for Classrooms](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook-for-classrooms) — fork-and-distribute model, custom examples, version pinning, port configuration
 
-Contributions are welcome — pull requests for `examples/` are especially welcome. Quiver Notebook is available under the MIT License. For other questions, reach out on [LinkedIn](https://www.linkedin.com/in/waynebishop).
+For the Quiver package itself, see the full [Quiver documentation](https://waynewbishop.github.io/quiver/documentation/quiver/) and the [Quiver Cookbook](https://github.com/waynewbishop/quiver-cookbook) for interactive recipes.
+
+## Contributing
+
+Pull requests for `examples/` are especially welcome. For other contributions or questions, open an issue or reach out on [LinkedIn](https://www.linkedin.com/in/waynebishop).
+
+## License
+
+MIT.
