@@ -10,11 +10,9 @@ To start, clone the repository and a browser opens with `Quiver`, `Foundation`, 
 
 ## Who the Notebook is for
 
-**Educators** preparing lectures or assignments can fork the repository, drop custom example files into the `examples/` folder, and distribute the URL to a class. The bundled stack covers enough ground for an applied linear algebra unit, an introductory descriptive statistics segment, and an applied regression module — material that fits inside an existing course rather than replacing one. A short supervised learning survey covering k-nearest neighbors, k-means, and Naive Bayes also fits comfortably in a few weeks.
-
-**Students** working through a course, textbook, or self-study get a Swift environment that does numerical work without installing additional binaries, configuring system packages, or downloading datasets separately. One clone and one command produce a working editor with `Quiver`, `Foundation`, and the bundled datasets already wired in.
-
-**iOS and Apple-platform developers** prototyping a model or testing an idea get a focused editor without a project workspace. Code that runs here compiles unchanged on any Apple platform — including iOS, watchOS, visionOS, and Vapor server-side targets.
+- **iOS and Apple-platform developers** — get a focused editor for prototyping a model or testing an idea. Code that runs here compiles unchanged on any Apple platform, including iOS, watchOS, visionOS, and Vapor server-side targets.
+- **Students** — get a Swift environment that does numerical work without installing additional binaries or downloading datasets separately. One clone and one command produce a working editor with `Quiver`, `Foundation`, and the bundled datasets already wired in.
+- **Educators** — fork the repository, drop custom examples into the `examples/` folder, and share the URL with a class. The bundled stack covers an applied linear algebra unit, an introductory descriptive statistics segment, an applied regression module, and a short supervised learning survey using k-nearest neighbors, k-means, and Naive Bayes.
 
 The Notebook itself runs from the Swift command-line toolchain, so Xcode is not required to use it. Any code written in the editor compiles unchanged inside an Xcode project that depends on Quiver, so a model prototyped here ships in an iOS, watchOS, visionOS, or Vapor app without translation.
 
