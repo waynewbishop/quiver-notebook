@@ -221,6 +221,17 @@ require(['vs/editor/editor.main'], () => {
         toggleSidebar();
     });
 
+    // Cmd/Ctrl+K to clear the output pane (Terminal / Xcode console / devtools convention)
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => {
+        clearOutput();
+    });
+
+    // Cmd/Ctrl+Shift+Enter to clear output and run (PyCharm rerun convention)
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => {
+        clearOutput({ silent: true });
+        runCode();
+    });
+
     // Presenter-mode font sizing (browser/Xcode muscle memory)
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Equal,  () => stepFontSize(+1));
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Minus,  () => stepFontSize(-1));
@@ -286,6 +297,8 @@ require(['vs/editor/editor.main'], () => {
         }
         console.info('[Quiver] Registered completion provider with ' + baseSuggestions.length + ' suggestions');
 
+        const quiverNameSet = new Set(baseSuggestions.map(s => s.label));
+
         monaco.languages.registerCompletionItemProvider('swift', {
             triggerCharacters: ['.'],
             provideCompletionItems(model, position) {
@@ -296,12 +309,25 @@ require(['vs/editor/editor.main'], () => {
                     startColumn: word.startColumn,
                     endColumn: word.endColumn
                 };
-                const suggestions = baseSuggestions.map(s => Object.assign({}, s, { range }));
+                // After a `.`, only Quiver members make sense — local
+                // identifiers would be noise. Detect by peeking at the char
+                // immediately before the word being completed.
+                const lineText = model.getLineContent(position.lineNumber);
+                const charBefore = word.startColumn > 1 ? lineText.charAt(word.startColumn - 2) : '';
+                const isMemberAccess = charBefore === '.';
+
+                const quiverItems = baseSuggestions.map(s => Object.assign({}, s, { range }));
+                if (isMemberAccess) {
+                    return { suggestions: quiverItems, incomplete: true };
+                }
+
+                const localItems = collectLocalIdentifiers(model, position, quiverNameSet)
+                    .map(item => Object.assign({}, item, { range }));
                 // incomplete: true tells Monaco to re-query on every keystroke
                 // instead of filtering a cached list. Slight perf cost (~250
                 // items rebuilt per keystroke) but avoids stale-range bugs
                 // where suggestions silently drop after typing past the dot.
-                return { suggestions, incomplete: true };
+                return { suggestions: quiverItems.concat(localItems), incomplete: true };
             }
         });
 
@@ -411,6 +437,124 @@ function buildQuiverSuggestion(label, signature, summary) {
     item.insertText = label + '(' + parts.join(', ') + ')';
     item.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
     return item;
+}
+
+/* --- Local identifier scanner ---
+ * Walks the current model text and collects user-defined names (let/var
+ * bindings, func declarations, function parameters, for-loop variables,
+ * struct/class/enum names) so they can be surfaced as autocomplete
+ * suggestions alongside Quiver symbols. This is a regex pass, not a
+ * parser — it has no notion of scope, so a name declared inside one
+ * function will appear everywhere. For a single-file notebook that's
+ * the right tradeoff: simple, fast, and matches what users expect from
+ * "all the names I've typed so far."
+ *
+ * The current word at the cursor is excluded so an identifier doesn't
+ * suggest itself while being typed. Names that collide with Quiver
+ * symbols are skipped — the Quiver entry is richer (signature, doc).
+ */
+const SWIFT_KEYWORDS = new Set([
+    'let', 'var', 'func', 'return', 'if', 'else', 'guard', 'while', 'for', 'in',
+    'switch', 'case', 'default', 'break', 'continue', 'do', 'try', 'catch', 'throw',
+    'throws', 'rethrows', 'struct', 'class', 'enum', 'protocol', 'extension',
+    'import', 'typealias', 'init', 'self', 'Self', 'super', 'true', 'false', 'nil',
+    'public', 'private', 'internal', 'fileprivate', 'open', 'static', 'final',
+    'lazy', 'weak', 'unowned', 'inout', 'where', 'as', 'is', 'some', 'any',
+    'async', 'await', 'actor', 'mutating', 'nonmutating', 'override', 'required',
+    'convenience', 'defer', 'repeat', 'fallthrough', 'associatedtype', 'precedencegroup',
+    'operator', 'subscript', 'get', 'set', 'didSet', 'willSet'
+]);
+
+function collectLocalIdentifiers(model, position, excludeSet) {
+    // Names → kind. Later finds upgrade earlier ones (a name first seen as
+    // a parameter, then later declared as a func, ends up as Function).
+    const found = new Map();
+    const cursorWord = model.getWordAtPosition(position);
+    const cursorWordText = cursorWord ? cursorWord.word : '';
+
+    const text = model.getValue();
+    // Strip line and block comments + string literals so we don't pick up
+    // identifiers from inside them. Replacements preserve length so any
+    // future position math stays valid.
+    const cleaned = text
+        .replace(/\/\*[\s\S]*?\*\//g, m => ' '.repeat(m.length))
+        .replace(/\/\/[^\n]*/g, m => ' '.repeat(m.length))
+        .replace(/"(?:\\.|[^"\\\n])*"/g, m => ' '.repeat(m.length));
+
+    function record(name, kind) {
+        if (!name || SWIFT_KEYWORDS.has(name) || excludeSet.has(name)) return;
+        if (name === cursorWordText) return;
+        if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) return;
+        // Upgrade priority: Function > Variable > Field (parameter).
+        const rank = { Variable: 1, Field: 1, Function: 2, Class: 2 };
+        const existing = found.get(name);
+        if (!existing || (rank[kind] || 0) > (rank[existing] || 0)) {
+            found.set(name, kind);
+        }
+    }
+
+    // let/var bindings — also handles tuple destructuring `let (a, b) = ...`
+    const bindingRe = /\b(?:let|var)\s+(?:\(([^)]+)\)|([A-Za-z_][A-Za-z0-9_]*))/g;
+    let m;
+    while ((m = bindingRe.exec(cleaned)) !== null) {
+        if (m[1]) {
+            m[1].split(',').forEach(part => record(part.trim(), 'Variable'));
+        } else {
+            record(m[2], 'Variable');
+        }
+    }
+
+    // func declarations and their parameter list
+    const funcRe = /\bfunc\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)/g;
+    while ((m = funcRe.exec(cleaned)) !== null) {
+        record(m[1], 'Function');
+        // Parameters: each comma-separated piece is `[label] name: Type`
+        // We want the *internal* name — the second identifier if there are
+        // two, otherwise the first. Skip `_`.
+        m[2].split(',').forEach(raw => {
+            const part = raw.trim();
+            if (!part) return;
+            const colon = part.indexOf(':');
+            const head = (colon === -1 ? part : part.substring(0, colon)).trim();
+            const tokens = head.split(/\s+/).filter(t => t && t !== '_');
+            const internal = tokens.length >= 2 ? tokens[1] : tokens[0];
+            record(internal, 'Field');
+        });
+    }
+
+    // for-in loop variables: `for x in xs`, `for (i, v) in xs.enumerated()`
+    const forRe = /\bfor\s+(?:\(([^)]+)\)|([A-Za-z_][A-Za-z0-9_]*))\s+in\b/g;
+    while ((m = forRe.exec(cleaned)) !== null) {
+        if (m[1]) {
+            m[1].split(',').forEach(part => record(part.trim(), 'Variable'));
+        } else {
+            record(m[2], 'Variable');
+        }
+    }
+
+    // Type declarations
+    const typeRe = /\b(?:struct|class|enum|protocol|actor|typealias)\s+([A-Za-z_][A-Za-z0-9_]*)/g;
+    while ((m = typeRe.exec(cleaned)) !== null) {
+        record(m[1], 'Class');
+    }
+
+    const items = [];
+    for (const [name, kindName] of found) {
+        items.push({
+            label: name,
+            kind: monaco.languages.CompletionItemKind[kindName],
+            insertText: name,
+            // sortText '5_' ranks below Quiver suggestions ('0_' prefix)
+            // so library symbols still surface first.
+            sortText: '5_' + name,
+            filterText: name,
+            detail: kindName === 'Function' ? 'Local function'
+                  : kindName === 'Class'    ? 'Local type'
+                  : kindName === 'Field'    ? 'Parameter'
+                                            : 'Local variable'
+        });
+    }
+    return items;
 }
 
 /* --- Quiver signature help helpers ---
@@ -573,16 +717,21 @@ document.getElementById('copy-btn').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('clear-btn').addEventListener('click', () => {
+function clearOutput({ silent = false } = {}) {
     const hasOutput = document.getElementById('output').textContent.trim().length > 0;
     if (!hasOutput) {
-        setStatus('Nothing to clear.', '');
-        return;
+        if (!silent) setStatus('Nothing to clear.', '');
+        return false;
     }
     setOutput('', '');
     setDurationPill(null);
-    setStatus('Output cleared.', '');
+    if (!silent) setStatus('Output cleared.', '');
     updateClearButtonState();
+    return true;
+}
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+    clearOutput();
 });
 
 document.getElementById('new-btn').addEventListener('click', () => {

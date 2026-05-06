@@ -4,7 +4,7 @@ A browser-based Swift editor for exploring vectors, matrices, statistics, and ma
 
 ## Overview
 
-The Quiver Notebook provides a fast, lightweight environment for learning Quiver and for prototyping. Established as a standalone web-based IDE, it serves two audiences: students who want to learn statistics, linear algebra, and machine learning in Swift, and developers who want a quick iteration loop for testing and building their own models.
+The Quiver Notebook provides a fast, lightweight environment for learning [Quiver](https://waynewbishop.github.io/quiver/documentation/quiver/) and for prototyping. Established as a standalone web-based IDE, it serves two audiences: students who want to learn statistics, linear algebra, and machine learning in Swift, and developers who want a quick iteration loop for testing and building their own models.
 
 To start, clone the repository and a browser opens with `Quiver`, `Foundation`, and a small library of teaching datasets ready to use. Nothing else needs to be installed beyond the Swift CLI.
 
@@ -18,7 +18,7 @@ The Notebook itself runs from the Swift command-line toolchain, so Xcode is not 
 
 ## Quick Start
 
-The Notebook runs on the Swift command-line toolchain. The lightest way to get Swift on macOS is **swiftly**, Swift's official toolchain installer. It runs as a normal Mac installer and does not require Homebrew or Xcode.
+The Notebook runs on the Swift command-line toolchain. The lightest way to get Swift on macOS is **swiftly**, Swift's official toolchain installer. It runs as a normal Mac installer and does not require Homebrew or Xcode. For a smooth install we recommend having macOS 15 (Sequoia) or newer.
 
 1. Download the installer: [swiftly-1.1.1.pkg](https://download.swift.org/swiftly/darwin/swiftly-1.1.1.pkg)
 2. Double-click the downloaded file and follow the prompts.

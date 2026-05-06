@@ -9,7 +9,7 @@ let package = Package(
         .macOS(.v14)
     ],
     dependencies: [
-        // Quiver — numerical computing (vectors, matrices, statistics, ML models)
+        // Quiver — statistics, linear algebra, and machine learning
         .package(url: "https://github.com/waynewbishop/quiver.git", from: "1.1.0"),
 
         // Structures — data structures and algorithms (trees, heaps, tries, graphs, stacks, queues)

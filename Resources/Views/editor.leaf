@@ -170,6 +170,8 @@
                         <dt><kbd>Shift</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code</dd>
                         <dt><kbd>&#8984;</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code (Mac)</dd>
                         <dt><kbd>Ctrl</kbd> + <kbd>&#8629;</kbd></dt><dd>Run code (Linux / Win)</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>&#8679;</kbd> + <kbd>&#8629;</kbd></dt><dd>Clear output and run</dd>
+                        <dt><kbd>&#8984;</kbd> + <kbd>K</kbd></dt><dd>Clear output</dd>
                     </dl>
                 </div>
                 <div class="shortcuts-group">

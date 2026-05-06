@@ -4,6 +4,10 @@ import Foundation
 
 /// Configures Vapor application: serves static files, renders Leaf views, and pre-warms the sandbox build cache.
 public func configure(_ app: Application) async throws {
+    // Verify macOS and Swift toolchain meet minimums before doing anything else.
+    // A failure here aborts boot with a remediation message — no point binding a port if snippets can't compile.
+    try ToolchainCheck.run(app: app)
+
     // Serve static assets from Public/
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
