@@ -1,4 +1,4 @@
-// Title: Vector Addition and Broadcasting
+// Title: Vector Addition and Element-Wise Operations
 //
 // Quiver treats [Double] as a vector. Element-wise operations between two
 // vectors of the same length use named methods (add, multiply) so they

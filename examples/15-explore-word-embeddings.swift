@@ -38,7 +38,7 @@ print()
 
 // The classic analogy: king − man + woman ≈ ? The target vector lives
 // somewhere between male royalty and female non-royalty, and the closest
-// vocabulary entry typically lands on "queen".
+// vocabulary entry typically lands on female royalty.
 print("king − man + woman ≈")
 for hit in glove.analogy("king", "man", "woman", k: 1) {
     print("  \(hit.rank). \(hit.word)  \(String(format: "%.4f", hit.score))")

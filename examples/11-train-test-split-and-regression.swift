@@ -33,6 +33,6 @@ let model = try LinearRegression.fit(features: trainFeatures, targets: trainTarg
 let predictions = model.predict(testFeatures)
 let r2 = predictions.rSquared(actual: testTargets)
 
-print("R² on held-out test set:", r2)
+print("R² on held-out test set:", String(format: "%.3f", r2))
 print()
 print(model)

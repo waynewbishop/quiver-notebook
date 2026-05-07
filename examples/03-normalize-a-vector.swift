@@ -7,10 +7,10 @@
 
 let v = [3.0, 4.0]
 
-print("vector:   ", v)
-print("magnitude:", v.magnitude)
+print("vector:           ", v)
+print("magnitude:        ", v.magnitude)
 
 let unit = v.normalized
 
-print("normalized:          ", unit)
-print("magnitude of unit:   ", unit.magnitude)
+print("normalized:       ", unit)
+print("magnitude of unit:", unit.magnitude)

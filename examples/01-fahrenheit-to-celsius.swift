@@ -8,5 +8,5 @@ let temperatures = [72.0, 68.0, 73.0, 70.0, 75.0]
 
 let celsius = (temperatures - 32.0) * 5.0/9.0
 
-print("Fahrenheit:", temperatures)
-print("Celsius:   ", celsius)
+print("Fahrenheit (°F):", temperatures.round())
+print("Celsius (°C):   ", celsius.round())

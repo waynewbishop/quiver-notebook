@@ -15,7 +15,7 @@ let data: [[Double]] = [
     [9.0, 8.0], [8.5, 8.5], [9.2, 7.8]     // group C
 ]
 
-let model = KMeans.fit(data: data, k: 3, seed: 1)
+let model = KMeans.fit(data: data, k: 3, seed: 42)
 
 // CustomStringConvertible — a one-line summary of the fitted model.
 print(model)
@@ -30,4 +30,4 @@ for cluster in clusters {
 print()
 
 // Individual properties remain available for detailed inspection.
-print("labels:", model.labels)
+print("per-point cluster assignments:", model.labels)

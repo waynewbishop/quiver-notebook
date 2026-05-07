@@ -1,7 +1,8 @@
 // Title: Find Outliers with a Boolean Mask
 //
 // outlierMask returns a [Bool] flagging values more than N standard
-// deviations from the mean. trueIndices converts the mask to positions
+// deviations from the mean — using the same mean() and std() introduced
+// in the previous example. trueIndices converts the mask to positions
 // so the unusual values can be reported with their original index.
 
 let dailySpending = [42.0, 38.0, 45.0, 41.0, 39.0, 250.0, 43.0, 40.0, 37.0, 44.0]
@@ -9,8 +10,7 @@ let dailySpending = [42.0, 38.0, 45.0, 41.0, 39.0, 250.0, 43.0, 40.0, 37.0, 44.0
 let mask = dailySpending.outlierMask(threshold: 2.0)
 let indices = mask.trueIndices
 
-print("values:  ", dailySpending)
-print("mask:    ", mask)
+print("values:             ", dailySpending)
 print("outliers at indices:", indices)
 
 for i in indices {
