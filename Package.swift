@@ -18,6 +18,10 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", "4.3.0" ..< "5.0.0")
     ],
     targets: [
+        .target(
+            name: "Pelican",
+            path: "Sources/Pelican"
+        ),
         .executableTarget(
             name: "App",
             dependencies: [
@@ -25,6 +29,11 @@ let package = Package(
                 .product(name: "Leaf", package: "leaf")
             ],
             path: "Sources/App"
+        ),
+        .testTarget(
+            name: "PelicanTests",
+            dependencies: ["Pelican"],
+            path: "Tests/PelicanTests"
         )
     ]
 )
