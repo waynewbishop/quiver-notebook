@@ -10,10 +10,12 @@ let package = Package(
     ],
     dependencies: [
         // Vapor — HTTP server and routing
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.89.0"),
+        // Pinned below 4.122 to avoid the swift-configuration transitive dependency,
+        // which requires a newer Swift toolchain than some educator machines have.
+        .package(url: "https://github.com/vapor/vapor.git", "4.89.0" ..< "4.122.0"),
 
         // Leaf — HTML template rendering
-        .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0")
+        .package(url: "https://github.com/vapor/leaf.git", "4.3.0" ..< "5.0.0")
     ],
     targets: [
         .executableTarget(
