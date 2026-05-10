@@ -1,4 +1,4 @@
-import Vapor
+import Pelican
 import Foundation
 
 /// Verifies the host machine has macOS 15+ and a working Swift 5.9+ toolchain before the server boots.
@@ -21,7 +21,7 @@ enum ToolchainCheck {
         try checkSwiftToolchain(logger: app.logger)
     }
 
-    private static func checkMacOSVersion(logger: Logger) throws {
+    private static func checkMacOSVersion(logger: PelicanLogger) throws {
         let version = ProcessInfo.processInfo.operatingSystemVersion
         if version.majorVersion < minimumMacOSMajor {
             throw Failure(message: """
@@ -33,7 +33,7 @@ enum ToolchainCheck {
         logger.info("macOS \(version.majorVersion).\(version.minorVersion).\(version.patchVersion) — OK")
     }
 
-    private static func checkSwiftToolchain(logger: Logger) throws {
+    private static func checkSwiftToolchain(logger: PelicanLogger) throws {
         let result: (stdout: String, stderr: String, exitCode: Int32)
         do {
             result = try invokeSwiftVersion()

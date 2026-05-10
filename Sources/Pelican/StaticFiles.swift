@@ -1,6 +1,6 @@
 import Foundation
 
-public struct StaticFiles {
+public struct StaticFiles: Sendable {
     public let publicDirectory: URL
 
     public init(publicDirectory: URL) {

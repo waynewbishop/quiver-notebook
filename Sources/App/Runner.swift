@@ -1,4 +1,4 @@
-import Vapor
+import Pelican
 import Foundation
 
 /// Executes user-submitted Swift code by writing it into the sandbox package and invoking `swift run`.
@@ -24,7 +24,7 @@ enum Runner {
         let wrapped = wrap(userCode: userCode)
         try wrapped.write(to: mainPath, atomically: true, encoding: .utf8)
 
-        return try await invokeSwiftRun(in: sandboxDir, logger: app.logger)
+        return try await invokeSwiftRun(in: sandboxDir)
     }
 
     /// Triggers a build of the sandbox package with a trivial main.swift so Quiver is compiled and cached.
@@ -35,7 +35,7 @@ enum Runner {
         let stub = wrap(userCode: "// pre-warm\nprint(\"Quiver notebook ready.\")\n")
         try stub.write(to: mainPath, atomically: true, encoding: .utf8)
 
-        return try await invokeSwiftRun(in: sandboxDir, logger: app.logger)
+        return try await invokeSwiftRun(in: sandboxDir)
     }
 
     /// Injects `import Quiver`, `import Structures`, Foundation, and a `@main` entry point around user code.
@@ -62,7 +62,7 @@ enum Runner {
     }
 
     /// Shells out to `swift run Runner` in the given directory and captures stdout/stderr.
-    private static func invokeSwiftRun(in directory: URL, logger: Logger) async throws -> Result {
+    private static func invokeSwiftRun(in directory: URL) async throws -> Result {
         let start = Date()
 
         let process = Process()

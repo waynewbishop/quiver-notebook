@@ -1,72 +1,95 @@
-import Vapor
+import Pelican
+import Foundation
 
 /// Registers HTTP routes: the editor page, the run endpoint, and the examples listing.
 func routes(_ app: Application) throws {
-    // Render the notebook editor
-    app.get { req async throws -> View in
-        let version = QuiverVersion.resolved(app: req.application)
-        return try await req.view.render("editor", EditorContext(title: "Quiver Notebook", quiverVersion: version))
+    let directories = AppDirectories()
+    let viewsDirectory = URL(fileURLWithPath: directories.viewsDirectory, isDirectory: true)
+    let publicDirectory = URL(fileURLWithPath: directories.publicDirectory, isDirectory: true)
+    let staticFiles = StaticFiles(publicDirectory: publicDirectory)
+
+    // Render the notebook editor (replaces Leaf with two String replacements).
+    app.get("/") { req in
+        let version = QuiverVersion.resolved(app: app)
+        let templateURL = viewsDirectory.appendingPathComponent("editor.html")
+        let template = try String(contentsOf: templateURL, encoding: .utf8)
+        let html = template
+            .replacingOccurrences(of: "#(title)", with: "Quiver Notebook")
+            .replacingOccurrences(of: "#(quiverVersion)", with: version)
+        return HTTPResponse.html(html)
     }
 
-    // Execute user Swift code in the sandbox package
-    app.post("api", "run") { req async throws -> RunResponse in
-        let payload = try req.content.decode(RunRequest.self)
-        let result = try await Runner.run(userCode: payload.code, app: req.application)
-        return RunResponse(
+    // Execute user Swift code in the sandbox package.
+    app.post("/api/run") { req in
+        let payload = try req.decode(RunRequest.self)
+        let result = try await Runner.run(userCode: payload.code, app: app)
+        let body = RunResponse(
             stdout: result.stdout,
             stderr: result.stderr,
             exitCode: result.exitCode,
             durationMs: result.durationMs
         )
+        return try HTTPResponse.json(body)
     }
 
     // Report the sandbox pre-warm status so the frontend can show a "warming up" banner.
-    app.get("api", "status") { req async throws -> StatusResponse in
+    app.get("/api/status") { req in
         let status = PrewarmStatus.shared
-        return StatusResponse(prewarm: status.state.rawValue, reason: status.reason)
+        let body = StatusResponse(prewarm: status.state.rawValue, reason: status.reason)
+        return try HTTPResponse.json(body)
     }
 
-    // List example snippets discovered in the examples/ directory
-    app.get("api", "examples") { req async throws -> [ExampleSummary] in
-        try Examples.list(app: req.application)
+    // List example snippets discovered in the examples/ directory.
+    app.get("/api/examples") { req in
+        let examples = try Examples.list(app: app)
+        return try HTTPResponse.json(examples)
     }
 
-    // Return the source of a single example by filename
-    app.get("api", "examples", ":name") { req async throws -> ExampleDetail in
-        guard let name = req.parameters.get("name") else {
-            throw Abort(.badRequest, reason: "Missing example name")
+    // Return the source of a single example by filename.
+    app.get("/api/examples/:name") { req in
+        guard let name = req.parameter("name") else {
+            return HTTPResponse.text("Missing example name", status: .badRequest)
         }
-        return try Examples.load(name: name, app: req.application)
+        let detail = try Examples.load(name: name, app: app)
+        return try HTTPResponse.json(detail)
+    }
+
+    // Static files (CSS, JS, favicon, quiver-docs.json) — served from /Public.
+    // FileMiddleware-equivalent: any GET that didn't match a route above falls through here.
+    app.get("/favicon.svg")        { _ in staticFiles.response(forRequestPath: "favicon.svg") ?? .notFound() }
+    app.get("/quiver-docs.json")   { _ in staticFiles.response(forRequestPath: "quiver-docs.json") ?? .notFound() }
+    app.get("/css/:file")          { req in
+        guard let file = req.parameter("file") else { return .notFound() }
+        return staticFiles.response(forRequestPath: "css/\(file)") ?? .notFound()
+    }
+    app.get("/js/:file")           { req in
+        guard let file = req.parameter("file") else { return .notFound() }
+        return staticFiles.response(forRequestPath: "js/\(file)") ?? .notFound()
     }
 }
 
-struct EditorContext: Encodable {
-    let title: String
-    let quiverVersion: String
-}
-
-struct RunRequest: Content {
+struct RunRequest: Codable {
     let code: String
 }
 
-struct RunResponse: Content {
+struct RunResponse: Codable {
     let stdout: String
     let stderr: String
     let exitCode: Int32
     let durationMs: Int
 }
 
-struct StatusResponse: Content {
+struct StatusResponse: Codable {
     let prewarm: String
     let reason: String?
 }
 
-struct ExampleSummary: Content {
+struct ExampleSummary: Codable {
     let name: String
     let title: String
 }
 
-struct ExampleDetail: Content {
+struct ExampleDetail: Codable {
     let name: String
     let title: String
     let code: String

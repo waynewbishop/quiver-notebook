@@ -1,4 +1,4 @@
-import Vapor
+import Pelican
 import Foundation
 
 /// Reads the resolved Quiver version from `sandbox/Package.resolved` so the UI

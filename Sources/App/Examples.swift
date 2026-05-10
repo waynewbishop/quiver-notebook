@@ -1,4 +1,4 @@
-import Vapor
+import Pelican
 import Foundation
 
 /// Reads example `.swift` files from the examples/ directory and serves them to the frontend.
