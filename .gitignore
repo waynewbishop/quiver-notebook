@@ -21,3 +21,7 @@ Public/uploads/
 
 # Internal planning / drafts
 Planning/
+
+# User-dropped example files (folder + README stay tracked)
+examples-custom/*.swift
+!examples-custom/README.md
