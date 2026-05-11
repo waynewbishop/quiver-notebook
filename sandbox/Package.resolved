@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "bishop-algorithms-swift-package",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/waynewbishop/bishop-algorithms-swift-package.git",
-      "state" : {
-        "revision" : "ace400434e42fae58917c713d0c13aec183c89de",
-        "version" : "0.5.2"
-      }
-    },
-    {
       "identity" : "quiver",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/waynewbishop/quiver.git",
