@@ -6,36 +6,81 @@ A browser-based Swift editor for exploring vectors, matrices, statistics, and ma
 
 The Quiver Notebook provides a fast, lightweight environment for learning [Quiver](https://waynewbishop.github.io/quiver/documentation/quiver/) and for prototyping. Established as a standalone web-based IDE, it serves two audiences: students who want to learn statistics, linear algebra, and machine learning in Swift, and developers who want a quick iteration loop for testing and building their own models.
 
-To start, clone the repository and a browser opens with `Quiver`, `Foundation`, and a small library of teaching datasets ready to use. Nothing else needs to be installed beyond the Swift CLI.
+To start, clone the repository and a browser opens with `Quiver`, `Foundation`, and a small library of teaching datasets ready to use. Once the Swift toolchain is installed, no additional binaries are required.
 
 ## Who the Notebook is for
 
 - **iOS and Apple-platform developers** — get a focused editor for prototyping a model or testing an idea. Code that runs here compiles unchanged on any Apple platform, including iOS, watchOS, visionOS, and Vapor server-side targets.
 - **Students** — get a Swift environment that does numerical work without installing additional binaries or downloading datasets separately. One clone and one command produce a working editor with `Quiver`, `Foundation`, and the bundled datasets already wired in.
-- **Educators** — fork the repository, drop custom examples into the `examples/` folder, and share the URL with a class. The bundled stack covers an applied linear algebra unit, an introductory descriptive statistics segment, an applied regression module, and a short supervised learning survey using k-nearest neighbors, k-means, and Naive Bayes.
+- **Educators** — fork the repository, drop custom examples into the `examples-custom/` folder, and share the URL with a class. The bundled stack covers an applied linear algebra unit, an introductory descriptive statistics segment, an applied regression module, and a short supervised learning survey using k-nearest neighbors, k-means, and Naive Bayes.
 
 The Notebook itself runs from the Swift command-line toolchain, so Xcode is not required to use it. Any code written in the editor compiles unchanged inside an Xcode project that depends on Quiver, so a model prototyped here ships in an iOS, watchOS, visionOS, or Vapor app without translation.
 
 ## Quick Start
 
-The Notebook runs on the Swift command-line toolchain. The lightest way to get Swift on macOS is **swiftly**, Swift's official toolchain installer. It runs as a normal Mac installer and does not require Homebrew or Xcode. For a smooth install we recommend having macOS 15 (Sequoia) or newer.
+The Quiver Notebook runs on macOS 15 (Sequoia) or newer with Swift 6.0 or newer.
 
-1. Download the installer: [swiftly-1.1.1.pkg](https://download.swift.org/swiftly/darwin/swiftly-1.1.1.pkg)
-2. Double-click the downloaded file and follow the prompts.
-3. Open a new terminal tab and run:
+### About Homebrew
 
-   ```bash
-   ~/.swiftly/bin/swiftly init
-   ```
+Homebrew is the standard package manager for macOS — a free tool that installs developer software from a single command line. The Quiver Notebook docs recommend Homebrew because it handles three things at once: it downloads the Swift toolchain installer, keeps it updated alongside other developer tools, and makes the whole install reproducible across student machines. Anything Homebrew installs can also be uninstalled cleanly with a single command.
 
-   This downloads the latest Swift toolchain into your home folder and configures your shell.
-4. Confirm the install:
+If a Mac already has Homebrew, skip to step 2.
 
-   ```bash
-   swift --version
-   ```
+### 1. Install Homebrew
 
-Once Swift is in place, clone and run:
+Open the **Terminal** application (in Applications → Utilities, or search "Terminal" in Spotlight). Paste this command and press Return — it downloads and runs the official Homebrew install script from [brew.sh](https://brew.sh):
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+The install takes a few minutes and may ask for the Mac's password. That's expected — Homebrew installs system-wide.
+
+When the install finishes, confirm Homebrew is working by checking its version:
+
+```bash
+brew --version
+```
+
+The terminal should print a line like `Homebrew 4.4.0`. If it says "command not found," the install didn't add Homebrew to the terminal's search path — close the terminal window, open a new one, and try again.
+
+### 2. Install Swiftly through Homebrew
+
+**Swiftly** is Swift's official toolchain installer, maintained by the Swift project itself. We use Homebrew from step 1 to install Swiftly, and Swiftly installs the actual Swift compiler.
+
+Install Swiftly:
+
+```bash
+brew install swiftly
+```
+
+Confirm Homebrew is managing the install:
+
+```bash
+brew list swiftly
+```
+
+This prints the list of files Homebrew installed for the Swiftly package. A successful install shows several file paths. An empty result or an error means the install didn't complete.
+
+### 3. Install the Swift toolchain
+
+With swiftly installed, run it once to download and configure the Swift compiler itself:
+
+```bash
+swiftly init
+```
+
+The download takes a few minutes. When it finishes, confirm Swift is available:
+
+```bash
+swift --version
+```
+
+The terminal should print a Swift version like `Swift version 6.0.2`. If it says "command not found," close the terminal window and open a new one — the install only takes effect in new terminal sessions.
+
+### 4. Clone and run the Notebook
+
+The Notebook lives in its own GitHub repository. Clone a copy to the Mac and start it:
 
 ```bash
 git clone https://github.com/waynewbishop/quiver-notebook
@@ -43,7 +88,20 @@ cd quiver-notebook
 swift run
 ```
 
-Then open `http://localhost:8080` in a browser. The first launch compiles the libraries and the editor, which takes a minute or two on most machines. Every launch after that starts in seconds.
+The first launch takes a minute or two while Swift compiles the Notebook and pre-warms the snippet sandbox. The sandbox is a separate Swift package that depends on Quiver, so the first launch downloads and compiles Quiver from GitHub. Subsequent runs use the cached build and start in seconds. When the server is ready, the terminal prints a banner:
+
+```
+==========================================================
+  Quiver Notebook is running.
+
+  Open this URL in your browser:
+  http://localhost:8080
+
+  If port 8080 is in use, restart with: PORT=8090 swift run
+==========================================================
+```
+
+Open the URL in any browser to start writing snippets. Press `Ctrl+C` in the terminal to stop the server.
 
 The local server binds to `127.0.0.1` by design and refuses to start if the address is changed. The Notebook is reachable only from the same machine that launched it.
 
@@ -55,7 +113,7 @@ The full menu of datasets, the loading API, and the categorical-encoding behavio
 
 ## Bundled examples
 
-The left sidebar of the editor lists ready-to-run snippets, ordered from simplest to most complex. Each example loads into the editor with one click. Educators extend the sidebar by dropping their own `.swift` files into the `examples/` folder — there is no plugin system, no manifest, and no rebuild required. Refresh the browser tab and the new entries appear.
+The left sidebar of the editor lists ready-to-run snippets, ordered from simplest to most complex. Each example loads into the editor with one click. The Notebook reads two folders: `examples/` for the bundled snippets shipped with the repository, and `examples-custom/` for files added by an instructor. Drop new `.swift` files into `examples-custom/` — there is no plugin system, no manifest, and no rebuild required. Restart `swift run` to pick up newly added files. Custom entries appear in the sidebar after the bundled set.
 
 Each example file begins with a `// Title:` comment on the first line, and the text after the colon becomes the sidebar label.
 

@@ -13,12 +13,15 @@ let xs = [1.0, 2.0, 3.0]
 print(xs.reduce(0, +))
 ```
 
-Custom examples are listed after the bundled examples and have
-their title prefixed with `Custom — ` so it's clear which folder
-they came from.
+Custom examples are listed after the bundled examples and appear
+in the sidebar with the title from their `// Title:` comment, the
+same as bundled examples.
 
 Files are read fresh each time the Notebook starts. Restart
 `swift run` to pick up newly added files.
 
-This folder is ignored by Git (other than this README), so files
-you drop here stay on your machine and never get committed.
+Files dropped here can be committed to a fork so that students or
+collaborators who clone the fork see the same custom examples.
+Files in the bundled `examples/` folder come from the upstream
+repository; this folder is the place to add course-specific or
+project-specific snippets without conflicting with upstream updates.

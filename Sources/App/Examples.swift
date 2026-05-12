@@ -16,7 +16,7 @@ enum Examples {
         case custom
     }
 
-    /// Lists bundled examples first, then custom examples. Custom entries have their title prefixed with "Custom — ".
+    /// Lists bundled examples first, then custom examples. Both use the same title format.
     static func list(app: Application) throws -> [ExampleSummary] {
         let bundled = try summaries(in: bundledDirectory(app: app), source: .bundled)
         let custom = (try? summaries(in: customDirectory(app: app), source: .custom)) ?? []
@@ -38,7 +38,7 @@ enum Examples {
         throw ExamplesError.fileNotFound(name)
     }
 
-    /// Returns example summaries for one directory, applying the source-specific title decoration.
+    /// Returns example summaries for one directory.
     private static func summaries(in dir: URL, source: Source) throws -> [ExampleSummary] {
         guard FileManager.default.fileExists(atPath: dir.path) else { return [] }
 
@@ -49,8 +49,7 @@ enum Examples {
         return try files.map { filename in
             let url = dir.appendingPathComponent(filename)
             let contents = try String(contentsOf: url, encoding: .utf8)
-            let baseTitle = extractTitle(from: contents) ?? defaultTitle(from: filename)
-            let title = (source == .custom) ? "Custom — \(baseTitle)" : baseTitle
+            let title = extractTitle(from: contents) ?? defaultTitle(from: filename)
             return ExampleSummary(name: filename, title: title)
         }
     }
@@ -64,8 +63,7 @@ enum Examples {
     /// Builds an ExampleDetail by reading the file and extracting its title.
     private static func makeDetail(name: String, url: URL, source: Source) throws -> ExampleDetail {
         let contents = try String(contentsOf: url, encoding: .utf8)
-        let baseTitle = extractTitle(from: contents) ?? defaultTitle(from: name)
-        let title = (source == .custom) ? "Custom — \(baseTitle)" : baseTitle
+        let title = extractTitle(from: contents) ?? defaultTitle(from: name)
         return ExampleDetail(name: name, title: title, code: contents)
     }
 

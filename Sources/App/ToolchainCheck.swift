@@ -1,12 +1,12 @@
 import Pelican
 import Foundation
 
-/// Verifies the host machine has macOS 15+ and a working Swift 5.9+ toolchain before the server boots.
+/// Verifies the host machine has macOS 15+ and a working Swift 6.0+ toolchain before the server boots.
 /// Throws a `ToolchainCheck.Failure` with a remediation message if any check fails.
 enum ToolchainCheck {
 
-    static let minimumSwiftMajor = 5
-    static let minimumSwiftMinor = 9
+    static let minimumSwiftMajor = 6
+    static let minimumSwiftMinor = 0
     static let minimumMacOSMajor = 15
     static let setupDocsURL = "https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook"
 
@@ -40,8 +40,9 @@ enum ToolchainCheck {
         } catch {
             throw Failure(message: """
                 Quiver Notebook could not invoke the Swift toolchain: \(error.localizedDescription).
-                Install Swift via swiftly: https://download.swift.org/swiftly/darwin/swiftly-1.1.1.pkg
-                Then run: ~/.swiftly/bin/swiftly init
+                Install Swift via Homebrew and swiftly:
+                  brew install swiftly
+                  swiftly init
                 See the Quiver Notebook setup guide: \(setupDocsURL)
                 """)
         }
@@ -51,8 +52,9 @@ enum ToolchainCheck {
         if combined.contains("xcrun: error: invalid active developer path") {
             throw Failure(message: """
                 Xcode command-line tools are not installed (or the active developer path is broken).
-                The lightest fix is to install swiftly instead: https://download.swift.org/swiftly/darwin/swiftly-1.1.1.pkg
-                Then run: ~/.swiftly/bin/swiftly init
+                The lightest fix is to install swiftly via Homebrew:
+                  brew install swiftly
+                  swiftly init
                 See the Quiver Notebook setup guide: \(setupDocsURL)
                 """)
         }
@@ -85,7 +87,7 @@ enum ToolchainCheck {
             throw Failure(message: """
                 Quiver Notebook requires Swift \(minimumSwiftMajor).\(minimumSwiftMinor) or newer.
                 Detected: Swift \(major).\(minor).
-                Upgrade with swiftly: ~/.swiftly/bin/swiftly install latest
+                Upgrade with swiftly: swiftly install latest
                 See the Quiver Notebook setup guide: \(setupDocsURL)
                 """)
         }

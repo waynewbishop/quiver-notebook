@@ -50,7 +50,7 @@ enum Runner {
         """
     }
 
-    /// Locates the sandbox/ directory relative to the Vapor working directory.
+    /// Locates the sandbox/ directory relative to the application's working directory.
     private static func sandboxDirectory(app: Application) throws -> URL {
         let workingDir = app.directory.workingDirectory
         let url = URL(fileURLWithPath: workingDir).appendingPathComponent("sandbox", isDirectory: true)
