@@ -1,10 +1,12 @@
 // Title: Summary Statistics on a Real Dataset
 //
-// One call gives the full statistical profile of every numeric column
-// in a real dataset. The 1990 California census shipped 20,640 housing
-// districts; we get count, mean, std, min, and max for all of it
-// without writing a loop. Quiver's std is population (ddof = 0); pass
-// ddof: 1 on a single column when sample std is what is needed.
+// summary() returns a typed PanelSummary — count, mean, std, min, and
+// max for every numeric column — in one call. CustomStringConvertible
+// formats it as a labeled table.
+//
+// The 1990 California census shipped 20,640 housing districts. The
+// "std" column is the sample standard deviation (ddof = 1), matching
+// the default for standardDeviation() and variance() on a single column.
 
 guard let housing = Dataset.californiaHousing else {
     exit(0)

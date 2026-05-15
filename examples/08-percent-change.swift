@@ -2,16 +2,33 @@
 //
 // percentChange computes period-over-period change on a time series.
 // Default lag is 1 (e.g. day-over-day). Use lag: 7 for week-over-week,
-// lag: 12 for year-over-year on monthly data. rollingMean smooths the
+// lag: 365 for year-over-year on daily data. rollingMean smooths the
 // same series over a sliding window so trend reads through the noise.
+//
+// The bikeSharing dataset is 731 daily rider counts from a real
+// bike-share system — exactly the shape of an on-device time series
+// an app would produce from its own usage data.
 
-let monthlyRevenue = [100.0, 105.0, 102.0, 110.0, 115.0, 108.0]
+guard let bikes = Dataset.bikeSharing,
+      let cnt = bikes["cnt"] else {
+    exit(0)
+}
 
-let monthOverMonth = monthlyRevenue.percentChange()
-print("month-over-month %:    ", monthOverMonth.map { String(format: "%+.1f", $0) })
+// First three weeks of daily counts.
+let firstThreeWeeks = Array(cnt.prefix(21))
+print("first 21 daily counts:", firstThreeWeeks.map { Int($0) })
+print()
 
-let quarterOverQuarter = monthlyRevenue.percentChange(lag: 3)
-print("quarter-over-quarter %:", quarterOverQuarter.map { String(format: "%+.1f", $0) })
+// Day-over-day change in ridership.
+let dayOverDay = firstThreeWeeks.percentChange()
+print("day-over-day %:", dayOverDay.map { String(format: "%+.1f", $0) })
+print()
 
-let smoothed = monthlyRevenue.rollingMean(window: 3)
-print("3-month rolling mean:  ", smoothed.map { String(format: "%.1f", $0) })
+// Week-over-week — same shape, different lag.
+let weekOverWeek = firstThreeWeeks.percentChange(lag: 7)
+print("week-over-week %:", weekOverWeek.map { String(format: "%+.1f", $0) })
+print()
+
+// A 7-day rolling mean smooths the weekday/weekend swing.
+let weeklyTrend = firstThreeWeeks.rollingMean(window: 7)
+print("7-day rolling mean:", weeklyTrend.map { String(format: "%.0f", $0) })

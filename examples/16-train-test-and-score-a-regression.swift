@@ -1,4 +1,4 @@
-// Title: Train/Test Split and Linear Regression
+// Title: Train Test and Score a Regression
 //
 // Fitting a model on the data you already have overstates how well it
 // will do on new data. The standard fix is to hold out a random slice
@@ -9,6 +9,10 @@
 // — the same rows go into the training Panel and the same rows into the
 // test Panel. Passing a seed makes the split reproducible, which matters
 // for grading, debugging, and any reporting of results.
+//
+// summary() returns a typed RegressionSummary with coefficients,
+// standard errors, t-statistics, p-values, and confidence intervals —
+// the inference surface that says whether a slope is real or noise.
 
 // House size (sq ft) and price (USD thousands).
 let data = Panel([
@@ -30,9 +34,15 @@ let testTargets   = test["price"]
 
 let model = try LinearRegression.fit(features: trainFeatures, targets: trainTargets)
 
+// Score on held-out test data — this is the honest measure of generalization.
 let predictions = model.predict(testFeatures)
 let r2 = predictions.rSquared(actual: testTargets)
 
 print("R² on held-out test set:", String(format: "%.3f", r2))
 print()
-print(model)
+
+// Inference on the training data — RegressionSummary tells us whether
+// the slope is statistically distinguishable from zero, not just whether
+// the fit is good.
+let report = try model.summary(features: trainFeatures, targets: trainTargets)
+print(report)

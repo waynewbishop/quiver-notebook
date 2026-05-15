@@ -1,10 +1,9 @@
-// Title: Distribution: Histogram and Quartiles
+// Title: Histogram and Quartiles for Distribution Shape
 //
 // Mean and median tell us where data sits. Histogram and quartiles tell
 // us how it is spread. histogram() returns equal-width bins as
 // (midpoint, count) tuples — chart-ready and scan-ready. quartiles()
-// returns the five-number summary, and percentile() returns the value
-// at any cut point we choose.
+// returns the typed Quartiles struct: the five-number summary plus IQR.
 
 let responseTimes = [
     12.0, 15.0, 11.0, 18.0, 14.0, 16.0, 13.0, 17.0, 19.0, 22.0,
@@ -19,8 +18,12 @@ for bin in responseTimes.histogram(bins: 5) {
 }
 print()
 
+// Quartiles struct prints cleanly. q.iqr is the spread of the middle
+// 50% — the input to the IQR outlier rule in the next example.
 if let q = responseTimes.quartiles() {
     print(q)
+    print()
+    print("IQR (Q3 − Q1):", String(format: "%.2f", q.iqr))
 }
 print()
 
