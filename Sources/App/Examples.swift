@@ -50,7 +50,7 @@ enum Examples {
             let url = dir.appendingPathComponent(filename)
             let contents = try String(contentsOf: url, encoding: .utf8)
             let title = extractTitle(from: contents) ?? defaultTitle(from: filename)
-            return ExampleSummary(name: filename, title: title)
+            return ExampleSummary(name: filename, title: title, source: source.rawValue)
         }
     }
 
@@ -64,7 +64,7 @@ enum Examples {
     private static func makeDetail(name: String, url: URL, source: Source) throws -> ExampleDetail {
         let contents = try String(contentsOf: url, encoding: .utf8)
         let title = extractTitle(from: contents) ?? defaultTitle(from: name)
-        return ExampleDetail(name: name, title: title, code: contents)
+        return ExampleDetail(name: name, title: title, code: contents, source: source.rawValue)
     }
 
     /// Locates the bundled examples/ directory shipped with the repo.

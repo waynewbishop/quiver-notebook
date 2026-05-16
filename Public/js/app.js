@@ -829,6 +829,43 @@ function setDurationPill(text, kind = '') {
 
 /* --- Examples sidebar --- */
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// Paper icon for bundled examples, pencil icon for files dropped in examples-custom/.
+function makeSourceIcon(source) {
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('class', `example-icon example-icon-${source}`);
+    svg.setAttribute('viewBox', '0 0 16 16');
+    svg.setAttribute('width', '14');
+    svg.setAttribute('height', '14');
+    svg.setAttribute('aria-hidden', 'true');
+
+    if (source === 'custom') {
+        // square.and.pencil — rounded square with a pencil rising out of the top-right corner.
+        const square = document.createElementNS(SVG_NS, 'path');
+        square.setAttribute('d', 'M3 3.25A1.25 1.25 0 0 1 4.25 2H8a.5.5 0 0 1 0 1H4.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V8a.5.5 0 0 1 1 0v3.75A1.25 1.25 0 0 1 12.75 13h-8.5A1.25 1.25 0 0 1 3 11.75v-8.5z');
+        svg.appendChild(square);
+
+        const pencil = document.createElementNS(SVG_NS, 'path');
+        pencil.setAttribute('d', 'M12.1 1.6a1.4 1.4 0 0 1 2 0l.3.3a1.4 1.4 0 0 1 0 2L8.6 9.7a.7.7 0 0 1-.32.18l-2 .5a.4.4 0 0 1-.49-.49l.5-2a.7.7 0 0 1 .18-.32L12.1 1.6zm1.3.7a.4.4 0 0 0-.58 0L12.2 2.9l.9.9.62-.62a.4.4 0 0 0 0-.58l-.32-.3zM12.4 4.5l-.9-.9-4.3 4.3-.27 1.07 1.07-.27 4.4-4.2z');
+        svg.appendChild(pencil);
+    } else {
+        // book.closed — rounded-corner book with a spine bar and a single bookmark accent.
+        const cover = document.createElementNS(SVG_NS, 'path');
+        cover.setAttribute('d', 'M4.5 2h7A1.5 1.5 0 0 1 13 3.5v9A1.5 1.5 0 0 1 11.5 14h-7A1.5 1.5 0 0 1 3 12.5v-9A1.5 1.5 0 0 1 4.5 2zm0 1a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-7z');
+        svg.appendChild(cover);
+
+        const spine = document.createElementNS(SVG_NS, 'path');
+        spine.setAttribute('d', 'M3.5 4.2h9v.8h-9v-.8z');
+        svg.appendChild(spine);
+
+        const bookmark = document.createElementNS(SVG_NS, 'path');
+        bookmark.setAttribute('d', 'M7.5 2.5h1v3l-.5-.4-.5.4v-3z');
+        svg.appendChild(bookmark);
+    }
+    return svg;
+}
+
 async function loadExamples() {
     const list = document.getElementById('examples-list');
     try {
@@ -844,9 +881,14 @@ async function loadExamples() {
         list.innerHTML = '';
         examples.forEach(ex => {
             const li = document.createElement('li');
-            li.textContent = ex.title;
             li.dataset.name = ex.name;
             li.dataset.title = ex.title.toLowerCase();
+            li.dataset.source = ex.source || 'bundled';
+            li.appendChild(makeSourceIcon(li.dataset.source));
+            const label = document.createElement('span');
+            label.className = 'example-title';
+            label.textContent = ex.title;
+            li.appendChild(label);
             li.addEventListener('click', () => loadExample(ex.name, li));
             list.appendChild(li);
         });

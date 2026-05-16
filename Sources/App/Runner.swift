@@ -61,13 +61,21 @@ enum Runner {
     }
 
     /// Shells out to `swift run Runner` in the given directory and captures stdout/stderr.
+    /// Suppresses build progress lines by default; set `QUIVER_NOTEBOOK_DEBUG=1` to see them.
     private static func invokeSwiftRun(in directory: URL) async throws -> Result {
         let start = Date()
+
+        let debugEnabled = ProcessInfo.processInfo.environment["QUIVER_NOTEBOOK_DEBUG"] == "1"
+        var arguments = ["swift", "run"]
+        if !debugEnabled {
+            arguments.append("--quiet")
+        }
+        arguments.append("Runner")
 
         let process = Process()
         process.currentDirectoryURL = directory
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swift", "run", "Runner"]
+        process.arguments = arguments
 
         let stdoutPipe = Pipe()
         let stderrPipe = Pipe()

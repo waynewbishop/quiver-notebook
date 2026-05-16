@@ -413,6 +413,9 @@ body.resizing-horizontal {
 }
 
 .examples-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 8px 10px;
     margin: 0 -10px;
     border-radius: 4px;
@@ -420,6 +423,28 @@ body.resizing-horizontal {
     font-size: 14px;
     color: var(--text);
     transition: background 0.08s;
+}
+
+.examples-list .example-icon {
+    flex: 0 0 auto;
+    fill: currentColor;
+    color: var(--text-muted);
+}
+
+.examples-list .example-icon-custom {
+    color: var(--accent);
+}
+
+.examples-list li.active .example-icon {
+    color: white;
+}
+
+.examples-list .example-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .examples-list li:hover {

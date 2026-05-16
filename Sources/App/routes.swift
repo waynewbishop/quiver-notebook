@@ -87,10 +87,12 @@ struct StatusResponse: Codable {
 struct ExampleSummary: Codable {
     let name: String
     let title: String
+    let source: String
 }
 
 struct ExampleDetail: Codable {
     let name: String
     let title: String
     let code: String
+    let source: String
 }

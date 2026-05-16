@@ -2,7 +2,13 @@ import Quiver
 import Foundation
 
 // --- user code begins ---
-// pre-warm
-print("Quiver notebook ready.")
 
+guard let iris = Dataset.iris else {
+    exit(0)
+}
+
+let panel = iris.toPanel()
+print(panel.head(n: 3))
+print(iris.description)
+print("shape:", panel.shape)
 // --- user code ends ---
