@@ -17,9 +17,14 @@ var rng = SeededRandomNumberGenerator(seed: 42)
 // Build a skewed population: rate = 0.5, so the population mean is 2.0.
 let population = [Double].randomExponential(10_000, rate: 0.5, using: &rng)
 
+guard let popMean = population.mean(),
+      let popStd = population.standardDeviation() else {
+    exit(0)
+}
+
 print("population:")
-print("  mean:", String(format: "%.3f", population.mean() ?? 0), "(theoretical: 2.000)")
-print("  std: ", String(format: "%.3f", population.standardDeviation() ?? 0))
+print("  mean:", String(format: "%.3f", popMean), "(theoretical: 2.000)")
+print("  std: ", String(format: "%.3f", popStd))
 print()
 print("  shape — 5-bin histogram:")
 for bin in population.histogram(bins: 5) {
@@ -35,9 +40,14 @@ let sampleMeans = population.samplingDistributionOfMean(
     seed: 42
 )
 
+guard let meansMean = sampleMeans.mean(),
+      let meansStd = sampleMeans.standardDeviation() else {
+    exit(0)
+}
+
 print("distribution of 1,000 sample means (n = 50 each):")
-print("  mean:", String(format: "%.3f", sampleMeans.mean() ?? 0), "(matches population mean)")
-print("  std: ", String(format: "%.3f", sampleMeans.standardDeviation() ?? 0), "(the standard error)")
+print("  mean:", String(format: "%.3f", meansMean), "(matches population mean)")
+print("  std: ", String(format: "%.3f", meansStd), "(the standard error)")
 print()
 print("  shape — 5-bin histogram:")
 for bin in sampleMeans.histogram(bins: 5) {

@@ -20,13 +20,15 @@ print()
 
 // Quartiles struct prints cleanly. q.iqr is the spread of the middle
 // 50% — the input to the IQR outlier rule in the next example.
-if let q = responseTimes.quartiles() {
-    print(q)
-    print()
-    print("IQR (Q3 − Q1):", String(format: "%.2f", q.iqr))
+guard let q = responseTimes.quartiles(),
+      let p90 = responseTimes.percentile(90.0) else {
+    exit(0)
 }
+
+print(q)
+print()
+print("IQR (Q3 − Q1):", String(format: "%.2f", q.iqr))
 print()
 
 // percentile() answers "the slowest 10% of requests took at least how long?"
-let p90 = responseTimes.percentile(90.0) ?? 0
 print("90th percentile:", String(format: "%.1f", p90), "ms")

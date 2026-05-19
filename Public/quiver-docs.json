@@ -951,6 +951,14 @@
     "signature" : "static func sineWave(frequency: Double, sampleRate: Double, count: Int, amplitude: Double = 1.0, offset: Double = 0.0) -> [Double]",
     "summary" : "Generates a sine wave signal at a given frequency and sample rate."
   },
+  "simulatedRun" : {
+    "signature" : "public static var simulatedRun: TabularDataset?",
+    "summary" : "60 rows, 6 columns. Time series at 1 Hz. No label column. A synthetic 60-second tempo run with heart rate, pace, cadence, power, and altitude — the decoupling signal for effort classification. Pair with `simulatedRunAccel` for spectral analysis."
+  },
+  "simulatedRunAccel" : {
+    "signature" : "public static var simulatedRunAccel: TabularDataset?",
+    "summary" : "3,000 rows, 2 columns. Time series at 50 Hz. No label column. Wrist accelerometer magnitude for the same 60-second tempo run as `simulatedRun`. Dominant frequency ≈2.83 Hz (cadence). For spectral-analysis demos."
+  },
   "size" : {
     "signature" : "var size: Int { get }",
     "summary" : "Returns the total number of elements across all dimensions."

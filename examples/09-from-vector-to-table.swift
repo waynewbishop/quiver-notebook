@@ -34,5 +34,9 @@ print()
 
 // The same vector statistics still work on the raw array. The lift is
 // view-only: identical numbers, two API surfaces.
-print("vector mean: ", String(format: "%.2f", reactionTimes.mean() ?? 0))
-print("vector std:  ", String(format: "%.2f", reactionTimes.standardDeviation() ?? 0))
+guard let mean = reactionTimes.mean(),
+      let std = reactionTimes.standardDeviation() else {
+    exit(0)
+}
+print("vector mean: ", String(format: "%.2f", mean))
+print("vector std:  ", String(format: "%.2f", std))

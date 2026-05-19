@@ -30,6 +30,18 @@
     "csvFile": "student-performance.csv"
   },
   {
+    "name": "simulatedRun",
+    "kind": "time_series",
+    "description": "60 seconds of a synthetic tempo run for a moderately trained 70 kg runner, sampled at 1 Hz. Six columns: time (s), heartRate (BPM), pace (m/s), cadence (spm), power (W), altitude (m). Heart rate drifts +6 BPM across the minute while pace and power hold flat — the load-bearing physiological signal for multi-signal effort classification. Generated deterministically from seed 42 against a published physiological constraint spec; see CLEANING.md for the generative model.",
+    "csvFile": "simulated-run.csv"
+  },
+  {
+    "name": "simulatedRunAccel",
+    "kind": "time_series",
+    "description": "Wrist accelerometer magnitude in m/s² for the same 60-second tempo run as `simulatedRun`, sampled at 50 Hz (3,000 samples). Two columns: time (s) and magnitude (m/s²). Built from a footstrike fundamental at 2.833 Hz, a two-legged-gait harmonic at 5.667 Hz, and Gaussian noise around a 1g baseline. Generated deterministically from seed 42; the two simulated-run datasets describe the same underlying event at different sample rates.",
+    "csvFile": "simulated-run-accel.csv"
+  },
+  {
     "name": "glove50d",
     "kind": "embeddings",
     "description": "5,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word` plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 5,000 frequency-sorted lines; no other modifications. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift.",

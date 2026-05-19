@@ -20,7 +20,9 @@ let panel = titanic.toPanel()
 
 // Drop Age and Embarked because they contain missing values that would
 // derail this example's evaluation focus. The five features below have
-// no NaNs and capture most of the survival signal.
+// no NaNs and are a reasonable subset for this evaluation example.
+// (Age is a strong survival predictor in its own right; Quiver's
+// imputation tools are demonstrated separately.)
 let featureColumns = ["Pclass", "Sex", "SibSp", "Parch", "Fare"]
 
 let (train, test) = panel.trainTestSplit(testRatio: 0.3, seed: 42)
@@ -38,11 +40,8 @@ let cm = predictions.confusionMatrix(actual: testLabels)
 print(cm)
 print()
 
-print("precision:", cm.precision.map { String(format: "%.3f", $0) } ?? "undefined")
-print("recall:   ", cm.recall.map { String(format: "%.3f", $0) } ?? "undefined")
-print("f1Score:  ", cm.f1Score.map { String(format: "%.3f", $0) } ?? "undefined")
-print()
-
 // classificationReport returns a typed ClassificationReport — per-class
-// metrics, accuracy, and macro/weighted averages in one structured value.
+// precision, recall, F1, support, accuracy, and macro/weighted averages
+// in one structured value. The same numbers a confusion matrix carries,
+// presented in the form an analyst would write by hand.
 print(predictions.classificationReport(actual: testLabels))
