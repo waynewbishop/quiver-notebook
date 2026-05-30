@@ -134,12 +134,10 @@ internal enum DatasetLoader {
             let rankColumn = columnsByName["rank"],
             rankColumn.wrappedElementType == Int.self,
             let magnitudeColumn = columnsByName["magnitude"],
-            magnitudeColumn.wrappedElementType == Double.self,
-            let nearestColumn = columnsByName["nearest"],
-            nearestColumn.wrappedElementType == String.self
+            magnitudeColumn.wrappedElementType == Double.self
         else {
             FileHandle.standardError.write(Data(
-                "DatasetLoader: \(csvURL.lastPathComponent) is missing one of the required embedding columns (word, rank, magnitude, nearest)\n".utf8
+                "DatasetLoader: \(csvURL.lastPathComponent) is missing one of the required embedding columns (word, rank, magnitude)\n".utf8
             ))
             return nil
         }
@@ -161,7 +159,6 @@ internal enum DatasetLoader {
         let words = wordColumn.assumingType(String.self)
         let ranks = rankColumn.assumingType(Int.self)
         let magnitudes = magnitudeColumn.assumingType(Double.self)
-        let nearests = nearestColumn.assumingType(String.self)
 
         // Pre-collect each dim column as a Double slice so the per-row build
         // is a fast O(rows × dims) loop without re-indexing TabularData.
@@ -182,7 +179,6 @@ internal enum DatasetLoader {
         var vectors: [String: [Double]] = [:]
         var rankByWord: [String: Int] = [:]
         var magnitudeByWord: [String: Double] = [:]
-        var nearestByWord: [String: String] = [:]
         let rowCount = words.count
         vectors.reserveCapacity(rowCount)
 
@@ -198,7 +194,6 @@ internal enum DatasetLoader {
             vectors[word] = vector
             if let r = ranks[row] { rankByWord[word] = r }
             if let m = magnitudes[row] { magnitudeByWord[word] = m }
-            if let n = nearests[row] { nearestByWord[word] = n }
         }
 
         guard !vectors.isEmpty else {
@@ -225,8 +220,7 @@ internal enum DatasetLoader {
             vocabulary: vocabulary,
             vectors: vectors,
             ranks: rankByWord,
-            magnitudes: magnitudeByWord,
-            nearestWords: nearestByWord
+            magnitudes: magnitudeByWord
         )
     }
 }

@@ -111,9 +111,9 @@ extension Dataset {
 
     // MARK: - Bundled embeddings dataset
 
-    /// 5,000 words, 50-dimensional vectors. Lookup column: `word`.
+    /// 25,000 words, 50-dimensional vectors. Lookup column: `word`.
     ///
-    /// The 5,000 most-frequent English words from Stanford's GloVe 6B-token
+    /// The 25,000 most-frequent English words from Stanford's GloVe 6B-token
     /// corpus, each represented as a 50-dimensional vector. Useful for
     /// teaching cosine similarity, semantic search, and word analogies
     /// (`king − man + woman ≈ queen`) without bringing in an external
@@ -122,7 +122,7 @@ extension Dataset {
         DatasetLoader.loadEmbeddings(
             name: "glove50d",
             csvURL: bundledURL(for: "glove-50d.csv"),
-            description: "5,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word`, `rank`, `magnitude`, `nearest`, plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 5,000 frequency-sorted lines. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift."
+            description: "25,000 most-frequent English words from Stanford's GloVe 6B-token corpus, each represented as a 50-dimensional vector. Columns are `word`, `rank`, `magnitude`, plus `dim_01` through `dim_50`. Sliced from the upstream `glove.6B.50d.txt` by taking the first 25,000 frequency-sorted lines. Nearest-neighbour and analogy queries are computed on demand from the vectors. Useful for teaching cosine similarity, semantic search, and word analogies in pure Swift."
         )
     }
 

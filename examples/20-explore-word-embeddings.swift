@@ -6,7 +6,7 @@
 // usual vector tools — cosine similarity, addition, subtraction —
 // answer questions about meaning.
 //
-// Dataset.glove50d ships the 5,000 most-frequent English words from
+// Dataset.glove50d ships the 25,000 most-frequent English words from
 // Stanford's GloVe corpus, each a 50-dimensional vector, bundled with
 // the Notebook. No download, no setup. The same Quiver primitives that
 // score user-similarity in a recommender or align time-series readings

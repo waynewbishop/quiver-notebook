@@ -15,7 +15,7 @@ public enum Dataset {}
 /// the original ordered class names are stashed in `categoricalMappings` so
 /// students can decode predictions back to label strings. Missing values are
 /// preserved as `Double.nan` rather than mean-imputed.
-public struct TabularDataset: Sendable {
+public struct TabularDataset: CustomStringConvertible, Sendable {
     /// Short identifier — `"iris"`, `"titanic"`, etc., or for `Dataset.load(path:)`,
     /// the input filename without its extension.
     public let name: String
@@ -24,6 +24,11 @@ public struct TabularDataset: Sendable {
     /// any cleaning that was applied. For example, the bundled `iris` dataset's
     /// description records that it holds 150 rows across three species, four
     /// numeric features, and was originally published by R. A. Fisher in 1936.
+    ///
+    /// This is the value `print(dataset)` shows (`EmbeddingsDataset` and this
+    /// type conform to `CustomStringConvertible` via this property), so a print
+    /// surfaces the dataset's metadata rather than dumping its backing store.
+    /// Use `shape`, `count`, and `head()` to inspect structure and rows.
     public let description: String
 
     /// Maps an original column name to the ordered class names produced when
@@ -111,12 +116,17 @@ public struct TabularDataset: Sendable {
 /// never integer-encoded. Use the subscript to pull a vector
 /// (`glove["king"]`), `nearest(to:k:)` for similarity search, and
 /// `analogy(_:_:_:k:)` for the classic king − man + woman ≈ queen pattern.
-public struct EmbeddingsDataset: Sendable {
+public struct EmbeddingsDataset: CustomStringConvertible, Sendable {
     /// Short identifier — for example, `"glove50d"`.
     public let name: String
 
     /// Human-readable summary of the dataset's origin, vocabulary size, and
     /// vector dimensionality.
+    ///
+    /// This is the value `print(dataset)` shows (the type conforms to
+    /// `CustomStringConvertible` via this property), so a print surfaces the
+    /// dataset's metadata rather than dumping its backing vectors. Use `shape`,
+    /// `count`, and `head()` to inspect structure and rows.
     public let description: String
 
     /// Number of components in each embedding vector — `50` for the bundled
@@ -130,7 +140,19 @@ public struct EmbeddingsDataset: Sendable {
     private let vectors: [String: [Double]]
     private let ranks: [String: Int]
     private let magnitudes: [String: Double]
-    private let nearestWords: [String: String]
+
+    /// Number of words in the dataset. Mirrors `TabularDataset.count` —
+    /// `glove.count` reads as "how many words do I have?".
+    public var count: Int {
+        vocabulary.count
+    }
+
+    /// Vocabulary size and vector width as a tuple, parallel to
+    /// `TabularDataset.shape`. Labelled `(words, dimensions)` because an
+    /// embedding set is a word-to-vector lookup, not a row/column table.
+    public var shape: (words: Int, dimensions: Int) {
+        (words: vocabulary.count, dimensions: dimensions)
+    }
 
     internal init(
         name: String,
@@ -139,8 +161,7 @@ public struct EmbeddingsDataset: Sendable {
         vocabulary: [String],
         vectors: [String: [Double]],
         ranks: [String: Int],
-        magnitudes: [String: Double],
-        nearestWords: [String: String]
+        magnitudes: [String: Double]
     ) {
         self.name = name
         self.description = description
@@ -149,7 +170,6 @@ public struct EmbeddingsDataset: Sendable {
         self.vectors = vectors
         self.ranks = ranks
         self.magnitudes = magnitudes
-        self.nearestWords = nearestWords
     }
 
     /// Returns the embedding vector for a word, or `nil` if the word is not
@@ -221,17 +241,21 @@ public struct EmbeddingsDataset: Sendable {
         magnitudes[word]
     }
 
-    /// Returns the precomputed nearest neighbour for a word — the closest
-    /// other word by cosine similarity, computed once at load time. Returns
-    /// `nil` if the word is not in the vocabulary.
+    /// Returns the nearest neighbour for a word — the closest other word by
+    /// cosine similarity — computed on demand from the loaded vectors. Returns
+    /// `nil` if the word is not in the vocabulary. This is a thin convenience
+    /// over `nearest(to:k:)` with `k == 1`; it does a single O(n) scan per
+    /// call rather than reading a precomputed column.
     public func nearestWord(of word: String) -> String? {
-        nearestWords[word]
+        nearest(to: word, k: 1).first?.word
     }
 
     /// Returns the first rows of the dataset as a formatted table. The
     /// leftmost column shows the word itself; remaining columns show rank,
-    /// magnitude, nearest word, and the 50 embedding dimensions rounded to
-    /// two decimal places. Rows are ordered by rank ascending.
+    /// magnitude, and the 50 embedding dimensions rounded to two decimal
+    /// places. Rows are ordered by rank ascending. Nearest-neighbour lookups
+    /// are not shown here — a preview stays a cheap dictionary read; use
+    /// `nearest(to:k:)` or `nearestWord(of:)` for similarity queries.
     public func head(n: Int = 10) -> String {
         let displayRows = Swift.min(n, vocabulary.count)
         guard displayRows > 0 else { return "(empty EmbeddingsDataset)" }
@@ -249,7 +273,7 @@ public struct EmbeddingsDataset: Sendable {
             return String(format: "%.4f", value)
         }
 
-        var headers: [String] = ["word", "rank", "magnitude", "nearest"]
+        var headers: [String] = ["word", "rank", "magnitude"]
         for d in 1...dimensions {
             headers.append(String(format: "dim_%02d", d))
         }
@@ -259,9 +283,8 @@ public struct EmbeddingsDataset: Sendable {
             let word = vocabulary[r]
             let rank = ranks[word].map { String($0) } ?? ""
             let mag = magnitudes[word].map(formatMagnitude) ?? ""
-            let near = nearestWords[word] ?? ""
             let vec = vectors[word] ?? []
-            var row: [String] = [word, rank, mag, near]
+            var row: [String] = [word, rank, mag]
             for d in 0..<dimensions {
                 row.append(d < vec.count ? formatComponent(vec[d]) : "")
             }
