@@ -167,7 +167,14 @@ require(['vs/editor/editor.main'], () => {
         const newDecos = [];
         const lineCount = model.getLineCount();
         for (let line = 1; line <= lineCount; line++) {
-            const text = model.getLineContent(line);
+            // Blank out // comments and string literals before matching so a
+            // member-looking token in prose (e.g. Task.detached or .value in a
+            // comment) isn't colored. Replacements preserve length so the
+            // decoration column math below stays valid. Same idiom as the
+            // completion-provider stripper near getValue() below.
+            const text = model.getLineContent(line)
+                .replace(/"(?:\\.|[^"\\\n])*"/g, m => ' '.repeat(m.length))
+                .replace(/\/\/[^\n]*/g, m => ' '.repeat(m.length));
             let m;
             memberRegex.lastIndex = 0;
             while ((m = memberRegex.exec(text)) !== null) {

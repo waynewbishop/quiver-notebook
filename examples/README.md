@@ -38,7 +38,6 @@ When a column is not enough, `Panel` adds named columns and aligned rows. Every 
 | `10-load-a-bundled-dataset.swift` | `Dataset.iris` and the bundled-data on-ramp |
 | `11-summary-statistics-real-dataset.swift` | `panel.summary()` on California Housing |
 | `12-correlation-between-columns.swift` | Pearson r and the full correlation matrix |
-| `13-frequency-table.swift` | `distinctCounts()` for discrete columns |
 
 ## Reasoning Under Uncertainty
 
@@ -60,3 +59,11 @@ Quiver ships several models — linear regression, KNN, K-Means — alongside th
 | `18-evaluating-a-binary-classifier.swift` | `ConfusionMatrix` and `ClassificationReport` on Titanic |
 | `19-kmeans-clustering.swift` | `KMeans` unsupervised clustering |
 | `20-explore-word-embeddings.swift` | GloVe 50d — `king − man + woman ≈ queen` |
+
+## Concurrency
+
+A fit can be heavy. Swift's structured concurrency runs several at once with no extra library, and a Quiver model is an immutable value type — safe to hand back across the task boundary.
+
+| File | What it shows |
+| --- | --- |
+| `21-structured-concurrency-with-kmeans.swift` | `Task.detached` runs a `KMeans` fit off the calling context; `await` returns the model |

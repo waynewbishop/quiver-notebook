@@ -29,7 +29,7 @@
   },
   "adjustedRSquared" : {
     "signature" : "let adjustedRSquared: Double",
-    "summary" : "The adjusted coefficient of determination, `1 - (1 - R²) · (n - 1) \/ (n - p - 1)` where `p` is the number of fitted coefficients (intercept counts when present in this convention)."
+    "summary" : "The adjusted coefficient of determination, `1 - (1 - R²) · (n - 1) \/ (n - p)` where `p` is the number of fitted coefficients (intercept counts when present in this convention)."
   },
   "AggregationMethod" : {
     "signature" : "enum AggregationMethod",
@@ -58,6 +58,10 @@
   "AggregationMethod.sum" : {
     "signature" : "case sum",
     "summary" : "Sum all values in the group"
+  },
+  "agreement" : {
+    "signature" : "let agreement: SkewnessAgreement",
+    "summary" : "Whether the outlier-sensitive moment measure and the outlier-resistant Bowley measure agree, conflict by magnitude, or conflict in direction."
   },
   "allSatisfy" : {
     "signature" : "func allSatisfy(_ predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
@@ -98,6 +102,10 @@
   "asDictionary" : {
     "signature" : "public func asDictionary() -> [String: [Double]]",
     "summary" : "Returns the full word-to-vector dictionary. Useful when an algorithm expects a `[String: [Double]]` directly."
+  },
+  "asExpression" : {
+    "signature" : "func asExpression(form: VectorForm = .column) -> String",
+    "summary" : "Returns the vector of fractions as a string, with each entry rendered by ``Fraction\/asExpression()`` and right-aligned so numerators and denominators line up vertically."
   },
   "asFraction" : {
     "signature" : "func asFraction(maxDenominator: Int = 1000) -> Fraction",
@@ -158,6 +166,14 @@
   "BinRule.sturges" : {
     "signature" : "case sturges",
     "summary" : "`k = ⌈log₂(n) + 1⌉`. Sturges, 1926; assumes roughly normal data."
+  },
+  "bowley" : {
+    "signature" : "let bowley: Double",
+    "summary" : "The Bowley quartile coefficient `(Q3 - 2·Q2 + Q1) \/ (Q3 - Q1)`. Bounded to `[-1, 1]`; resistant to outliers because it uses only the quartiles."
+  },
+  "bowleySkewness" : {
+    "signature" : "func bowleySkewness() -> Element?",
+    "summary" : "Returns the Bowley quartile coefficient of skewness — a robust measure built only from the quartiles, so a few extreme values cannot distort it."
   },
   "broadcast" : {
     "signature" : "func broadcast(with value: Element, operation: (Element, Element) -> Element) -> [Element]",
@@ -516,7 +532,7 @@
     "summary" : "Converts an array of words to their vector embeddings by looking up each word in the embeddings dictionary."
   },
   "EmbeddingsDataset" : {
-    "signature" : "public struct EmbeddingsDataset: Sendable",
+    "signature" : "public struct EmbeddingsDataset: CustomStringConvertible, Sendable",
     "summary" : "A bundled word-embedding dataset — words mapped to fixed-length vectors."
   },
   "empiricalRule" : {
@@ -526,6 +542,10 @@
   "EmpiricalRule" : {
     "signature" : "struct EmpiricalRule",
     "summary" : "Observed and expected fractions for the empirical (68-95-99.7) rule."
+  },
+  "encode" : {
+    "signature" : "func encode(to encoder: any Encoder) throws",
+    "summary" : "Encodes this value into the given encoder, when the type's `RawValue` is `String`."
   },
   "enumerated" : {
     "signature" : "func enumerated() -> EnumeratedSequence<Self>",
@@ -565,7 +585,7 @@
   },
   "featureCount" : {
     "signature" : "let featureCount: Int",
-    "summary" : "Number of feature columns the scaler was fitted on."
+    "summary" : "Number of features the model was trained on. Does not count the intercept term."
   },
   "FeatureScaler" : {
     "signature" : "struct FeatureScaler",
@@ -578,6 +598,10 @@
   "filtered" : {
     "signature" : "func filtered(where mask: [Bool]) -> Panel",
     "summary" : "Returns a new panel containing only the rows where the mask is true."
+  },
+  "finalLoss" : {
+    "signature" : "let finalLoss: Double",
+    "summary" : "The final penalized-loss value at the returned coefficients."
   },
   "findDuplicates" : {
     "signature" : "func findDuplicates(threshold: Double = 0.95) -> [(index1: Int, index2: Int, similarity: Double)]",
@@ -669,7 +693,35 @@
   },
   "glove50d" : {
     "signature" : "public static var glove50d: EmbeddingsDataset?",
-    "summary" : "5,000 words, 50-dimensional vectors. Lookup column: `word`."
+    "summary" : "25,000 words, 50-dimensional vectors. Lookup column: `word`."
+  },
+  "GradientDescent" : {
+    "signature" : "struct GradientDescent",
+    "summary" : "A regression model trained by batch gradient descent on mean squared error loss."
+  },
+  "GradientDescent.Outcome" : {
+    "signature" : "enum Outcome",
+    "summary" : "The outcome of the descent run that produced this model."
+  },
+  "GradientDescent.Outcome.converged" : {
+    "signature" : "case converged",
+    "summary" : "The convergence test fired within the iteration cap."
+  },
+  "GradientDescent.Outcome.maxIterationsReached" : {
+    "signature" : "case maxIterationsReached",
+    "summary" : "The optimizer used every available iteration without satisfying the convergence test. The returned coefficients are the best-so-far estimate, not corrupted — but a tighter learning rate or a larger iteration cap would reach the minimum."
+  },
+  "GradientDescentError" : {
+    "signature" : "enum GradientDescentError",
+    "summary" : "Errors thrown by ``GradientDescent`` when the optimizer cannot return a trustworthy result."
+  },
+  "GradientDescentError.divergedIncreasing" : {
+    "signature" : "case divergedIncreasing(iteration: Int, previousLoss: Double, currentLoss: Double)",
+    "summary" : "The loss strictly increased between two consecutive iterations by more than one tolerance unit. The descent step overshot the minimum without yet producing non-finite values. Recovering would require a smaller learning rate or scaled features."
+  },
+  "GradientDescentError.divergedNonFinite" : {
+    "signature" : "case divergedNonFinite(iteration: Int, loss: Double)",
+    "summary" : "The iterate produced a non-finite loss (`NaN` or `±∞`) at the given iteration. Typically caused by a learning rate that is too large for the feature scale — the parameters overshoot, the predictions blow up, and the squared residuals overflow."
   },
   "grandTotal" : {
     "signature" : "var grandTotal: Int { get }",
@@ -687,9 +739,17 @@
     "signature" : "func hannWindowed() -> [Double]",
     "summary" : "Applies a Hann window to reduce spectral leakage before computing the Fourier transform."
   },
+  "hash" : {
+    "signature" : "func hash(into hasher: inout Hasher)",
+    "summary" : null
+  },
+  "hashValue" : {
+    "signature" : "var hashValue: Int { get }",
+    "summary" : null
+  },
   "hasIntercept" : {
     "signature" : "let hasIntercept: Bool",
-    "summary" : "Whether this model includes an intercept (bias) term."
+    "summary" : "Whether this model includes an intercept (bias) term. The intercept, when present, is never penalized."
   },
   "head" : {
     "signature" : "func head(n: Int = 10) -> String",
@@ -724,8 +784,8 @@
     "summary" : "Returns a statistical summary of a 2D matrix including shape, size, type, and aggregate statistics computed across all elements."
   },
   "init" : {
-    "signature" : "init(_ value: Double, maxDenominator: Int = 1000, tolerance: Double = 1e-9)",
-    "summary" : "Converts a Double to its simplest fractional representation using continued fraction expansion."
+    "signature" : "init(from decoder: any Decoder) throws",
+    "summary" : "Creates a new instance by decoding from the given decoder, when the type's `RawValue` is `String`."
   },
   "inverted" : {
     "signature" : "func inverted() throws -> [[Element.Element]]",
@@ -761,7 +821,7 @@
   },
   "iterations" : {
     "signature" : "let iterations: Int",
-    "summary" : "The number of iterations the algorithm ran before stopping."
+    "summary" : "Number of iterations the optimizer used before stopping. Equal to `lossHistory.count − 1` because the trajectory begins with the loss at the initial all-zeros parameters."
   },
   "joined" : {
     "signature" : "func joined<Separator>(separator: Separator) -> JoinedSequence<Self> where Separator : Sequence, Separator.Element == Self.Element.Element",
@@ -774,6 +834,10 @@
   "k" : {
     "signature" : "let k: Int",
     "summary" : "The number of neighbors to consider for each prediction."
+  },
+  "kFoldIndices" : {
+    "signature" : "func kFoldIndices(k: Int, seed: UInt64) -> [(train: [Int], validation: [Int])]",
+    "summary" : "Partitions the array's sample positions into `k` train\/validation folds for cross-validation, using a seeded shuffle for reproducible results."
   },
   "KMeans" : {
     "signature" : "struct KMeans",
@@ -795,9 +859,17 @@
     "signature" : "func labels(_ column: String) -> [Int]",
     "summary" : "Returns the named column as integer labels for classification."
   },
+  "lambda" : {
+    "signature" : "let lambda: Double",
+    "summary" : "The L2 penalty strength used during fitting. Larger values shrink the coefficients harder; `0.0` recovers ordinary least squares."
+  },
   "lazy" : {
     "signature" : "var lazy: LazySequence<Self> { get }",
     "summary" : "A sequence containing the same elements as this sequence, but on which some operations, such as `map` and `filter`, are implemented lazily."
+  },
+  "learningRate" : {
+    "signature" : "let learningRate: Double",
+    "summary" : "The learning rate that was used during fitting."
   },
   "lexicographicallyPrecedes" : {
     "signature" : "func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence, by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, Self.Element == OtherSequence.Element",
@@ -855,6 +927,10 @@
     "signature" : "static func logPMF(k: Int, n: Int, p: Double) -> Double?",
     "summary" : "Returns the natural log of the binomial probability mass at `k`."
   },
+  "lossHistory" : {
+    "signature" : "let lossHistory: [Double]",
+    "summary" : "The full loss trajectory, beginning with the loss at θ = 0 and ending with ``finalLoss``. Length is `iterations + 1`. Inspecting this array is the canonical way to see whether descent was smooth, oscillated, or crawled — the diagnostic that turns ``GradientDescent`` from a black box into an observable process."
+  },
   "lower" : {
     "signature" : "let lower: Double",
     "summary" : "The lower bound of the interval."
@@ -868,7 +944,7 @@
     "summary" : "Returns the precomputed magnitude (Euclidean norm) of a word's embedding vector, or `nil` if the word is not in the vocabulary."
   },
   "magnitudes" : {
-    "signature" : "private let magnitudes: [String: Double] private let nearestWords: [String: String]",
+    "signature" : "private let magnitudes: [String: Double]",
     "summary" : null
   },
   "makeIterator" : {
@@ -951,6 +1027,10 @@
     "signature" : "let model: Model",
     "summary" : "The trained model that produces predictions from scaled features."
   },
+  "moment" : {
+    "signature" : "let moment: Double",
+    "summary" : "The adjusted Fisher-Pearson moment coefficient (sample convention). Unbounded; sensitive to outliers. Positive means a long tail toward high values, negative toward low values."
+  },
   "multiply" : {
     "signature" : "func multiply(_ other: [[Float]]) -> [[Float]]",
     "summary" : "Element-wise multiplication of two matrices (Hadamard product) - Parameter other: The second matrix - Returns: A new matrix where each element is the product of corresponding elements"
@@ -973,7 +1053,7 @@
   },
   "nearestWord" : {
     "signature" : "public func nearestWord(of word: String) -> String?",
-    "summary" : "Returns the precomputed nearest neighbour for a word — the closest other word by cosine similarity, computed once at load time. Returns `nil` if the word is not in the vocabulary."
+    "summary" : "Returns the nearest neighbour for a word — the closest other word by cosine similarity — computed on demand from the loaded vectors. Returns `nil` if the word is not in the vocabulary. This is a thin convenience over `nearest(to:k:)` with `k == 1`; it does a single O(n) scan per call rather than reading a precomputed column."
   },
   "next" : {
     "signature" : "mutating func next() -> UInt64",
@@ -1002,6 +1082,10 @@
   "orthogonalComponent" : {
     "signature" : "func orthogonalComponent(to vector: [Element]) -> [Element]",
     "summary" : "Returns the component of this vector that is perpendicular to another vector."
+  },
+  "outcome" : {
+    "signature" : "let outcome: GradientDescent.Outcome",
+    "summary" : "Whether the run converged or hit the iteration cap. See ``Outcome``."
   },
   "outlierMask" : {
     "signature" : "func outlierMask(threshold: Element = 2.0, mean: Element? = nil, standardDeviation: Element? = nil) -> [Bool]",
@@ -1223,6 +1307,22 @@
     "signature" : "func reversed() -> [Self.Element]",
     "summary" : "Returns an array containing the elements of this sequence in reverse order."
   },
+  "Ridge" : {
+    "signature" : "struct Ridge",
+    "summary" : "A regression model trained with an L2 (ridge) penalty on its coefficients."
+  },
+  "Ridge.Outcome" : {
+    "signature" : "enum Outcome",
+    "summary" : "The outcome of the descent run that produced this model."
+  },
+  "Ridge.Outcome.converged" : {
+    "signature" : "case converged",
+    "summary" : "The convergence test fired within the iteration cap."
+  },
+  "Ridge.Outcome.maxIterationsReached" : {
+    "signature" : "case maxIterationsReached",
+    "summary" : "The optimizer used every available iteration without satisfying the convergence test. The returned coefficients are the best-so-far estimate, not corrupted — but a tighter learning rate or a larger iteration cap would reach the minimum. Compare the first and last entries of ``lossHistory`` to confirm meaningful descent."
+  },
   "rollingMean" : {
     "signature" : "func rollingMean(window: Int) -> [Element]",
     "summary" : "Calculates a rolling mean (moving average) over a specified window."
@@ -1255,21 +1355,29 @@
     "signature" : "func rSquared(actual: [Double]) -> Double",
     "summary" : "Coefficient of determination R² comparing these predicted values against actuals."
   },
+  "sample" : {
+    "signature" : "func sample(_ count: Int, replace: Bool = true, using generator: inout some RandomNumberGenerator) -> [Element]",
+    "summary" : "Draws a single random sample of `count` elements from the array, drawing from a caller-supplied random number generator."
+  },
   "sampleRate" : {
     "signature" : "let sampleRate: Double",
     "summary" : "The sample rate of the source signal, in samples per second."
   },
+  "samplingDistribution" : {
+    "signature" : "func samplingDistribution(sampleSize: Int, iterations: Int = 1000, using generator: inout some RandomNumberGenerator, statistic: ([Double]) -> Double) -> [Double]",
+    "summary" : "Returns the sampling distribution of an arbitrary statistic, drawing from a caller-supplied random number generator."
+  },
   "samplingDistributionOfMean" : {
-    "signature" : "func samplingDistributionOfMean(sampleSize: Int, iterations: Int = 1000, seed: UInt64) -> [Double]",
-    "summary" : "Returns the sampling distribution of the sample mean."
+    "signature" : "func samplingDistributionOfMean(sampleSize: Int, iterations: Int = 1000, using generator: inout some RandomNumberGenerator) -> [Double]",
+    "summary" : "Returns the sampling distribution of the sample mean, drawing from a caller-supplied random number generator."
   },
   "samplingDistributionOfMedian" : {
-    "signature" : "func samplingDistributionOfMedian(sampleSize: Int, iterations: Int = 1000, seed: UInt64) -> [Double]",
-    "summary" : "Returns the sampling distribution of the sample median."
+    "signature" : "func samplingDistributionOfMedian(sampleSize: Int, iterations: Int = 1000, using generator: inout some RandomNumberGenerator) -> [Double]",
+    "summary" : "Returns the sampling distribution of the sample median, drawing from a caller-supplied random number generator."
   },
   "samplingDistributionOfStandardDeviation" : {
-    "signature" : "func samplingDistributionOfStandardDeviation(sampleSize: Int, iterations: Int = 1000, seed: UInt64) -> [Double]",
-    "summary" : "Returns the sampling distribution of the sample standard deviation."
+    "signature" : "func samplingDistributionOfStandardDeviation(sampleSize: Int, iterations: Int = 1000, using generator: inout some RandomNumberGenerator) -> [Double]",
+    "summary" : "Returns the sampling distribution of the sample standard deviation, drawing from a caller-supplied random number generator."
   },
   "scalarProjection" : {
     "signature" : "func scalarProjection(onto vector: [Element]) -> Element",
@@ -1330,6 +1438,30 @@
   "skewness" : {
     "signature" : "func skewness(bias: Bool = true) -> Element?",
     "summary" : "Returns the sample skewness of the array — a single number describing how lopsided the distribution is."
+  },
+  "SkewnessAgreement" : {
+    "signature" : "enum SkewnessAgreement",
+    "summary" : "How an outlier-sensitive and an outlier-resistant skewness measure relate."
+  },
+  "SkewnessAgreement.agree" : {
+    "signature" : "case agree",
+    "summary" : "Both measures land in their symmetric band, or both lean the same direction. The skew, whatever its size, is corroborated by a measure that ignores outliers."
+  },
+  "SkewnessAgreement.direction" : {
+    "signature" : "case direction",
+    "summary" : "The two measures lean in opposite directions. The strongest signal that the moment number is driven by a few extreme values rather than the underlying shape."
+  },
+  "SkewnessAgreement.mixed" : {
+    "signature" : "case mixed",
+    "summary" : "One measure reads as roughly symmetric while the other reads as decisively skewed. The decisive measure is not corroborated — a sign that extremes may be at work."
+  },
+  "skewnessReport" : {
+    "signature" : "func skewnessReport() -> SkewnessReport?",
+    "summary" : "Returns a two-measure skewness diagnostic: the outlier-sensitive moment coefficient, the outlier-resistant Bowley coefficient, and whether the two agree."
+  },
+  "SkewnessReport" : {
+    "signature" : "struct SkewnessReport",
+    "summary" : "A two-measure skewness diagnostic: the moment coefficient, the robust Bowley coefficient, and whether the two agree."
   },
   "softMax" : {
     "signature" : "func softMax() -> [Double]",
@@ -1436,7 +1568,7 @@
     "summary" : "The number of actual samples of this class in the ground truth. For aggregate rows, this is the total sample count."
   },
   "TabularDataset" : {
-    "signature" : "public struct TabularDataset: Sendable",
+    "signature" : "public struct TabularDataset: CustomStringConvertible, Sendable",
     "summary" : "A bundled tabular dataset wrapping a Quiver `Panel` of numeric columns."
   },
   "tail" : {
@@ -1554,6 +1686,18 @@
   "variances" : {
     "signature" : "let variances: [Double]",
     "summary" : "Variance of each feature for samples in this class."
+  },
+  "VectorForm" : {
+    "signature" : "enum VectorForm",
+    "summary" : "The visual form a vector takes when rendered via `asExpression()`."
+  },
+  "VectorForm.column" : {
+    "signature" : "case column",
+    "summary" : "Column form with stacked Unicode brackets — the textbook default."
+  },
+  "VectorForm.inline" : {
+    "signature" : "case inline",
+    "summary" : "Inline angle-bracket form, `⟨a, b, c⟩` — the prose-friendly variant."
   },
   "vectorProjection" : {
     "signature" : "func vectorProjection(onto vector: [Element]) -> [Element]",

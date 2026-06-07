@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/waynewbishop/quiver.git",
       "state" : {
-        "revision" : "ab660a732a1fb42408385a2cb36803a91948f206",
-        "version" : "1.2.5"
+        "revision" : "0d1d600198a647b34bb23ed4dd57db7d8ad9d021",
+        "version" : "1.3.0"
       }
     }
   ],
