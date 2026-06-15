@@ -99,6 +99,10 @@
     "signature" : "func argMin() -> Int?",
     "summary" : "Returns the index of the smallest element in the array."
   },
+  "Array" : {
+    "signature" : "extension Array where Element == Double",
+    "summary" : "Fourier transform operations on real-valued signal arrays."
+  },
   "asDictionary" : {
     "signature" : "public func asDictionary() -> [String: [Double]]",
     "summary" : "Returns the full word-to-vector dictionary. Useful when an algorithm expects a `[String: [Double]]` directly."
@@ -224,7 +228,7 @@
     "summary" : "Returns the number of samples per class as a dictionary."
   },
   "classes" : {
-    "signature" : "let classes: [GaussianNaiveBayes.ClassStats]",
+    "signature" : "let classes: [ClassStats]",
     "summary" : "The learned statistics for each class, one entry per unique label."
   },
   "Classification" : {
@@ -270,6 +274,10 @@
   "coefficients" : {
     "signature" : "let coefficients: [Double]",
     "summary" : "The fitted coefficient vector. When the model has an intercept the first element is the intercept; the remainder are feature weights."
+  },
+  "Coefficients" : {
+    "signature" : "protocol Coefficients",
+    "summary" : "A model whose fit is summarized by a vector of coefficients."
   },
   "column" : {
     "signature" : "func column(at index: Element.Index) -> [Element.Element]",
@@ -399,6 +407,10 @@
     "signature" : "internal enum DatasetLoader",
     "summary" : "Single chokepoint that converts a CSV file into a concrete dataset value."
   },
+  "decisionFunction" : {
+    "signature" : "func decisionFunction(_ features: [[Double]]) -> [Double]",
+    "summary" : "Returns the raw linear score Xθ — the log-odds — for one or more samples."
+  },
   "degree" : {
     "signature" : "var degree: Int { get }",
     "summary" : "The degree of the polynomial — the highest power with a non-zero coefficient."
@@ -434,6 +446,10 @@
   "diag" : {
     "signature" : "static func diag(_ diagonal: [Element]) -> [[Element]]",
     "summary" : "Creates a diagonal matrix from a vector of diagonal values."
+  },
+  "Dictionary" : {
+    "signature" : "extension Dictionary where Key == String, Value == [Double]",
+    "summary" : null
   },
   "diff" : {
     "signature" : "func diff(lag: Int = 1) -> [Element]",
@@ -503,6 +519,10 @@
     "signature" : "func dot(_ other: [Element]) -> Element",
     "summary" : "Calculates the dot product of two vectors."
   },
+  "Double" : {
+    "signature" : "extension Double",
+    "summary" : null
+  },
   "downsample" : {
     "signature" : "func downsample(factor: Int, using method: AggregationMethod) -> [Element]",
     "summary" : "Reduces the array size by grouping consecutive elements into fixed-size windows and aggregating each window into a single value."
@@ -531,6 +551,14 @@
     "signature" : "func embed(using embeddings: [String : [Double]]) -> [[Double]]",
     "summary" : "Converts an array of words to their vector embeddings by looking up each word in the embeddings dictionary."
   },
+  "embedded" : {
+    "signature" : "func embedded(using embedder: some Embedder) -> [(text: String, vector: [Double])]",
+    "summary" : "Embeds every string in this array, pairing each vector with its source text."
+  },
+  "Embedder" : {
+    "signature" : "protocol Embedder : Sendable",
+    "summary" : "A source of text embeddings."
+  },
   "EmbeddingsDataset" : {
     "signature" : "public struct EmbeddingsDataset: CustomStringConvertible, Sendable",
     "summary" : "A bundled word-embedding dataset — words mapped to fixed-length vectors."
@@ -554,6 +582,10 @@
   "exp" : {
     "signature" : "func exp() -> [Double]",
     "summary" : "Returns e raised to the power of each element in the array."
+  },
+  "expected" : {
+    "signature" : "func expected(_ features: [[Double]]) -> [Double]",
+    "summary" : "The expected values the wrapped model predicts for the given features."
   },
   "expected1Sigma" : {
     "signature" : "var expected1Sigma: Double { get }",
@@ -697,7 +729,7 @@
   },
   "GradientDescent" : {
     "signature" : "struct GradientDescent",
-    "summary" : "A regression model trained by batch gradient descent on mean squared error loss."
+    "summary" : "A regression model trained by batch gradient descent, and the shared optimizer behind every iterative model in Quiver."
   },
   "GradientDescent.Outcome" : {
     "signature" : "enum Outcome",
@@ -919,6 +951,22 @@
     "signature" : "struct LogDeterminant",
     "summary" : "Represents the sign and natural logarithm of a matrix determinant."
   },
+  "LogisticRegression" : {
+    "signature" : "struct LogisticRegression",
+    "summary" : "A binary classifier trained by gradient descent on cross-entropy loss."
+  },
+  "LogisticRegression.Outcome" : {
+    "signature" : "enum Outcome",
+    "summary" : "The outcome of the descent run that produced this model. Mirrors ``GradientDescent\/Outcome`` — both objectives run the one shared loop, so they report convergence the same way."
+  },
+  "LogisticRegression.Outcome.converged" : {
+    "signature" : "case converged",
+    "summary" : "The convergence test fired within the iteration cap."
+  },
+  "LogisticRegression.Outcome.maxIterationsReached" : {
+    "signature" : "case maxIterationsReached",
+    "summary" : "The optimizer used every available iteration without satisfying the convergence test. The returned coefficients are the best-so-far estimate. Confirm meaningful descent by comparing ``lossHistory``'s first and last entries before trusting the result."
+  },
   "logPDF" : {
     "signature" : "static func logPDF(x: Double, mean: Double, standardDeviation: Double) -> Double?",
     "summary" : "Returns the natural log of the normal probability density at `x`."
@@ -1025,11 +1073,15 @@
   },
   "model" : {
     "signature" : "let model: Model",
-    "summary" : "The trained model that produces predictions from scaled features."
+    "summary" : "The fitted regression model whose predictions define the expectation."
   },
   "moment" : {
     "signature" : "let moment: Double",
     "summary" : "The adjusted Fisher-Pearson moment coefficient (sample convention). Unbounded; sensitive to outliers. Positive means a long tail toward high values, negative toward low values."
+  },
+  "mostSimilar" : {
+    "signature" : "func mostSimilar<Label>(to query: [Double], k: Int) -> [(rank: Int, text: Label, score: Double)] where Element == (text: Label, vector: [Double])",
+    "summary" : "Ranks these embedded texts by cosine similarity to a query vector."
   },
   "multiply" : {
     "signature" : "func multiply(_ other: [[Float]]) -> [[Float]]",
@@ -1084,7 +1136,7 @@
     "summary" : "Returns the component of this vector that is perpendicular to another vector."
   },
   "outcome" : {
-    "signature" : "let outcome: GradientDescent.Outcome",
+    "signature" : "let outcome: Outcome",
     "summary" : "Whether the run converged or hit the iteration cap. See ``Outcome``."
   },
   "outlierMask" : {
@@ -1192,8 +1244,8 @@
     "summary" : "Returns log-probabilities for each class for each sample."
   },
   "predictProbabilities" : {
-    "signature" : "func predictProbabilities(_ features: [[Double]]) -> [[Double]]",
-    "summary" : "Returns calibrated class probabilities for each sample."
+    "signature" : "func predictProbabilities(_ features: [[Double]]) -> [Double]",
+    "summary" : "Predicts the probability of class 1 for one or more samples."
   },
   "prefix" : {
     "signature" : "func prefix(_ maxLength: Int) -> PrefixSequence<Self>",
@@ -1298,6 +1350,18 @@
   "reshaped" : {
     "signature" : "func reshaped(rows: Int, columns: Int) -> [[Element]]",
     "summary" : "Reshapes a one-dimensional array into a two-dimensional matrix with the specified dimensions using row-major order."
+  },
+  "residual" : {
+    "signature" : "func residual(features: [Double], observed: Double) -> Double",
+    "summary" : "The residual for a single observed value at one sample."
+  },
+  "ResidualModel" : {
+    "signature" : "struct ResidualModel<Model> where Model : Regressor, Model : Decodable, Model : Encodable, Model : Equatable, Model : Sendable",
+    "summary" : "Pairs a fitted regression model with the residuals it leaves behind."
+  },
+  "residuals" : {
+    "signature" : "func residuals(features: [[Double]], targets: [Double]) -> [Double]",
+    "summary" : "The residuals `observed − predicted`, one per sample."
   },
   "residualStandardError" : {
     "signature" : "let residualStandardError: Double",
@@ -1538,6 +1602,10 @@
   "stratifiedSplit" : {
     "signature" : "func stratifiedSplit<L>(labels: [L], testRatio: Double, seed: UInt64) -> (trainFeatures: [Element], testFeatures: [Element], trainLabels: [L], testLabels: [L]) where L : Hashable",
     "summary" : "Splits paired feature and label arrays into training and testing subsets, preserving the class distribution from the labels in both sets."
+  },
+  "String" : {
+    "signature" : "extension String",
+    "summary" : null
   },
   "studentPerformance" : {
     "signature" : "public static var studentPerformance: TabularDataset?",

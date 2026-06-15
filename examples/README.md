@@ -59,6 +59,7 @@ Quiver ships several models — linear regression, KNN, K-Means — alongside th
 | `18-evaluating-a-binary-classifier.swift` | `ConfusionMatrix` and `ClassificationReport` on Titanic |
 | `19-kmeans-clustering.swift` | `KMeans` unsupervised clustering |
 | `20-explore-word-embeddings.swift` | GloVe 50d — `king − man + woman ≈ queen` |
+| `22-retrieval-augmented-generation.swift` | Chunk a passage, embed each fragment, retrieve the top match for a question by meaning |
 
 ## Concurrency
 
