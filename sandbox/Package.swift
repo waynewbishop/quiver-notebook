@@ -10,7 +10,7 @@ let package = Package(
     ],
     dependencies: [
         // Quiver — statistics, linear algebra, and machine learning
-        .package(url: "https://github.com/waynewbishop/quiver.git", from: "1.4.0")
+        .package(url: "https://github.com/waynewbishop/quiver.git", from: "1.5.0")
     ],
     targets: [
         .executableTarget(

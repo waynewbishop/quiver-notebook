@@ -28,9 +28,13 @@ for (i, row) in result.matrix.enumerated() {
 }
 print()
 
-// The headline pair: income and median house value.
+// The headline pair: income and median house value. correlation(with:)
+// returns an optional — nil when a column is empty or has no spread to
+// correlate against — so we unwrap before reading it.
 let income = panel["median_income"]
 let value = panel["median_house_value"]
-let r = income.correlation(with: value)
+guard let r = income.correlation(with: value) else {
+    exit(0)
+}
 print("median_income vs median_house_value:")
 print("  r =", String(format: "%.3f", r))

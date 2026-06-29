@@ -13,43 +13,46 @@
 // though neither shares the word "temperature" — "hot," "heat," and
 // "oven" sit near "temperature" in embedding space. That is the whole
 // trick, and it is the same cosine-similarity math as example 20.
+//
+// Quiver ships the retrieval scaffolding as three pieces that snap
+// together. A `Chunker` decides where a document is cut. An `Embedder`
+// turns text into a vector. An `EmbeddingIndex` holds the embedded
+// corpus and ranks a query against it. We write the first two — where to
+// cut and where vectors come from are our decisions — and the index does
+// the embed-once, rank-each-query work for us.
 
 guard let glove = Dataset.glove50d else {
     exit(0)
 }
 
-// A chunk keeps its position so a retrieved fragment is attributable.
-// Sendable lets it cross the task boundaries a background worker introduces.
-struct Chunk: Sendable {
-    let index: Int
-    let text: String
-}
+// An embedding source. Embed text by averaging the GloVe vectors of its
+// tokens; return nil when no token is recognized, the signal the rest of
+// the retrieval surface relies on. A sentence model would conform the
+// same way — one method, text in, vector out — and nothing downstream
+// would change.
+struct GloVeEmbedder: Embedder {
+    let table: EmbeddingsDataset
 
-// Split a passage into paragraph chunks. Where to cut is a developer
-// decision — paragraphs here, but sentences or sections work the same way.
-func chunked(_ passage: String) -> [Chunk] {
-    let paragraphs = passage.components(separatedBy: "\n\n")
-    var chunks: [Chunk] = []
-    var index = 0
-    for paragraph in paragraphs {
-        let trimmed = paragraph.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.isEmpty { continue }
-        chunks.append(Chunk(index: index, text: trimmed))
-        index += 1
-    }
-    return chunks
-}
-
-// Embed text by averaging the GloVe vectors of its tokens. The GloVe
-// table is one embedding source; a sentence model would conform the same way.
-func embed(_ text: String) -> [Double]? {
-    var wordVectors: [[Double]] = []
-    for token in text.tokenize() {
-        if let vector = glove[token] {
-            wordVectors.append(vector)
+    func embed(_ text: String) -> [Double]? {
+        var wordVectors: [[Double]] = []
+        for token in text.tokenize() {
+            if let vector = table[token] {
+                wordVectors.append(vector)
+            }
         }
+        return wordVectors.meanVector()
     }
-    return wordVectors.meanVector()
+}
+
+// A chunking strategy. Split on blank lines into paragraph fragments;
+// asChunks() trims, drops the empties, and numbers what remains, so each
+// fragment carries the position it was cut at and stays attributable.
+// Where to cut is a developer decision — sentences or sections conform
+// the same way.
+struct ParagraphChunker: Chunker {
+    func chunk(_ text: String) -> [Chunk] {
+        text.components(separatedBy: "\n\n").asChunks()
+    }
 }
 
 let passage = """
@@ -60,25 +63,22 @@ Knead the dough until smooth, then shape it.
 Bake in a hot oven. The heat sets the crust.
 """
 
-// Embed each chunk once, at ingest, keeping chunks and vectors aligned.
-// In a real system these vectors persist to disk and load once per launch.
-let chunks = chunked(passage)
-var storedChunks: [Chunk] = []
-var storedVectors: [[Double]] = []
-for chunk in chunks {
-    if let vector = embed(chunk.text) {
-        storedChunks.append(chunk)
-        storedVectors.append(vector)
-    }
+// Build the index: embed each chunk once, at ingest, storing the chunk
+// beside its vector. In a real system the index is Codable, so these
+// vectors persist to disk and load once per launch rather than being
+// recomputed.
+var index = EmbeddingIndex<Chunk>(embedder: GloVeEmbedder(table: glove))
+for chunk in passage.chunked(using: ParagraphChunker()) {
+    index.add(chunk.text, label: chunk)
 }
 
 // Retrieve the top fragment for a question. Only the query is embedded at
-// search time; the chunks were embedded once above.
+// search time; the chunks were embedded once at ingest. The index ranks
+// and exposes its math — it does not judge relevance. Whether the top hit
+// is good enough to act on is ours to decide.
 func retrieve(_ question: String) {
-    guard let queryVector = embed(question) else { return }
-    let scores = storedVectors.cosineSimilarities(to: queryVector)
-    let hits = scores.topIndices(k: 1, labels: storedChunks)
-    if let top = hits.first {
+    let result = index.retrieve(question, k: 1)
+    if let top = result.hits.first {
         print("Q: \(question)")
         print("  -> chunk \(top.label.index)  (\(String(format: "%.3f", top.score)))  \(top.label.text)")
         print()

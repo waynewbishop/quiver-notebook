@@ -34,6 +34,12 @@ let testTargets   = test["price"]
 
 let model = try LinearRegression.fit(features: trainFeatures, targets: trainTargets)
 
+// The fit is a row of coefficients, and equation() writes them out as a
+// plain formula — intercept first, then the price per square foot. A model
+// you can read by hand is not a black box.
+print("fitted model:", model.equation())
+print()
+
 // Score on held-out test data — this is the honest measure of generalization.
 let predictions = model.predict(testFeatures)
 let r2 = predictions.rSquared(actual: testTargets)
