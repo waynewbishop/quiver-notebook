@@ -244,6 +244,63 @@ require(['vs/editor/editor.main'], () => {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Minus,  () => stepFontSize(-1));
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Digit0, () => applyFontSize('normal'));
 
+    // Block-comment auto-close (Xcode behavior): pressing Return on a line that
+    // ends in an unterminated `/*` expands it into a three-line block, placing
+    // the cursor on an indented middle line with `*/` closed below it.
+    //
+    //     /*                    /*
+    //     |<Return>      →           |   ← cursor, indented
+    //                           */
+    //
+    // Handled here rather than through Monaco's block-comment config so it stays
+    // surgical and cannot disturb the built-in bracket auto-close.
+    editor.onKeyDown((e) => {
+        if (e.keyCode !== monaco.KeyCode.Enter) return;
+        // Let Shift/Cmd/Ctrl+Enter fall through to the run commands above.
+        if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return;
+
+        const selection = editor.getSelection();
+        if (!selection || !selection.isEmpty()) return; // don't fire mid-selection
+
+        const model = editor.getModel();
+        const pos = selection.getPosition();
+        const lineText = model.getLineContent(pos.lineNumber);
+
+        // Only trigger when the cursor sits right after a `/*` that has no `*/`
+        // yet on the same line, so we never double-close an already-closed block.
+        const beforeCursor = lineText.slice(0, pos.column - 1);
+        if (!beforeCursor.trimEnd().endsWith('/*')) return;
+        if (lineText.includes('*/')) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Match the opening line's leading whitespace so the block stays aligned.
+        const indent = (lineText.match(/^\s*/) || [''])[0];
+        const inner = indent + '    '; // one extra indent level for the middle line
+
+        // Replace from the cursor to end of line with: blank indented middle
+        // line, then the closing `*/` on its own line.
+        const range = new monaco.Range(
+            pos.lineNumber, pos.column,
+            pos.lineNumber, lineText.length + 1
+        );
+        const tail = lineText.slice(pos.column - 1); // anything after the cursor
+        const insertText = '\n' + inner + '\n' + indent + '*/' + tail;
+
+        editor.executeEdits('auto-close-block-comment', [{
+            range: range,
+            text: insertText,
+            forceMoveMarkers: true
+        }]);
+
+        // Land the cursor on the indented middle line.
+        editor.setPosition({
+            lineNumber: pos.lineNumber + 1,
+            column: inner.length + 1
+        });
+    });
+
     // Quiver docs hover — tooltip shows method signature and first paragraph
     // of the DocC comment for any symbol present in quiverDocs. Lookup is by
     // the unqualified word under the cursor (Monaco's getWordAtPosition).
