@@ -18,17 +18,8 @@ final class Server: @unchecked Sendable {
     }
 
     func run() async throws {
-        let parameters = NWParameters.tcp
-        parameters.allowLocalEndpointReuse = true
-        if let inetOptions = parameters.defaultProtocolStack.internetProtocol as? NWProtocolIP.Options {
-            inetOptions.version = .v4
-        }
-
-        guard let nwPort = NWEndpoint.Port(rawValue: UInt16(port)) else {
-            throw ServerError.invalidPort(port)
-        }
-
-        let listener = try NWListener(using: parameters, on: nwPort)
+        let parameters = try Server.listenerParameters(host: host, port: port)
+        let listener = try NWListener(using: parameters)
         self.listener = listener
 
         listener.newConnectionHandler = { [weak self] connection in
@@ -59,6 +50,22 @@ final class Server: @unchecked Sendable {
         }
 
         try await Task.sleep(nanoseconds: .max)
+    }
+
+    /// Builds TCP parameters that bind the listener to `host` only, so other machines can't connect.
+    /// Without a required local endpoint, NWListener accepts connections on every network interface.
+    static func listenerParameters(host: String, port: Int) throws -> NWParameters {
+        guard let portNumber = UInt16(exactly: port), let nwPort = NWEndpoint.Port(rawValue: portNumber) else {
+            throw ServerError.invalidPort(port)
+        }
+
+        let parameters = NWParameters.tcp
+        parameters.allowLocalEndpointReuse = true
+        if let inetOptions = parameters.defaultProtocolStack.internetProtocol as? NWProtocolIP.Options {
+            inetOptions.version = .v4
+        }
+        parameters.requiredLocalEndpoint = .hostPort(host: NWEndpoint.Host(host), port: nwPort)
+        return parameters
     }
 
     func shutdown() {
