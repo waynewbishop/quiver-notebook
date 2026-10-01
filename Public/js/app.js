@@ -12,6 +12,15 @@ const SOURCE_KEY = 'quiver-notebook-source';
 
 let lineNumbersEnabled = true;
 
+// Per-launch token the server embeds in the page; POSTs without it are refused.
+function notebookToken() {
+    const meta = document.querySelector('meta[name="notebook-token"]');
+    return meta ? meta.content : '';
+}
+
+// Set just before a reload triggered by a stale token, so the page re-runs once and never loops.
+const TOKEN_RELOAD_KEY = 'quiver-notebook-token-reload';
+
 // Three presets for presenter-friendly sizing. Editor size drives Monaco;
 // output size drives the .output pane via a data-attribute on <html>.
 const FONT_SIZES = {
@@ -207,6 +216,14 @@ require(['vs/editor/editor.main'], () => {
         updateBreadcrumbModifiedFlag();
         refreshMemberDecorations();
     });
+
+    // After a reload caused by a restarted server, finish the Run the student asked for.
+    let reloadedForToken = null;
+    try { reloadedForToken = sessionStorage.getItem(TOKEN_RELOAD_KEY); } catch (e) {}
+    if (reloadedForToken === 'pending') {
+        try { sessionStorage.setItem(TOKEN_RELOAD_KEY, 'retried'); } catch (e) {}
+        runCode();
+    }
 
     // Track cursor position for footer display
     editor.onDidChangeCursorPosition((ev) => {
@@ -846,14 +863,24 @@ async function runCode() {
     try {
         const res = await fetch('/api/run', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Notebook-Token': notebookToken()
+            },
             body: JSON.stringify({ code })
         });
+
+        // A 403 from our own page means the server restarted and this tab holds an old token.
+        // Save the draft and reload once to pick up the new token; the reloaded page re-runs.
+        if (res.status === 403 && reloadAfterRestart(code)) {
+            return;
+        }
 
         if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
         }
 
+        try { sessionStorage.removeItem(TOKEN_RELOAD_KEY); } catch (e) {}
         const result = await res.json();
         setOutput(result.stdout || '', result.stderr || '');
 
@@ -875,6 +902,25 @@ async function runCode() {
         runBtn.disabled = false;
         runBtn.classList.remove('running');
     }
+}
+
+// Saves the draft and reloads the page to get a fresh token; returns false if a reload already failed to help.
+function reloadAfterRestart(code) {
+    let state = null;
+    try { state = sessionStorage.getItem(TOKEN_RELOAD_KEY); } catch (e) {}
+    if (state === 'retried') {
+        try { sessionStorage.removeItem(TOKEN_RELOAD_KEY); } catch (e) {}
+        return false;
+    }
+    try {
+        localStorage.setItem(STORAGE_KEY, code);
+        sessionStorage.setItem(TOKEN_RELOAD_KEY, 'pending');
+    } catch (e) {
+        return false;
+    }
+    setStatus('The Notebook restarted. Refreshing the page…', 'running');
+    window.location.reload();
+    return true;
 }
 
 function setDurationPill(text, kind = '') {

@@ -6,13 +6,15 @@ final class Server: @unchecked Sendable {
     private let host: String
     private let port: Int
     private let router: Router
+    private let requestGuard: RequestGuard
     private let queue = DispatchQueue(label: "pelican.server", qos: .userInitiated)
     private var listener: NWListener?
 
-    init(host: String, port: Int, router: Router) {
+    init(host: String, port: Int, router: Router, requestGuard: RequestGuard) {
         self.host = host
         self.port = port
         self.router = router
+        self.requestGuard = requestGuard
     }
 
     func run() async throws {
@@ -107,6 +109,10 @@ final class Server: @unchecked Sendable {
     }
 
     private func dispatch(request: HTTPRequest) async -> HTTPResponse {
+        // Refuse requests from other sites or hosts before any route runs.
+        if let rejection = requestGuard.rejection(for: request) {
+            return rejection
+        }
         guard let match = router.match(method: request.method, path: request.path) else {
             return .notFound()
         }

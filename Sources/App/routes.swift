@@ -16,6 +16,7 @@ func routes(_ app: Application) throws {
         let html = template
             .replacingOccurrences(of: "#(title)", with: "Quiver Notebook")
             .replacingOccurrences(of: "#(quiverVersion)", with: version)
+            .replacingOccurrences(of: "#(sessionToken)", with: app.sessionToken ?? "")
         return HTTPResponse.html(html)
     }
 

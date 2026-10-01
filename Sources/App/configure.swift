@@ -14,6 +14,10 @@ public func configure(_ app: Application) async throws {
         "Quiver Notebook must bind to 127.0.0.1 only. See README → Running the Notebook Safely."
     )
 
+    // A fresh token each launch: only the editor page served by this process can read it,
+    // so other sites and stale tabs can't run code even if a request reaches the server.
+    app.sessionToken = SessionToken.generate()
+
     try routes(app)
 
     // Read the bundled dataset manifest and log what loaded successfully.
