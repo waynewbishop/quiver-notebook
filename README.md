@@ -105,7 +105,11 @@ The first launch takes a minute or two while Swift compiles the Notebook and pre
 
 Open the URL in any browser to start writing snippets. Press `Ctrl+C` in the terminal to stop the server.
 
-The local server binds to `127.0.0.1` by design and refuses to start if the address is changed. The Notebook is reachable only from the same machine that launched it.
+## Privacy
+
+The Notebook keeps your work on your own Mac. There are no accounts, no telemetry, and no analytics. Code, bundled datasets, and CSVs loaded from a custom path are all read by the local process and never leave the machine.
+
+Only the Notebook's own editor can run code. The local server answers on `127.0.0.1`, making it reachable from this Mac alone, and refuses to start if the address is changed. Each launch creates a private key that the editor uses behind the scenes every time you press Run.
 
 ## Bundled datasets
 
