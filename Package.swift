@@ -23,6 +23,11 @@ let package = Package(
             name: "PelicanTests",
             dependencies: ["Pelican"],
             path: "Tests/PelicanTests"
+        ),
+        .testTarget(
+            name: "AppTests",
+            dependencies: ["App"],
+            path: "Tests/AppTests"
         )
     ]
 )
