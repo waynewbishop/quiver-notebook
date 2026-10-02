@@ -22,7 +22,8 @@ print()
 // 50% — the input to the IQR outlier rule in the next example.
 guard let q = responseTimes.quartiles(),
       let p90 = responseTimes.percentile(90.0) else {
-    exit(0)
+    print("Couldn't compute quartiles for responseTimes.")
+    exit(1)
 }
 
 print(q)

@@ -11,7 +11,8 @@
 // the N×N matrix of r values.
 
 guard let housing = Dataset.californiaHousing else {
-    exit(0)
+    print("Couldn't load Dataset.californiaHousing.")
+    exit(1)
 }
 
 let panel = housing.toPanel()
@@ -34,7 +35,8 @@ print()
 let income = panel["median_income"]
 let value = panel["median_house_value"]
 guard let r = income.correlation(with: value) else {
-    exit(0)
+    print("Couldn't compute the correlation between income and value.")
+    exit(1)
 }
 print("median_income vs median_house_value:")
 print("  r =", String(format: "%.3f", r))

@@ -11,7 +11,8 @@
 
 guard let bikes = Dataset.bikeSharing,
       let cnt = bikes["cnt"] else {
-    exit(0)
+    print("Couldn't load the cnt column from Dataset.bikeSharing.")
+    exit(1)
 }
 
 // First three weeks of daily counts.

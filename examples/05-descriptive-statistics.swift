@@ -21,7 +21,8 @@ let scores = [78.0, 82.0, 91.0, 67.0, 88.0, 75.0, 94.0, 71.0, 85.0, 79.0]
 guard let s = scores.summary(),
       let variance = scores.variance(),
       let se = scores.standardError() else {
-    exit(0)
+    print("Couldn't compute statistics for scores.")
+    exit(1)
 }
 
 print("scores:", scores)

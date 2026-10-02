@@ -22,7 +22,8 @@ let df = Double(n - 1)
 guard let mean = reactionTimes.mean(),
       let se = reactionTimes.standardError(),
       let tCritical = Distributions.t.quantile(p: 0.975, df: df) else {
-    exit(0)
+    print("Couldn't compute the mean, standard error, or t critical value.")
+    exit(1)
 }
 
 let margin = tCritical * se

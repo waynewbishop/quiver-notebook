@@ -19,7 +19,8 @@ let population = [Double].randomExponential(10_000, rate: 0.5, using: &rng)
 
 guard let popMean = population.mean(),
       let popStd = population.standardDeviation() else {
-    exit(0)
+    print("Couldn't compute the population mean and standard deviation.")
+    exit(1)
 }
 
 print("population:")
@@ -42,7 +43,8 @@ let sampleMeans = population.samplingDistributionOfMean(
 
 guard let meansMean = sampleMeans.mean(),
       let meansStd = sampleMeans.standardDeviation() else {
-    exit(0)
+    print("Couldn't compute the mean and standard deviation of the sample means.")
+    exit(1)
 }
 
 print("distribution of 1,000 sample means (n = 50 each):")

@@ -11,7 +11,8 @@
 // shape extends to the multi-class case.
 
 guard let iris = Dataset.iris else {
-    exit(0)
+    print("Couldn't load Dataset.iris.")
+    exit(1)
 }
 
 let panel = iris.toPanel()

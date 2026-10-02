@@ -35,7 +35,8 @@ print()
 // Boolean-mask composition (.or) builds the fence test from two
 // element-wise comparisons, no manual loop required.
 guard let q = dailySpending.quartiles() else {
-    exit(0)
+    print("Couldn't compute quartiles for dailySpending.")
+    exit(1)
 }
 
 let lowerFence = q.q1 - 1.5 * q.iqr

@@ -25,7 +25,8 @@
 // more, where one hit standing far above the field is a real signal.
 
 guard let glove = Dataset.glove50d else {
-    exit(0)
+    print("Couldn't load Dataset.glove50d.")
+    exit(1)
 }
 
 // The same embedder as example 22: average the GloVe vectors of the

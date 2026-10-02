@@ -36,7 +36,8 @@ print()
 // view-only: identical numbers, two API surfaces.
 guard let mean = reactionTimes.mean(),
       let std = reactionTimes.standardDeviation() else {
-    exit(0)
+    print("Couldn't compute the mean and standard deviation for reactionTimes.")
+    exit(1)
 }
 print("vector mean: ", String(format: "%.2f", mean))
 print("vector std:  ", String(format: "%.2f", std))

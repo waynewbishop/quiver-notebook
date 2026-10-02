@@ -11,7 +11,8 @@
 // call away.
 
 guard let iris = Dataset.iris else {
-    exit(0)
+    print("Couldn't load Dataset.iris.")
+    exit(1)
 }
 
 // A Panel is Quiver's named-column container for tabular data — each

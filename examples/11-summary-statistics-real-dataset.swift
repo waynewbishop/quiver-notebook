@@ -9,7 +9,8 @@
 // the default for standardDeviation() and variance() on a single column.
 
 guard let housing = Dataset.californiaHousing else {
-    exit(0)
+    print("Couldn't load Dataset.californiaHousing.")
+    exit(1)
 }
 
 // A Panel is Quiver's named-column container: each column is a [Double]

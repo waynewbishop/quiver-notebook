@@ -13,7 +13,8 @@
 // from a watch sensor are the ones doing the work below.
 
 guard let glove = Dataset.glove50d else {
-    exit(0)
+    print("Couldn't load Dataset.glove50d.")
+    exit(1)
 }
 
 // Peek at the first three words by frequency rank.

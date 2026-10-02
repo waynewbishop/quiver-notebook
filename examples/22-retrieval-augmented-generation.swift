@@ -22,7 +22,8 @@
 // the embed-once, rank-each-query work for us.
 
 guard let glove = Dataset.glove50d else {
-    exit(0)
+    print("Couldn't load Dataset.glove50d.")
+    exit(1)
 }
 
 // An embedding source. Embed text by averaging the GloVe vectors of its

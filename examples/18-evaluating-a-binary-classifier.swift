@@ -13,7 +13,8 @@
 // the previous example; what is new is the evaluation surface.
 
 guard let titanic = Dataset.titanic else {
-    exit(0)
+    print("Couldn't load Dataset.titanic.")
+    exit(1)
 }
 
 let panel = titanic.toPanel()
@@ -21,8 +22,7 @@ let panel = titanic.toPanel()
 // Drop Age and Embarked because they contain missing values that would
 // derail this example's evaluation focus. The five features below have
 // no NaNs and are a reasonable subset for this evaluation example.
-// (Age is a strong survival predictor in its own right; Quiver's
-// imputation tools are demonstrated separately.)
+// (Age is a strong survival predictor in its own right.)
 let featureColumns = ["Pclass", "Sex", "SibSp", "Parch", "Fare"]
 
 let (train, test) = panel.trainTestSplit(testRatio: 0.3, seed: 42)
