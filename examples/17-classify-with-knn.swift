@@ -38,8 +38,3 @@ let predictions = model.predict(testFeatures)
 // Accuracy: fraction of test rows the model labeled correctly.
 let accuracy = predictions.accuracy(actual: testLabels, positiveLabel: 1)
 print("accuracy:", String(format: "%.3f", accuracy))
-print()
-
-// classificationReport prints precision, recall, F1, and support
-// for the positive class alongside overall accuracy.
-print(predictions.classificationReport(actual: testLabels))

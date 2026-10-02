@@ -9,7 +9,8 @@
 // t_critical is the quantile of the t-distribution at the chosen
 // confidence level and degrees of freedom (n − 1).
 
-// Reaction times (ms) for a single subject across 30 trials.
+// Reaction times (ms) for a single subject across 30 trials — the same
+// data example 09 promoted into a Panel.
 let reactionTimes: [Double] = [
     312, 298, 305, 287, 320, 294, 301, 315, 289, 308,
     297, 311, 282, 319, 303, 296, 285, 309, 314, 293,

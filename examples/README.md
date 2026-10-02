@@ -1,6 +1,6 @@
 # Quiver Notebook examples
 
-Twenty-three focused examples that walk the surface of Quiver from a single line of vector arithmetic to word-embedding analogies. Each file is a complete, runnable program — open one in the Notebook and the result prints in seconds.
+Twenty-one focused examples that walk the surface of Quiver from a single line of vector arithmetic to word-embedding analogies. Each file is a complete, runnable program — open one in the Notebook and the result prints in seconds.
 
 The order is a curriculum, not a catalog. Read them top to bottom and the framework teaches itself.
 
@@ -35,8 +35,7 @@ When a column is not enough, `Panel` adds named columns and aligned rows. Every 
 | File | What it shows |
 | --- | --- |
 | `09-from-vector-to-table.swift` | Promoting a `[Double]` into a one-column Panel |
-| `10-load-a-bundled-dataset.swift` | `Dataset.iris` and the bundled-data on-ramp |
-| `11-summary-statistics-real-dataset.swift` | `panel.summary()` on California Housing |
+| `10-load-a-bundled-dataset.swift` | `Dataset.iris`, the bundled-data on-ramp, and `panel.summary()` |
 | `12-correlation-between-columns.swift` | Pearson r and the full correlation matrix |
 
 ## Reasoning Under Uncertainty
@@ -60,7 +59,6 @@ Quiver ships several models — linear regression, KNN, K-Means — alongside th
 | `19-kmeans-clustering.swift` | `KMeans` unsupervised clustering |
 | `20-explore-word-embeddings.swift` | GloVe 50d — `king − man + woman ≈ queen` |
 | `22-retrieval-augmented-generation.swift` | Chunk a passage, embed each fragment, retrieve the top match for a question by meaning |
-| `23-attention-entropy.swift` | Shannon entropy of an attention distribution, and the ordinary-vs-strange shift an interpretability study measures |
 | `24-gate-a-retrieval.swift` | Read a retrieval's score field — mean, spread, top score, top z — and decide with `isAboveGate` whether the top hit is worth handing to a model |
 
 ## Concurrency
