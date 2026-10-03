@@ -4,6 +4,10 @@ Twenty-three focused examples that walk the surface of Quiver from a single line
 
 The order is a curriculum, not a catalog. Read them top to bottom and the framework teaches itself.
 
+These examples teach the core arc, not the whole library. For the rest of the surface, see the [Quiver Cookbook](https://github.com/waynewbishop/quiver-cookbook) and the [Quiver documentation](https://waynewbishop.github.io/quiver/documentation/quiver/).
+
+Expected output appears as a comment only where a specific number is the point of the example. Exploratory examples leave the output to the run.
+
 ---
 
 ## Vectors

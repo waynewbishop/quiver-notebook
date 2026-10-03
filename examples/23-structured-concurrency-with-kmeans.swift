@@ -1,5 +1,8 @@
 // Title: Structured Concurrency with KMeans
 //
+// Before this example: 19 (KMeans clustering). This is the only example
+// that uses async and await.
+//
 // A model fit can be heavy, and you rarely want it blocking the context that
 // asked for it. Task.detached starts an independent task that runs on its own,
 // and await suspends until it hands the result back — no extra library needed.

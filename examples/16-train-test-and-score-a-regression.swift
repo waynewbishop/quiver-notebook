@@ -14,11 +14,15 @@
 // standard errors, t-statistics, p-values, and confidence intervals —
 // the inference surface that says whether a slope is real or noise.
 
-// House size (sq ft) and price (USD thousands).
-let data = Panel([
-    ("size",  [1000.0, 1200.0, 1500.0, 1800.0, 2000.0, 2200.0, 2500.0, 2800.0, 3000.0, 3200.0]),
-    ("price", [180.0, 210.0, 260.0, 295.0, 325.0, 360.0, 410.0, 455.0, 485.0, 515.0])
-])
+// The California Housing districts from example 11. One feature, median
+// income (tens of thousands of USD), predicts median house value (USD) —
+// the pair example 11 found most strongly correlated.
+guard let housing = Dataset.californiaHousing else {
+    print("Couldn't load Dataset.californiaHousing.")
+    exit(1)
+}
+
+let data = housing.toPanel()
 
 // 30% of rows held out for testing. Same seed = same split every run.
 let (train, test) = data.trainTestSplit(testRatio: 0.3, seed: 42)
@@ -27,16 +31,16 @@ print("train rows:", train.shape.rows)
 print("test rows: ", test.shape.rows)
 print()
 
-let trainFeatures = train.toMatrix(columns: ["size"])
-let trainTargets  = train["price"]
-let testFeatures  = test.toMatrix(columns: ["size"])
-let testTargets   = test["price"]
+let trainFeatures = train.toMatrix(columns: ["median_income"])
+let trainTargets  = train["median_house_value"]
+let testFeatures  = test.toMatrix(columns: ["median_income"])
+let testTargets   = test["median_house_value"]
 
 let model = try LinearRegression.fit(features: trainFeatures, targets: trainTargets)
 
 // The fit is a row of coefficients, and equation() writes them out as a
-// plain formula — intercept first, then the price per square foot. A model
-// you can read by hand is not a black box.
+// plain formula — intercept first, then the dollars of house value each
+// unit of median income adds. A model you can read by hand is not a black box.
 print("fitted model:", model.equation())
 print()
 

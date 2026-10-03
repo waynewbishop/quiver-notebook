@@ -1,5 +1,9 @@
 // Title: Retrieval for a Question
 //
+// Before this example: 04 (cosine similarity) and 20 (word embeddings).
+// The code writes two protocol conformances and uses a generic type, so
+// it assumes comfort with Swift structs and protocols.
+//
 // Retrieval-augmented generation answers a question from a specific
 // document instead of from a model's training. The first half of that
 // pipeline — the half Quiver owns — is retrieval: split the document
