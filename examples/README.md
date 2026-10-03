@@ -1,6 +1,6 @@
 # Quiver Notebook examples
 
-Twenty-one focused examples that walk the surface of Quiver from a single line of vector arithmetic to word-embedding analogies. Each file is a complete, runnable program — open one in the Notebook and the result prints in seconds.
+Twenty-three focused examples that walk the surface of Quiver from a single line of vector arithmetic to word-embedding analogies. Each file is a complete, runnable program — open one in the Notebook and the result prints in seconds.
 
 The order is a curriculum, not a catalog. Read them top to bottom and the framework teaches itself.
 
@@ -26,7 +26,7 @@ Once the vector is a measured thing, the next questions are about its shape. `su
 | `05-descriptive-statistics.swift` | The full descriptive surface — `summary()`, plus variance, std error, mode |
 | `06-histogram-and-quartiles.swift` | Histogram bins and the `Quartiles` struct |
 | `07-outlier-detection.swift` | Z-score rule vs. IQR rule, side by side |
-| `08-percent-change.swift` | Time-series primitives on real bike-sharing data |
+| `08-frequency-table.swift` | `distinctCounts()` and `mode()` on a discrete column, where a count by value shows what the mean hides |
 
 ## Working with Panels
 
@@ -36,16 +36,18 @@ When a column is not enough, `Panel` adds named columns and aligned rows. Every 
 | --- | --- |
 | `09-from-vector-to-table.swift` | Promoting a `[Double]` into a one-column Panel |
 | `10-load-a-bundled-dataset.swift` | `Dataset.iris`, the bundled-data on-ramp, and `panel.summary()` |
-| `12-correlation-between-columns.swift` | Pearson r and the full correlation matrix |
+| `11-correlation-between-columns.swift` | Pearson r and the full correlation matrix |
+| `12-percent-change.swift` | Time-series primitives on real bike-sharing data |
 
 ## Reasoning Under Uncertainty
 
-Description is what the data says; inference is what the data implies. Two examples build the inferential vocabulary: sampling distributions and confidence intervals.
+Description is what the data says; inference is what the data implies. Three examples build the inferential vocabulary: sampling distributions, confidence intervals, and hypothesis tests.
 
 | File | What it shows |
 | --- | --- |
-| `14-central-limit-theorem.swift` | Random distributions and the sampling distribution of the mean |
-| `15-confidence-interval.swift` | `Distributions.t.quantile` and `standardError()` |
+| `13-central-limit-theorem.swift` | Random distributions and the sampling distribution of the mean |
+| `14-confidence-interval.swift` | `Distributions.t.quantile` and `standardError()` |
+| `15-one-sample-t-test.swift` | A one-sample t-test with `Distributions.t.cdf`, and why it agrees with the interval |
 
 ## Models and Embeddings
 
@@ -58,8 +60,8 @@ Quiver ships several models — linear regression, KNN, K-Means — alongside th
 | `18-evaluating-a-binary-classifier.swift` | `ConfusionMatrix` and `ClassificationReport` on Titanic |
 | `19-kmeans-clustering.swift` | `KMeans` unsupervised clustering |
 | `20-explore-word-embeddings.swift` | GloVe 50d — `king − man + woman ≈ queen` |
-| `22-retrieval-augmented-generation.swift` | Chunk a passage, embed each fragment, retrieve the top match for a question by meaning |
-| `24-gate-a-retrieval.swift` | Read a retrieval's score field — mean, spread, top score, top z — and decide with `isAboveGate` whether the top hit is worth handing to a model |
+| `21-retrieval-augmented-generation.swift` | Chunk a passage, embed each fragment, retrieve the top match for a question by meaning |
+| `22-gate-a-retrieval.swift` | Read a retrieval's score field — mean, spread, top score, top z — and decide with `isAboveGate` whether the top hit is worth handing to a model |
 
 ## Concurrency
 
@@ -67,4 +69,4 @@ A fit can be heavy. Swift's structured concurrency runs several at once with no 
 
 | File | What it shows |
 | --- | --- |
-| `21-structured-concurrency-with-kmeans.swift` | `Task.detached` runs a `KMeans` fit off the calling context; `await` returns the model |
+| `23-structured-concurrency-with-kmeans.swift` | `Task.detached` runs a `KMeans` fit off the calling context; `await` returns the model |

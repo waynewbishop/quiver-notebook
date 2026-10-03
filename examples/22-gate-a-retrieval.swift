@@ -1,6 +1,6 @@
 // Title: Gate a Retrieval
 //
-// Example 22 retrieves the best fragment for a question. But retrieval
+// Example 21 retrieves the best fragment for a question. But retrieval
 // always returns something — ranking only asks which chunk is closest,
 // never whether the closest one is actually close. Ask this corpus about
 // phone batteries and a chunk about dough still comes back first. Handing
@@ -29,7 +29,7 @@ guard let glove = Dataset.glove50d else {
     exit(1)
 }
 
-// The same embedder as example 22: average the GloVe vectors of the
+// The same embedder as example 21: average the GloVe vectors of the
 // tokens, and return nil when no token is recognized.
 struct GloVeEmbedder: Embedder {
     let table: EmbeddingsDataset
@@ -45,7 +45,7 @@ struct GloVeEmbedder: Embedder {
     }
 }
 
-// The same chunking strategy as example 22: split on blank lines,
+// The same chunking strategy as example 21: split on blank lines,
 // letting asChunks() trim, drop empties, and number what remains.
 struct ParagraphChunker: Chunker {
     func chunk(_ text: String) -> [Chunk] {
