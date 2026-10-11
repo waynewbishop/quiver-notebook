@@ -110,9 +110,10 @@ the project's planning workspace; the CSV here is the canonical artifact.
 **Generative model:**
 - 60-second tempo run for a 70 kg moderately trained runner, sampled at 1 Hz.
 - `pace` is approximately constant at 3.60 m/s with σ = 0.05 m/s — no drift,
-  which is the load-bearing TES decoupling signal.
+  so the heart-rate rise is not explained by a change in work.
 - `heartRate` follows a deterministic linear ramp from 162 to 168 BPM (the
-  +6 BPM cardiac-drift signal) with σ = 1.0 BPM Gaussian noise added in a
+  +6 BPM heart-rate response lag at effort onset; not cardiac drift, which
+  unfolds over efforts of tens of minutes) with σ = 1.0 BPM Gaussian noise added in a
   second pass, then clamped to [158, 172] BPM.
 - `cadence` is approximately constant at 170 spm with σ = 1.0 spm noise.
 - `altitude` is a gentle sinusoid (1.8 m peak-to-peak, one cycle per minute)
@@ -144,7 +145,7 @@ two CSVs describe the same 60-second event at different sample rates.
   (3,000 samples).
 - `magnitude = g + A₁·sin(2π·f₁·τ) + A₂·sin(2π·2·f₁·τ) + ε`, where
   `g = 9.81 m/s²`, `f₁ = 2.833 Hz` (cadence at 170 spm), `A₁ = 0.6g`
-  (footstrike amplitude), `A₂ = 0.25·A₁` (two-legged gait harmonic), and
+  (footstrike amplitude), `A₂ = 0.25·A₁` (second harmonic of the step frequency), and
   `ε ~ N(0, (0.08g)²)` (broadband sensor noise).
 - Sinusoid phase is computed from the sample index, not accumulated step
   by step, to avoid ULP-scale drift across 3,000 samples.
