@@ -4,8 +4,8 @@
     "summary" : "Broadcasts scalar subtraction from each element of the vector - Parameters: - lhs: The vector - rhs: The scalar value to subtract - Returns: A new vector with the scalar subtracted from each element"
   },
   "!=" : {
-    "signature" : "static func != (lhs: Self, rhs: Self) -> Bool",
-    "summary" : "Returns a Boolean value indicating whether two values are not equal."
+    "signature" : "static func != (lhs: borrowing Self, rhs: borrowing Self) -> Bool",
+    "summary" : null
   },
   "*" : {
     "signature" : "static func * (lhs: Element, rhs: [Element]) -> [Element]",
@@ -19,6 +19,10 @@
     "signature" : "static func + (lhs: Element, rhs: [Element]) -> [Element]",
     "summary" : "Broadcasts scalar addition to each element of the vector (commutative) - Parameters: - lhs: The scalar value to add - rhs: The vector - Returns: A new vector with the scalar added to each element"
   },
+  "==" : {
+    "signature" : "static func == (lhs: TrueEffortScore, rhs: TrueEffortScore) -> Bool",
+    "summary" : null
+  },
   "accuracy" : {
     "signature" : "func accuracy(actual: [Int], positiveLabel: Int = 1) -> Double",
     "summary" : "Fraction of predictions that match the actual labels: (TP + TN) \/ total."
@@ -26,6 +30,10 @@
   "add" : {
     "signature" : "func add(_ other: [[Float]]) -> [[Float]]",
     "summary" : "Element-wise addition of two matrices - Parameter other: The second matrix - Returns: A new matrix where each element is the sum of corresponding elements"
+  },
+  "adjusted" : {
+    "signature" : "let adjusted: Double",
+    "summary" : null
   },
   "adjustedRSquared" : {
     "signature" : "let adjustedRSquared: Double",
@@ -65,11 +73,19 @@
   },
   "allSatisfy" : {
     "signature" : "func allSatisfy(_ predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
-    "summary" : "Returns a Boolean value indicating whether every element of a sequence satisfies a given predicate."
+    "summary" : null
   },
   "analogy" : {
     "signature" : "public func analogy(_ a: String, _ b: String, _ c: String, k: Int = 1) -> [(rank: Int, word: String, score: Double)]",
     "summary" : "Returns the `k` words that best complete the analogy \"a is to b as c is to ?\". The classic example is `analogy(\"king\", \"man\", \"woman\")`, which targets `king − man + woman` and typically returns `\"queen\"`. Returns `[]` if any of `a`, `b`, or `c` is not in the vocabulary."
+  },
+  "anchorLabels" : {
+    "signature" : "static let anchorLabels: [EffortClass]",
+    "summary" : "The effort labels parallel to `anchorSamples`. The old-hard rows split between `.threshold` (sustained race pace) and `.hard` (climb, descent, and above-threshold surges) by their kinematics; that split is a judgment call, provisional until the validation study."
+  },
+  "anchorSamples" : {
+    "signature" : "static let anchorSamples: [[Double]]",
+    "summary" : "Classifier feature rows for the anchor set: [heartRate, pace, cadence, grade, vertOsc]."
   },
   "and" : {
     "signature" : "func and(_ other: [Bool]) -> [Bool]",
@@ -103,6 +119,14 @@
     "signature" : "extension Array where Element == Double",
     "summary" : "Fourier transform operations on real-valued signal arrays."
   },
+  "asArray" : {
+    "signature" : "var asArray: [Double] { get }",
+    "summary" : "The z-scores in the classifier's feature order: `[heartRate, pace, cadence, grade, verticalOscillation]`."
+  },
+  "asChunks" : {
+    "signature" : "func asChunks() -> [Chunk]",
+    "summary" : "Turns a sequence of raw pieces into trimmed, numbered chunks."
+  },
   "asDictionary" : {
     "signature" : "public func asDictionary() -> [String: [Double]]",
     "summary" : "Returns the full word-to-vector dictionary. Useful when an algorithm expects a `[String: [Double]]` directly."
@@ -127,9 +151,17 @@
     "signature" : "func averaged() -> [Double]?",
     "summary" : "Calculates the element-wise average of a collection of vectors."
   },
+  "averageHeartRate" : {
+    "signature" : "let averageHeartRate: Double",
+    "summary" : "The recorded heart rate averaged over active time, in beats per minute. Weighted by time alone, not by trust, so it matches the average a watch shows for the run. Present on every run, including a first run."
+  },
   "bandEnergy" : {
     "signature" : "func bandEnergy(in range: ClosedRange<Double>) -> Double",
     "summary" : "Returns the total energy contained in the frequency band defined by `range`."
+  },
+  "baseline" : {
+    "signature" : "let baseline: TESBaseline?",
+    "summary" : "The baseline that scored this run, nil on a first run before any baseline exists. It is captured before `finalize()` refits, so it can differ from `tes.baseline`, which has already learned from this run. Read it with `baseline?.equation()`."
   },
   "Bayes" : {
     "signature" : "enum Bayes",
@@ -187,6 +219,10 @@
     "signature" : "private static func bundledURL(for csvFile: String) -> URL",
     "summary" : "Resolves a bundled CSV path relative to the sandbox's working directory."
   },
+  "cadence" : {
+    "signature" : "let cadence: Double",
+    "summary" : "Cadence, in standard deviations from the training mean."
+  },
   "californiaHousing" : {
     "signature" : "public static var californiaHousing: TabularDataset?",
     "summary" : "20,640 rows, 10 columns. Regression. Target column: `median_house_value`."
@@ -223,6 +259,22 @@
     "signature" : "func choose(where condition: [Bool], otherwise other: [Element]) -> [Element]",
     "summary" : "Returns a new array with elements conditionally chosen from this array or another."
   },
+  "chunk" : {
+    "signature" : "func chunk(_ text: String) -> [Chunk]",
+    "summary" : "Splits a document into ordered fragments."
+  },
+  "Chunk" : {
+    "signature" : "struct Chunk",
+    "summary" : "A single fragment of a larger document, paired with its position."
+  },
+  "chunked" : {
+    "signature" : "func chunked(using chunker: some Chunker) -> [Chunk]",
+    "summary" : "Splits this document into fragments using the given strategy."
+  },
+  "Chunker" : {
+    "signature" : "protocol Chunker : Sendable",
+    "summary" : "A strategy for splitting a document into retrievable fragments."
+  },
   "classDistribution" : {
     "signature" : "func classDistribution() -> [Int : Int]",
     "summary" : "Returns the number of samples per class as a dictionary."
@@ -242,6 +294,10 @@
   "ClassificationReport" : {
     "signature" : "struct ClassificationReport",
     "summary" : "A frozen snapshot of a multi-class classification's evaluation metrics."
+  },
+  "classifier" : {
+    "signature" : "var classifier: Pipeline<KNearestNeighbors> { get }",
+    "summary" : "The effort classifier, seeded from the population anchors and any personal labeled samples. Frozen after seeding, since re-fitting it on its own predictions would be self-training."
   },
   "Classifier" : {
     "signature" : "protocol Classifier",
@@ -277,7 +333,7 @@
   },
   "Coefficients" : {
     "signature" : "protocol Coefficients",
-    "summary" : "A model whose fit is summarized by a vector of coefficients."
+    "summary" : "A model you can read the numbers out of."
   },
   "column" : {
     "signature" : "func column(at index: Element.Index) -> [Element.Element]",
@@ -305,11 +361,19 @@
   },
   "compactMap" : {
     "signature" : "func compactMap<ElementOfResult>(_ transform: (Self.Element) throws -> ElementOfResult?) rethrows -> [ElementOfResult]",
-    "summary" : "Returns an array containing the non-`nil` results of calling the given transformation with each element of this sequence."
+    "summary" : null
   },
   "compare" : {
     "signature" : "func compare<Comparator>(_ lhs: Comparator.Compared, _ rhs: Comparator.Compared) -> ComparisonResult where Comparator : SortComparator, Comparator == Self.Element",
-    "summary" : "If `lhs` is ordered before `rhs` in the ordering described by the given sequence of `SortComparator`s"
+    "summary" : null
+  },
+  "componentCount" : {
+    "signature" : "let componentCount: Int",
+    "summary" : "Number of principal components the model retains."
+  },
+  "components" : {
+    "signature" : "let components: [[Double]]",
+    "summary" : "The principal components, one per row — a (componentCount × featureCount) matrix. With three input features and two components requested, `components` has two rows of three values, and `components[0]` is the direction of largest variance. Each row is a unit vector, sign-fixed so its largest-magnitude element is positive."
   },
   "conditionalByColumn" : {
     "signature" : "func conditionalByColumn() -> [[Double]]",
@@ -318,6 +382,10 @@
   "conditionalByRow" : {
     "signature" : "func conditionalByRow() -> [[Double]]",
     "summary" : "Returns the conditional probability P(column | row)."
+  },
+  "conditioning" : {
+    "signature" : "var conditioning: Double? { get }",
+    "summary" : "Conditioning of the standardized features — how redundant the signals are. A runner's pace, cadence, grade, and vertical oscillation move together, so this often reads in the tens, which is information rather than failure: the ridge penalty keeps the fit stable. nil when not meaningfully measurable. It is a 1-norm condition number of XᵀX, not an SVD condition number and not κ(X)."
   },
   "conditionNumber" : {
     "signature" : "var conditionNumber: Double { get }",
@@ -345,11 +413,15 @@
   },
   "contains" : {
     "signature" : "func contains(where predicate: (Self.Element) throws -> Bool) rethrows -> Bool",
-    "summary" : "Returns a Boolean value indicating whether the sequence contains an element that satisfies the given predicate."
+    "summary" : null
   },
   "ContingencyTable" : {
     "signature" : "struct ContingencyTable",
     "summary" : "A labeled two-dimensional table of integer counts."
+  },
+  "converged" : {
+    "signature" : "let converged: Bool",
+    "summary" : "Whether the off-diagonal norm reached the convergence tolerance within the sweep limit. An unconverged result is still a valid decomposition — the iterates remain exactly orthogonal-similar to the input — but its off-diagonal residual is larger than the tolerance guarantees."
   },
   "correlation" : {
     "signature" : "func correlation(with other: [Element]) -> Element?",
@@ -372,12 +444,16 @@
     "summary" : "Calculates cosine similarity between each vector in the array and a target vector."
   },
   "count" : {
-    "signature" : "func count<E>(where predicate: (Self.Element) throws(E) -> Bool) throws(E) -> Int where E : Error",
-    "summary" : "Returns the number of elements in the sequence that satisfy the given predicate."
+    "signature" : "let count: Int",
+    "summary" : "Number of training samples belonging to this class."
   },
   "counts" : {
     "signature" : "let counts: [[Int]]",
     "summary" : "The cell counts as `counts[row][column]`. Rectangular."
+  },
+  "covarianceMatrix" : {
+    "signature" : "func covarianceMatrix(ddof: Int = 1) -> [[Double]]?",
+    "summary" : "Computes the covariance matrix of a design matrix whose rows are samples and columns are features."
   },
   "csvRow" : {
     "signature" : "func csvRow() -> String",
@@ -399,6 +475,22 @@
     "signature" : "func cumulativeTrapezoidal(dt: Double) -> [Double]",
     "summary" : "Returns the running area under the samples — total area accumulated at each time step, plotted as a curve the same length as the input."
   },
+  "currentEffort" : {
+    "signature" : "var currentEffort: EffortClass? { get }",
+    "summary" : "The classifier's effort band for the latest recorded sample, nil before the first sample."
+  },
+  "currentResidual" : {
+    "signature" : "var currentResidual: Double? { get }",
+    "summary" : "Observed minus expected heart rate for the latest sample, nil before a baseline exists."
+  },
+  "currentScore" : {
+    "signature" : "var currentScore: Double { get }",
+    "summary" : "The live True Effort Score, climbing through the run against the fixed 2700 anchor."
+  },
+  "currentSignals" : {
+    "signature" : "var currentSignals: EffortSignals? { get }",
+    "summary" : "The latest sample's signals as z-scores against the classifier's training distribution, so a UI can spot which signal is an outlier — a large negative `grade` with a near-zero `heartRate` is the downhill signature. nil before the first sample."
+  },
   "Dataset" : {
     "signature" : "public enum Dataset {}",
     "summary" : "Public namespace for bundled datasets."
@@ -418,6 +510,10 @@
   "degreesOfFreedom" : {
     "signature" : "let degreesOfFreedom: Int",
     "summary" : "The residual degrees of freedom, `n - p`."
+  },
+  "deltaTimes" : {
+    "signature" : "var deltaTimes: [TimeInterval] { get }",
+    "summary" : "The per-moment durations, in seconds; the first is zero."
   },
   "denominator" : {
     "signature" : "let denominator: Int",
@@ -440,8 +536,8 @@
     "summary" : "Human-readable summary of the dataset's origin, row count, columns, and any cleaning that was applied. For example, the bundled `iris` dataset's description records that it holds 150 rows across three species, four numeric features, and was originally published by R. A. Fisher in 1936."
   },
   "determinant" : {
-    "signature" : "var determinant: Element.Element { get }",
-    "summary" : "Returns the determinant of a square matrix."
+    "signature" : "var determinant: Double { get }",
+    "summary" : "The determinant of the original matrix, recovered as the permutation sign times the product of the diagonal of `U`."
   },
   "diag" : {
     "signature" : "static func diag(_ diagonal: [Element]) -> [[Element]]",
@@ -459,13 +555,21 @@
     "signature" : "public let dimensions: Int",
     "summary" : "Number of components in each embedding vector — `50` for the bundled GloVe-50d slice."
   },
+  "discardRun" : {
+    "signature" : "mutating func discardRun()",
+    "summary" : "Discards the in-progress run without folding it into history."
+  },
   "distance" : {
-    "signature" : "func distance(to other: [Element]) -> Element",
-    "summary" : "Calculates the Euclidean distance between two points or vectors."
+    "signature" : "func distance(to other: [Double], metric: DistanceMetric) -> Double",
+    "summary" : "Measures the distance between two `[Double]` vectors under the chosen metric."
   },
   "DistanceMetric" : {
     "signature" : "enum DistanceMetric",
-    "summary" : "The distance metric used to compare samples in K-Nearest Neighbors."
+    "summary" : "The distance metric used to compare two vectors."
+  },
+  "DistanceMetric.chebyshev" : {
+    "signature" : "case chebyshev",
+    "summary" : "Chebyshev distance: max|aᵢ − bᵢ|."
   },
   "DistanceMetric.cosine" : {
     "signature" : "case cosine",
@@ -474,6 +578,18 @@
   "DistanceMetric.euclidean" : {
     "signature" : "case euclidean",
     "summary" : "Euclidean distance: √Σ(aᵢ − bᵢ)²."
+  },
+  "DistanceMetric.manhattan" : {
+    "signature" : "case manhattan",
+    "summary" : "Manhattan distance: Σ|aᵢ − bᵢ|."
+  },
+  "DistanceMetric.minkowski" : {
+    "signature" : "case minkowski(p: Double)",
+    "summary" : "Minkowski distance: (Σ|aᵢ − bᵢ|ᵖ)^(1\/p)."
+  },
+  "DistanceMetric.squaredEuclidean" : {
+    "signature" : "case squaredEuclidean",
+    "summary" : "Squared Euclidean distance: Σ(aᵢ − bᵢ)²."
   },
   "distinct" : {
     "signature" : "func distinct() -> [Element]",
@@ -529,15 +645,71 @@
   },
   "drop" : {
     "signature" : "func drop(while predicate: (Self.Element) throws -> Bool) rethrows -> DropWhileSequence<Self>",
-    "summary" : "Returns a sequence by skipping the initial, consecutive elements that satisfy the given predicate."
+    "summary" : null
   },
   "dropFirst" : {
     "signature" : "func dropFirst(_ k: Int = 1) -> DropFirstSequence<Self>",
-    "summary" : "Returns a sequence containing all but the given number of initial elements."
+    "summary" : null
   },
   "dropLast" : {
     "signature" : "func dropLast(_ k: Int = 1) -> [Self.Element]",
-    "summary" : "Returns a sequence containing all but the given number of final elements."
+    "summary" : null
+  },
+  "durationFactor" : {
+    "signature" : "let durationFactor: Double",
+    "summary" : null
+  },
+  "EffortClass" : {
+    "signature" : "enum EffortClass",
+    "summary" : "The five effort categories. The middle three are named as training zones; the top category is named for the load itself, because it holds heavy muscular work as well as cardiovascular effort. The `threshold` category anchors the score, so one hour held at threshold reads 100 on the raw score, following the convention of power-based training stress scores."
+  },
+  "EffortClass.easy" : {
+    "signature" : "case easy",
+    "summary" : null
+  },
+  "EffortClass.hard" : {
+    "signature" : "case hard",
+    "summary" : null
+  },
+  "EffortClass.recovery" : {
+    "signature" : "case recovery",
+    "summary" : null
+  },
+  "EffortClass.tempo" : {
+    "signature" : "case tempo",
+    "summary" : null
+  },
+  "EffortClass.threshold" : {
+    "signature" : "case threshold",
+    "summary" : null
+  },
+  "effortDistribution" : {
+    "signature" : "let effortDistribution: [EffortClass : Double]",
+    "summary" : null
+  },
+  "EffortSignals" : {
+    "signature" : "struct EffortSignals",
+    "summary" : "The standardized signals for one moment — each value is the z-score of that signal against the classifier's training distribution, so a reading near 0 is typical and a large magnitude is an outlier. This is how a UI reads *why* a moment is unusual: on a steep downhill, `grade` is a large negative outlier while `heartRate` stays near 0, which is the calm-heart, hard-legs signature the raw numbers hide."
+  },
+  "eigenDecomposed" : {
+    "signature" : "func eigenDecomposed() throws -> EigenDecomposition",
+    "summary" : "Computes the eigenvalues and eigenvectors of a symmetric matrix."
+  },
+  "EigenDecomposition" : {
+    "signature" : "struct EigenDecomposition",
+    "summary" : "The result of a symmetric eigendecomposition."
+  },
+  "eigenvalues" : {
+    "signature" : "let eigenvalues: [Double]",
+    "summary" : "Eigenvalues sorted in descending order."
+  },
+  "eigenvectors" : {
+    "signature" : "let eigenvectors: [[Double]]",
+    "summary" : "Orthonormal eigenvectors, one per row. Row `k` pairs with `eigenvalues[k]`. Each eigenvector is sign-fixed so its largest-magnitude element is positive."
+  },
+  "elapsedTime" : {
+    "signature" : "let elapsedTime: TimeInterval",
+    "summary" : null
   },
   "elbowMethod" : {
     "signature" : "static func elbowMethod(data: [[Double]], kRange: ClosedRange<Int>, maxIterations: Int = 100, seed: UInt64? = nil) -> [(k: Int, inertia: Double)]",
@@ -545,7 +717,7 @@
   },
   "elementsEqual" : {
     "signature" : "func elementsEqual<OtherSequence>(_ other: OtherSequence, by areEquivalent: (Self.Element, OtherSequence.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence",
-    "summary" : "Returns a Boolean value indicating whether this sequence and another sequence contain equivalent elements in the same order, using the given predicate as the equivalence test."
+    "summary" : null
   },
   "embed" : {
     "signature" : "func embed(using embeddings: [String : [Double]]) -> [[Double]]",
@@ -558,6 +730,18 @@
   "Embedder" : {
     "signature" : "protocol Embedder : Sendable",
     "summary" : "A source of text embeddings."
+  },
+  "EmbeddingIndex" : {
+    "signature" : "struct EmbeddingIndex<Label> where Label : Decodable, Label : Encodable, Label : Equatable",
+    "summary" : "An on-device vector store: embed each entry once at ingest, then rank the whole corpus against a query by cosine similarity."
+  },
+  "EmbeddingIndex.Entry" : {
+    "signature" : "struct Entry",
+    "summary" : "One stored entry: a payload and its embedding, in ingest order. `Codable` so a built index persists to disk and loads at the next launch."
+  },
+  "EmbeddingIndex.Snapshot" : {
+    "signature" : "struct Snapshot",
+    "summary" : "The persistable state of an index: its entries, labels and vectors, without the embedder."
   },
   "EmbeddingsDataset" : {
     "signature" : "public struct EmbeddingsDataset: CustomStringConvertible, Sendable",
@@ -572,12 +756,16 @@
     "summary" : "Observed and expected fractions for the empirical (68-95-99.7) rule."
   },
   "encode" : {
-    "signature" : "func encode(to encoder: any Encoder) throws",
-    "summary" : "Encodes this value into the given encoder, when the type's `RawValue` is `String`."
+    "signature" : "func encode(to encoder: Encoder) throws",
+    "summary" : "Encodes the pipeline, omitting the reducer key when no reducer is set so that reducer-free pipelines keep their original archive shape."
   },
   "enumerated" : {
     "signature" : "func enumerated() -> EnumeratedSequence<Self>",
-    "summary" : "Returns a sequence of pairs (*n*, *x*), where *n* represents a consecutive integer starting at zero and *x* represents an element of the sequence."
+    "summary" : null
+  },
+  "equation" : {
+    "signature" : "func equation() -> String",
+    "summary" : "The fitted baseline as a readable equation with each signal named, such as `expected HR = 142.69 - 4.62·pace + 2.87·cadence + …`. It forwards to the wrapped Ridge's ``Coefficients\/equation(variables:response:)``, so it reads the same way as every other linear model's equation. The weights are on standardized features, so each slope is the heart-rate change per standard deviation of its signal and the sizes compare directly."
   },
   "exp" : {
     "signature" : "func exp() -> [Double]",
@@ -599,6 +787,18 @@
     "signature" : "var expected3Sigma: Double { get }",
     "summary" : "The fraction expected within three standard deviations for a Gaussian distribution (0.9973)."
   },
+  "expectedHeartRate" : {
+    "signature" : "let expectedHeartRate: Double?",
+    "summary" : "The heart rate the baseline expected for this run's workload, the session mean in beats per minute. Weighted like `meanResidual`, so the two add up to the trust-weighted average heart rate, which equals `averageHeartRate` when no reading was doubted. nil on a first run."
+  },
+  "explainedVarianceRatios" : {
+    "signature" : "let explainedVarianceRatios: [Double]",
+    "summary" : "The fraction of total variance captured by each retained component. The values sum to 1.0 only when every component is retained (`componentCount == featureCount`); with fewer components the sum is the fraction of variance the projection keeps."
+  },
+  "explainedVariances" : {
+    "signature" : "let explainedVariances: [Double]",
+    "summary" : "The variance captured by each retained component, largest first."
+  },
   "exponentialMean" : {
     "signature" : "func exponentialMean(alpha: Element) -> [Element]",
     "summary" : "Computes the exponential moving average, where recent values carry more weight."
@@ -619,17 +819,25 @@
     "signature" : "let featureCount: Int",
     "summary" : "Number of features the model was trained on. Does not count the intercept term."
   },
+  "featureNames" : {
+    "signature" : "static let featureNames: [String]",
+    "summary" : "The regression feature names, in coefficient order after the intercept."
+  },
   "FeatureScaler" : {
     "signature" : "struct FeatureScaler",
     "summary" : "A column-wise min-max scaler for feature matrices."
   },
   "filter" : {
-    "signature" : "func filter(_ isIncluded: (Self.Element) throws -> Bool) rethrows -> [Self.Element]",
-    "summary" : "Returns an array containing, in order, the elements of the sequence that satisfy the given predicate."
+    "signature" : "func filter<E>(_ isIncluded: (Self.Element) throws(E) -> Bool) throws(E) -> [Self.Element] where E : Error",
+    "summary" : null
   },
   "filtered" : {
     "signature" : "func filtered(where mask: [Bool]) -> Panel",
     "summary" : "Returns a new panel containing only the rows where the mask is true."
+  },
+  "finalize" : {
+    "signature" : "mutating func finalize() -> TESResult?",
+    "summary" : "Closes the run: returns the breakdown, folds the run into history, and re-fits the baseline from the accumulated history (the classifier stays frozen). An indoor run returns its breakdown but leaves history and the baseline untouched. Returns nil when active `timerTime` is below the floor, in which case the run is cleared and not kept."
   },
   "finalLoss" : {
     "signature" : "let finalLoss: Double",
@@ -641,15 +849,15 @@
   },
   "first" : {
     "signature" : "func first(where predicate: (Self.Element) throws -> Bool) rethrows -> Self.Element?",
-    "summary" : "Returns the first element of the sequence that satisfies the given predicate."
+    "summary" : null
   },
   "fit" : {
-    "signature" : "static func fit(features: [[Double]], labels: [Int]) -> Pipeline<GaussianNaiveBayes>",
-    "summary" : "Fits a scaler, trains a Gaussian Naive Bayes classifier, and bundles them into a Pipeline."
+    "signature" : "static func fit(features: [[Double]], labels: [Int], componentCount: Int, k: Int = 3, metric: DistanceMetric = .euclidean, weight: VoteWeight = .uniform) -> Pipeline<KNearestNeighbors>",
+    "summary" : "Fits a scaler, projects the scaled features onto principal components, trains a K-Nearest Neighbors classifier on the projection, and bundles all three into a Pipeline."
   },
   "flatMap" : {
     "signature" : "func flatMap<SegmentOfResult>(_ transform: (Self.Element) throws -> SegmentOfResult) rethrows -> [SegmentOfResult.Element] where SegmentOfResult : Sequence",
-    "summary" : "Returns an array containing the concatenated results of calling the given transformation with each element of this sequence."
+    "summary" : null
   },
   "flattened" : {
     "signature" : "func flattened() -> [Element.Element]",
@@ -661,7 +869,7 @@
   },
   "forEach" : {
     "signature" : "func forEach(_ body: (Self.Element) throws -> Void) rethrows",
-    "summary" : "Calls the given closure on each element in the sequence in the same order as a `for`-`in` loop."
+    "summary" : null
   },
   "formatted" : {
     "signature" : "func formatted<S>(_ style: S) -> S.FormatOutput where Self == S.FormatInput, S : FormatStyle",
@@ -727,6 +935,10 @@
     "signature" : "public static var glove50d: EmbeddingsDataset?",
     "summary" : "25,000 words, 50-dimensional vectors. Lookup column: `word`."
   },
+  "grade" : {
+    "signature" : "let grade: Double",
+    "summary" : "Grade, in standard deviations from the training mean. A large negative value is a steep downhill."
+  },
   "GradientDescent" : {
     "signature" : "struct GradientDescent",
     "summary" : "A regression model trained by batch gradient descent, and the shared optimizer behind every iterative model in Quiver."
@@ -787,6 +999,18 @@
     "signature" : "func head(n: Int = 10) -> String",
     "summary" : "Returns the first rows of the panel as a formatted table."
   },
+  "heartRate" : {
+    "signature" : "let heartRate: Double",
+    "summary" : "Heart rate, in standard deviations from the training mean."
+  },
+  "heartRateModel" : {
+    "signature" : "let heartRateModel: Ridge",
+    "summary" : "The Ridge model that predicts expected heart rate from workload."
+  },
+  "heartRates" : {
+    "signature" : "var heartRates: [Double] { get }",
+    "summary" : "The recorded heart rates, in order."
+  },
   "heatmapData" : {
     "signature" : "func heatmapData(labels: [String]) -> [(x: String, y: String, value: Double)]",
     "summary" : "Computes a correlation matrix and flattens it into labeled tuples for heatmap rendering."
@@ -794,6 +1018,22 @@
   "histogram" : {
     "signature" : "func histogram(bins: Int) -> [(midpoint: Element, count: Int)] where Element : BinaryFloatingPoint",
     "summary" : "Divides data into evenly spaced bins and counts the frequency of values in each."
+  },
+  "history" : {
+    "signature" : "var history: [Workout] { get }",
+    "summary" : "The runner's accumulated workouts — the data the baseline is fit on, and the thing to persist. Grows as `finalize()` folds each run in; bounded by `historyWindow`, `minimumHistoryRuns`, and `historyLimit`."
+  },
+  "historyLimit" : {
+    "signature" : "let historyLimit: Int?",
+    "summary" : "The most workouts retained, oldest dropping off first, applied after the window and the floor. It bounds the refit cost for a runner who logs many runs. nil keeps all."
+  },
+  "historyWindow" : {
+    "signature" : "let historyWindow: TimeInterval?",
+    "summary" : "How far back, in seconds, from the newest run the baseline learns. Runs that start earlier drop off, so the baseline keeps pace with a runner who is improving. nil keeps every run."
+  },
+  "hits" : {
+    "signature" : "let hits: [RetrievedHit<Label>]",
+    "summary" : "The top-k matches, ranked best first."
   },
   "hypotheses" : {
     "signature" : "let hypotheses: [String]",
@@ -807,6 +1047,14 @@
     "signature" : "func imbalanceRatio() -> Double?",
     "summary" : "Returns the ratio of the largest class to the smallest class."
   },
+  "index" : {
+    "signature" : "let index: Int",
+    "summary" : "The position of this fragment in the sequence the chunker produced, starting at zero. A retrieved chunk reports this so the answer can cite which fragment it came from."
+  },
+  "indoorGrade" : {
+    "signature" : "static let indoorGrade: Double",
+    "summary" : "The grade, in percent, recorded for every sample of an indoor run. The watch cannot sense treadmill incline, so an indoor run is scored as level ground at the usual 0.5% setting; an incline the runner sets on the belt is not reflected."
+  },
   "inertia" : {
     "signature" : "let inertia: Double",
     "summary" : "Sum of squared distances from each point to its assigned centroid."
@@ -816,8 +1064,12 @@
     "summary" : "Returns a statistical summary of a 2D matrix including shape, size, type, and aggregate statistics computed across all elements."
   },
   "init" : {
-    "signature" : "init(from decoder: any Decoder) throws",
-    "summary" : "Creates a new instance by decoding from the given decoder, when the type's `RawValue` is `String`."
+    "signature" : "init(history: [Workout], labeledSamples: [[Double]] = [], labels: [EffortClass] = [], lambda: Double = 0.01, k: Int = 3, historyWindow: TimeInterval? = 28 * 86_400, minimumHistoryRuns: Int = 8, historyLimit: Int? = 60) throws",
+    "summary" : "Seeds from existing workouts and optional personal labeled samples, then fits the baseline once. Each labeled sample is a classifier feature row `[heartRate, pace, cadence, grade, verticalOscillation]`, appended to the bundled anchors, so the classifier never trains on less than the anchor set."
+  },
+  "inverseTransform" : {
+    "signature" : "func inverseTransform(_ projected: [[Double]]) -> [[Double]]",
+    "summary" : "Maps projected data back into the original feature space."
   },
   "inverted" : {
     "signature" : "func inverted() throws -> [[Element.Element]]",
@@ -830,6 +1082,14 @@
   "iris" : {
     "signature" : "public static var iris: TabularDataset?",
     "summary" : "150 rows, 5 columns. Classification. Label column: `species` (encoded alphabetically as setosa→0, versicolor→1, virginica→2)."
+  },
+  "isAboveGate" : {
+    "signature" : "func isAboveGate(floor: Double, outlierZ: Double) -> Bool",
+    "summary" : "Whether the top hit clears a relevance gate the caller defines: its score is high enough on its own (`floor`), or it stands out as a clear outlier above the field (`outlierZ` standard deviations)."
+  },
+  "isEmpty" : {
+    "signature" : "var isEmpty: Bool { get }",
+    "summary" : "Whether the index holds no entries."
   },
   "isEqual" : {
     "signature" : "func isEqual(to other: [Element]) -> [Bool]",
@@ -851,13 +1111,21 @@
     "signature" : "func isLessThanOrEqual(_ value: Element) -> [Bool]",
     "summary" : "Checks if each element in this array is less than or equal to the specified value."
   },
+  "isPaused" : {
+    "signature" : "var isPaused: Bool { get }",
+    "summary" : null
+  },
   "iterations" : {
     "signature" : "let iterations: Int",
     "summary" : "Number of iterations the optimizer used before stopping. Equal to `lossHistory.count − 1` because the trajectory begins with the loss at the initial all-zeros parameters."
   },
+  "jacobian" : {
+    "signature" : "func jacobian(of f: ([Double]) -> [Double], at x: [Double], step h: Double = 6e-6) -> [[Double]]",
+    "summary" : "The Jacobian of a vector-valued function, approximated by central differences."
+  },
   "joined" : {
-    "signature" : "func joined<Separator>(separator: Separator) -> JoinedSequence<Self> where Separator : Sequence, Separator.Element == Self.Element.Element",
-    "summary" : "Returns the concatenated elements of this sequence of sequences, inserting the given separator between each element."
+    "signature" : "func joined() -> FlattenSequence<Self>",
+    "summary" : null
   },
   "jointDistribution" : {
     "signature" : "func jointDistribution() -> [[Double]]",
@@ -883,6 +1151,10 @@
     "signature" : "func kurtosis(bias: Bool = true) -> Element?",
     "summary" : "Returns the sample excess kurtosis of the array — a single number describing how heavy the tails of the distribution are relative to a normal."
   },
+  "l" : {
+    "signature" : "let l: [[Double]]",
+    "summary" : "Unit lower triangular factor (1s on the diagonal, multipliers below)."
+  },
   "label" : {
     "signature" : "let label: Int",
     "summary" : "The class label this row describes. For aggregate rows (macro\/weighted average), this is set to the sentinel `-1` and callers should consult the aggregate accessors on `ClassificationReport` rather than reading `label`."
@@ -897,7 +1169,7 @@
   },
   "lazy" : {
     "signature" : "var lazy: LazySequence<Self> { get }",
-    "summary" : "A sequence containing the same elements as this sequence, but on which some operations, such as `map` and `filter`, are implemented lazily."
+    "summary" : null
   },
   "learningRate" : {
     "signature" : "let learningRate: Double",
@@ -905,7 +1177,7 @@
   },
   "lexicographicallyPrecedes" : {
     "signature" : "func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence, by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Bool where OtherSequence : Sequence, Self.Element == OtherSequence.Element",
-    "summary" : "Returns a Boolean value indicating whether the sequence precedes another sequence in a lexicographical (dictionary) ordering, using the given predicate to compare elements."
+    "summary" : null
   },
   "LinearRegression" : {
     "signature" : "struct LinearRegression",
@@ -919,6 +1191,10 @@
     "signature" : "public static func load(path: String) -> TabularDataset?",
     "summary" : "Loads a `TabularDataset` from any CSV file on disk."
   },
+  "loadCurve" : {
+    "signature" : "let loadCurve: [Double]",
+    "summary" : null
+  },
   "loadEmbeddings" : {
     "signature" : "static func loadEmbeddings(name: String, csvURL: URL, description: String) -> EmbeddingsDataset?",
     "summary" : null
@@ -929,7 +1205,11 @@
   },
   "localizedDescription" : {
     "signature" : "var localizedDescription: String { get }",
-    "summary" : "Retrieve the localized description for this error."
+    "summary" : null
+  },
+  "location" : {
+    "signature" : "var location: WorkoutLocation",
+    "summary" : "Where the current run takes place, `.outdoor` unless set. Set it before the first sample: an indoor run records every grade as `indoorGrade` and is scored but not folded into history. Ending the run (`finalize()` or `discardRun()`) resets it to `.outdoor`. Changing it mid-run affects only later samples, and `finalize()` reads the value at the end."
   },
   "log" : {
     "signature" : "func log() -> [Double]",
@@ -983,6 +1263,14 @@
     "signature" : "let lower: Double",
     "summary" : "The lower bound of the interval."
   },
+  "luDecomposed" : {
+    "signature" : "func luDecomposed() throws -> LUDecomposition",
+    "summary" : "Factors a square matrix into `P · A = L · U` using partial pivoting."
+  },
+  "LUDecomposition" : {
+    "signature" : "struct LUDecomposition",
+    "summary" : "The result of an LU factorization with partial pivoting."
+  },
   "macroAverage" : {
     "signature" : "let macroAverage: ClassMetrics",
     "summary" : "Unweighted mean of per-class metrics."
@@ -1001,7 +1289,7 @@
   },
   "map" : {
     "signature" : "func map<T, E>(_ transform: (Self.Element) throws(E) -> T) throws(E) -> [T] where E : Error",
-    "summary" : "Returns an array containing the results of mapping the given closure over the sequence's elements."
+    "summary" : null
   },
   "markdownTable" : {
     "signature" : "func markdownTable() -> String",
@@ -1023,13 +1311,17 @@
     "signature" : "case notSquare",
     "summary" : "The operation requires a square matrix but received a non-square one."
   },
+  "MatrixError.notSymmetric" : {
+    "signature" : "case notSymmetric",
+    "summary" : "The operation requires a symmetric matrix but received an asymmetric one."
+  },
   "MatrixError.singular" : {
     "signature" : "case singular",
     "summary" : "The matrix is singular (determinant = 0) and cannot be inverted."
   },
   "max" : {
-    "signature" : "@warn_unqualified_access func max(by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Self.Element?",
-    "summary" : "Returns the maximum element in the sequence, using the given predicate as the comparison between elements."
+    "signature" : "let max: T",
+    "summary" : "The largest value in the dataset."
   },
   "maximums" : {
     "signature" : "let maximums: [Double]",
@@ -1039,9 +1331,13 @@
     "signature" : "static func mean(lambda: Double) -> Double?",
     "summary" : "Returns the mean of a Poisson distribution. Equal to the rate `lambda`."
   },
+  "meanResidual" : {
+    "signature" : "let meanResidual: Double?",
+    "summary" : "Observed minus expected heart rate, the session mean and the core effort signal. Trust- and time-weighted, so a doubted optical stretch cannot swamp a few-bpm signal. It detects cardiac decoupling but does not diagnose its cause. nil on a first run, when no baseline exists to compare against."
+  },
   "means" : {
     "signature" : "let means: [Double]",
-    "summary" : "Per-column mean values learned from the training data."
+    "summary" : "Per-feature mean values learned from the training data."
   },
   "meanSquaredError" : {
     "signature" : "func meanSquaredError(actual: [Double]) -> Double",
@@ -1060,8 +1356,12 @@
     "summary" : "The distance metric used to compare samples."
   },
   "min" : {
-    "signature" : "@warn_unqualified_access func min(by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> Self.Element?",
-    "summary" : "Returns the minimum element in the sequence, using the given predicate as the comparison between elements."
+    "signature" : "let min: T",
+    "summary" : "The smallest value in the dataset."
+  },
+  "minimumHistoryRuns" : {
+    "signature" : "let minimumHistoryRuns: Int",
+    "summary" : "The fewest recent runs kept even when they fall outside `historyWindow`, so a runner returning from a break keeps a baseline."
   },
   "minimums" : {
     "signature" : "let minimums: [Double]",
@@ -1073,7 +1373,7 @@
   },
   "model" : {
     "signature" : "let model: Model",
-    "summary" : "The fitted regression model whose predictions define the expectation."
+    "summary" : "The trained model that produces predictions from transformed features."
   },
   "moment" : {
     "signature" : "let moment: Double",
@@ -1109,7 +1409,7 @@
   },
   "next" : {
     "signature" : "mutating func next() -> UInt64",
-    "summary" : "Returns a value from a uniform, independent distribution of binary data."
+    "summary" : "Returns the next random `UInt64` by scrambling the internal state."
   },
   "normalized" : {
     "signature" : "var normalized: [Element] { get }",
@@ -1140,12 +1440,20 @@
     "summary" : "Whether the run converged or hit the iteration cap. See ``Outcome``."
   },
   "outlierMask" : {
-    "signature" : "func outlierMask(threshold: Element = 2.0, mean: Element? = nil, standardDeviation: Element? = nil) -> [Bool]",
+    "signature" : "func outlierMask(threshold: Element = Element(2), mean: Element? = nil, standardDeviation: Element? = nil) -> [Bool]",
     "summary" : "Detects outliers using the z-score method and returns a boolean mask."
   },
   "oversample" : {
     "signature" : "func oversample(labels: [Int]) -> (features: [[Double]], labels: [Int])",
     "summary" : "Balances an imbalanced dataset by generating synthetic samples for smaller classes."
+  },
+  "p" : {
+    "signature" : "let p: [Int]",
+    "summary" : "Row permutation applied during pivoting. `p[i]` is the original index of the row now occupying position `i`, so `(P · b)[i] == b[p[i]]`."
+  },
+  "pace" : {
+    "signature" : "let pace: Double",
+    "summary" : "Pace, in standard deviations from the training mean."
   },
   "padded" : {
     "signature" : "func padded(toPowerOfTwo value: Double = 0.0) -> [Double]",
@@ -1162,6 +1470,14 @@
   "PanelSummary" : {
     "signature" : "struct PanelSummary",
     "summary" : "A frozen snapshot of per-column descriptive statistics for a `Panel`."
+  },
+  "pause" : {
+    "signature" : "mutating func pause()",
+    "summary" : "Pauses the run. The paused span counts toward wall-clock `elapsedTime` but not `timerTime`."
+  },
+  "PCA" : {
+    "signature" : "struct PCA",
+    "summary" : "A dimensionality-reduction transformer that projects features onto the directions of largest variance."
   },
   "pdf" : {
     "signature" : "static func pdf(x: Double, mean: Double, standardDeviation: Double) -> Double?",
@@ -1194,6 +1510,10 @@
   "perHypothesis" : {
     "signature" : "let perHypothesis: [Double]",
     "summary" : "The likelihood P(E | H_i) for each hypothesis, in matching order."
+  },
+  "permutationSign" : {
+    "signature" : "let permutationSign: Double",
+    "summary" : "Sign contributed by the row swaps: `+1` for an even number of swaps, `-1` for an odd number. Used to recover the determinant."
   },
   "Pipeline" : {
     "signature" : "struct Pipeline<Model> where Model : Decodable, Model : Encodable, Model : Equatable, Model : Sendable",
@@ -1249,7 +1569,7 @@
   },
   "prefix" : {
     "signature" : "func prefix(_ maxLength: Int) -> PrefixSequence<Self>",
-    "summary" : "Returns a sequence, up to the specified maximum length, containing the initial elements of the sequence."
+    "summary" : null
   },
   "prior" : {
     "signature" : "let prior: Double",
@@ -1327,13 +1647,25 @@
     "signature" : "public func rank(of word: String) -> Int?",
     "summary" : "Returns the frequency rank of a word, or `nil` if the word is not in the vocabulary. Rank `1` is the most-frequent word."
   },
+  "raw" : {
+    "signature" : "let raw: Double",
+    "summary" : null
+  },
   "recall" : {
     "signature" : "let recall: Double?",
     "summary" : "Recall for this class (TP \/ (TP + FN)). `nil` when there are no actual samples of this class in the ground truth."
   },
+  "record" : {
+    "signature" : "mutating func record(heartRate: Double, pace: Double, cadence: Double, grade: Double, verticalOscillation: Double, altitude: Double, at time: Date, hrTrust: Double = 1.0)",
+    "summary" : "Records one moment from its raw signals, stamped with an absolute time. The delta is derived internally, so the caller never tracks it. A non-positive delta is dropped, which self- discards a duplicate or out-of-order callback. The first sample of a run carries zero load but stamps the start; a post-resume gap advances wall clock only, never timer time or the run's start. `hrTrust` is the optical-sensor reliability, clamped to `0...1`; a fully doubted reading classifies on the kinematic signals alone. Grade is signed, negative for downhill; on an indoor run it is recorded as `indoorGrade` whatever the caller supplies."
+  },
   "reduce" : {
     "signature" : "func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, Self.Element) throws -> Result) rethrows -> Result",
-    "summary" : "Returns the result of combining the elements of the sequence using the given closure."
+    "summary" : null
+  },
+  "reducer" : {
+    "signature" : "let reducer: PCA?",
+    "summary" : "The optional dimensionality-reduction stage applied after scaling."
   },
   "RegressionSummary" : {
     "signature" : "struct RegressionSummary",
@@ -1342,6 +1674,14 @@
   "Regressor" : {
     "signature" : "protocol Regressor",
     "summary" : "A protocol for supervised regression models that predict continuous values."
+  },
+  "remove" : {
+    "signature" : "mutating func remove(labels: [Label])",
+    "summary" : "Removes every entry whose label is contained in `labels` — for dropping a document's entries before re-adding them, without rebuilding the index."
+  },
+  "removeAll" : {
+    "signature" : "mutating func removeAll()",
+    "summary" : "Removes all entries, leaving the embedder in place."
   },
   "resampled" : {
     "signature" : "func resampled(iterations: Int = 1000, seed: UInt64, statistic: ([Double]) -> Double) -> [Double]",
@@ -1355,6 +1695,10 @@
     "signature" : "func residual(features: [Double], observed: Double) -> Double",
     "summary" : "The residual for a single observed value at one sample."
   },
+  "residualModel" : {
+    "signature" : "let residualModel: ResidualModel<Ridge>",
+    "summary" : "The residual model over `heartRateModel`, measuring observed minus expected heart rate."
+  },
   "ResidualModel" : {
     "signature" : "struct ResidualModel<Model> where Model : Regressor, Model : Decodable, Model : Encodable, Model : Equatable, Model : Sendable",
     "summary" : "Pairs a fitted regression model with the residuals it leaves behind."
@@ -1367,9 +1711,25 @@
     "signature" : "let residualStandardError: Double",
     "summary" : "The residual standard error, `sqrt(SS_res \/ df)`."
   },
+  "resume" : {
+    "signature" : "mutating func resume()",
+    "summary" : "Resumes the run. The next recorded sample re-seeds the clock across the paused gap."
+  },
+  "RetrievalResult" : {
+    "signature" : "struct RetrievalResult<Label> where Label : Decodable, Label : Encodable, Label : Equatable",
+    "summary" : "The outcome of one retrieval: the top-k hits, plus the full score field they were drawn from and its summary statistics."
+  },
+  "retrieve" : {
+    "signature" : "func retrieve(_ query: String, k: Int) -> RetrievalResult<Label>",
+    "summary" : "Embeds the query, scores every entry by cosine similarity, and returns the top `k` matches along with the full score field and its statistics."
+  },
+  "RetrievedHit" : {
+    "signature" : "struct RetrievedHit<Label> where Label : Decodable, Label : Encodable, Label : Equatable",
+    "summary" : "One ranked match from a retrieval: a stored payload paired with its similarity to the query."
+  },
   "reversed" : {
     "signature" : "func reversed() -> [Self.Element]",
-    "summary" : "Returns an array containing the elements of this sequence in reverse order."
+    "summary" : null
   },
   "Ridge" : {
     "signature" : "struct Ridge",
@@ -1423,6 +1783,10 @@
     "signature" : "func sample(_ count: Int, replace: Bool = true, using generator: inout some RandomNumberGenerator) -> [Element]",
     "summary" : "Draws a single random sample of `count` elements from the array, drawing from a caller-supplied random number generator."
   },
+  "sampleCount" : {
+    "signature" : "var sampleCount: Int { get }",
+    "summary" : null
+  },
   "sampleRate" : {
     "signature" : "let sampleRate: Double",
     "summary" : "The sample rate of the source signal, in samples per second."
@@ -1453,7 +1817,15 @@
   },
   "scaler" : {
     "signature" : "let scaler: StandardScaler",
-    "summary" : "The scaler that normalizes raw inputs before prediction."
+    "summary" : "The scaler that standardizes each moment's features before the Ridge reads them."
+  },
+  "score" : {
+    "signature" : "let score: Double",
+    "summary" : "The cosine similarity of this hit to the query, in `-1...1`."
+  },
+  "scores" : {
+    "signature" : "func scores(for query: String) -> [Double]",
+    "summary" : "The cosine score of every entry against `query`, in storage order, without ranking — for inspecting the full field or applying a custom relevance rule. Empty when the query cannot be embedded."
   },
   "seed" : {
     "signature" : "let seed: UInt64",
@@ -1463,13 +1835,21 @@
     "signature" : "struct SeededRandomNumberGenerator",
     "summary" : "A deterministic random number generator that produces the same sequence for a given seed."
   },
+  "Sequence" : {
+    "signature" : "extension Sequence where Self.Element == String",
+    "summary" : null
+  },
+  "sessionCount" : {
+    "signature" : "var sessionCount: Int { get }",
+    "summary" : "Sessions logged — the cold-start to established axis. The caller decides what \"established\" means; the model only reports the count."
+  },
   "shape" : {
     "signature" : "var shape: (rows: Int, columns: Int) { get }",
     "summary" : "Returns the shape of a two-dimensional array as a `(rows, columns)` tuple."
   },
   "shuffled" : {
     "signature" : "func shuffled<T>(using generator: inout T) -> [Self.Element] where T : RandomNumberGenerator",
-    "summary" : "Returns the elements of the sequence, shuffled using the given generator as a source for randomness."
+    "summary" : null
   },
   "sigmoid" : {
     "signature" : "func sigmoid() -> [Double]",
@@ -1527,6 +1907,10 @@
     "signature" : "struct SkewnessReport",
     "summary" : "A two-measure skewness diagnostic: the moment coefficient, the robust Bowley coefficient, and whether the two agree."
   },
+  "snapshot" : {
+    "signature" : "var snapshot: Snapshot { get }",
+    "summary" : "The index's persistable state — encode this with `JSONEncoder` to save the embedded corpus to disk, a database, or the network."
+  },
   "softMax" : {
     "signature" : "func softMax() -> [Double]",
     "summary" : "Converts raw scores into a probability distribution that sums to 1.0."
@@ -1536,8 +1920,8 @@
     "summary" : "Solves the linear system `A · x = b` for the unknown vector `x`."
   },
   "sorted" : {
-    "signature" : "func sorted<S, Comparator>(using comparators: S) -> [Self.Element] where S : Sequence, Comparator : SortComparator, Comparator == S.Element, Self.Element == Comparator.Compared",
-    "summary" : "Returns the elements of the sequence, sorted using the given array of `SortComparator`s to compare elements."
+    "signature" : "func sorted(by areInIncreasingOrder: (Self.Element, Self.Element) throws -> Bool) rethrows -> [Self.Element]",
+    "summary" : null
   },
   "sortedBy" : {
     "signature" : "func sortedBy(column: String, ascending: Bool = true) -> Panel",
@@ -1548,8 +1932,8 @@
     "summary" : "Returns the indices that would sort the array in ascending order."
   },
   "split" : {
-    "signature" : "func split(maxSplits: Int = Int.max, omittingEmptySubsequences: Bool = true, whereSeparator isSeparator: (Self.Element) throws -> Bool) rethrows -> [ArraySlice<Self.Element>]",
-    "summary" : "Returns the longest possible subsequences of the sequence, in order, that don't contain elements satisfying the given predicate. Elements that are used to split the sequence are not returned as part of any subsequence."
+    "signature" : "func split(separator: Self.Element, maxSplits: Int = Int.max, omittingEmptySubsequences: Bool = true) -> [ArraySlice<Self.Element>]",
+    "summary" : null
   },
   "sqrt" : {
     "signature" : "func sqrt() -> [Double]",
@@ -1568,8 +1952,8 @@
     "summary" : "Converts multiple data series into percentage-based stacking where each time point sums to 100%."
   },
   "standardDeviation" : {
-    "signature" : "func standardDeviation(ddof: Int = 1) -> Element?",
-    "summary" : "Returns the standard deviation of all elements in the array."
+    "signature" : "let standardDeviation: Double",
+    "summary" : "The standard deviation (sample, `ddof: 1`) of the full score field."
   },
   "standardError" : {
     "signature" : "func standardError(ddof: Int = 1) -> Element?",
@@ -1587,9 +1971,13 @@
     "signature" : "struct StandardScaler",
     "summary" : "A column-wise z-score scaler for feature matrices."
   },
+  "startDate" : {
+    "signature" : "let startDate: Date",
+    "summary" : "When the run began."
+  },
   "starts" : {
     "signature" : "func starts<PossiblePrefix>(with possiblePrefix: PossiblePrefix, by areEquivalent: (Self.Element, PossiblePrefix.Element) throws -> Bool) rethrows -> Bool where PossiblePrefix : Sequence",
-    "summary" : "Returns a Boolean value indicating whether the initial elements of the sequence are equivalent to the elements in another sequence, using the given predicate as the equivalence test."
+    "summary" : null
   },
   "std" : {
     "signature" : "let std: Double",
@@ -1621,7 +2009,7 @@
   },
   "suffix" : {
     "signature" : "func suffix(_ maxLength: Int) -> [Self.Element]",
-    "summary" : "Returns a subsequence, up to the given maximum length, containing the final elements of the sequence."
+    "summary" : null
   },
   "sum" : {
     "signature" : "func sum() -> Element",
@@ -1635,6 +2023,10 @@
     "signature" : "let support: Int",
     "summary" : "The number of actual samples of this class in the ground truth. For aggregate rows, this is the total sample count."
   },
+  "sweepsUsed" : {
+    "signature" : "let sweepsUsed: Int",
+    "summary" : "The number of full Jacobi sweeps the solver performed."
+  },
   "TabularDataset" : {
     "signature" : "public struct TabularDataset: CustomStringConvertible, Sendable",
     "summary" : "A bundled tabular dataset wrapping a Quiver `Panel` of numeric columns."
@@ -1646,6 +2038,38 @@
   "tan" : {
     "signature" : "func tan() -> [Double]",
     "summary" : "Returns the tangent of each element in the array."
+  },
+  "TESBaseline" : {
+    "signature" : "struct TESBaseline",
+    "summary" : "The personal trained sub-models and readable diagnostics. Produced by `TrueEffortScore.finalize()` and replaced by each refit. The classifier lives on `TrueEffortScore.classifier`. If `baseline == nil`, the expected-heart-rate model is uncalibrated."
+  },
+  "TESError" : {
+    "signature" : "enum TESError",
+    "summary" : "What the seeding initializer can surface, as one catchable type, so a watch app can handle a failed seed without trapping. The empty init and the live loop do not throw, and decoding a saved model restores its baseline as stored without refitting, so a `TESError` comes only from seeding with existing runs. `.baselineDiverged` nests the underlying `GradientDescentError` whole, preserving its typed payload and description."
+  },
+  "TESError.baselineDiverged" : {
+    "signature" : "case baselineDiverged(GradientDescentError)",
+    "summary" : "The Ridge baseline diverged while fitting, preserved whole."
+  },
+  "TESError.insufficientLabeledSamples" : {
+    "signature" : "case insufficientLabeledSamples(k: Int, available: Int)",
+    "summary" : "The seeding init was asked for more neighbors than it has labeled examples. The empty init preconditions `k <= anchorSamples.count` instead."
+  },
+  "TESResult" : {
+    "signature" : "struct TESResult",
+    "summary" : "The breakdown of one finalized run. `adjusted` is the headline, but it never stands alone: `meanResidual` and the three session terms ride along as siblings, so a score driven by genuine hard work stays distinguishable from one driven by heat or altitude decoupling. There is deliberately no `score()` accessor that hides them."
+  },
+  "text" : {
+    "signature" : "let text: String",
+    "summary" : "The fragment text."
+  },
+  "time" : {
+    "signature" : "func time(in category: EffortClass) -> TimeInterval",
+    "summary" : "Returns the active time spent in a category, in seconds, or 0 if the run never entered it. The times across all categories sum to `timerTime`."
+  },
+  "timerTime" : {
+    "signature" : "let timerTime: TimeInterval",
+    "summary" : null
   },
   "titanic" : {
     "signature" : "public static var titanic: TabularDataset?",
@@ -1671,6 +2095,14 @@
     "signature" : "private func topMatches( target: [Double], exclude: Set<String>, k: Int ) -> [(rank: Int, word: String, score: Double)]",
     "summary" : "Scores every entry except those in `exclude` against `target` by cosine similarity, returns the top `k` sorted descending."
   },
+  "topScore" : {
+    "signature" : "let topScore: Double",
+    "summary" : "The highest score in the field — the top hit's score."
+  },
+  "topZScore" : {
+    "signature" : "let topZScore: Double",
+    "summary" : "How many standard deviations the top hit sits above the field's mean. Zero when the field has no spread (every score identical)."
+  },
   "totalSupport" : {
     "signature" : "let totalSupport: Int",
     "summary" : "Total number of samples across all classes."
@@ -1688,12 +2120,20 @@
     "summary" : "Splits the array into training and testing subsets using a seeded shuffle for reproducible results."
   },
   "transform" : {
-    "signature" : "func transform(_ vector: [Element.Element]) -> [Element.Element]",
-    "summary" : "Transforms a vector by this matrix (matrix-vector multiplication)"
+    "signature" : "func transform(_ features: [[Double]]) -> [[Double]]",
+    "summary" : "Transforms a feature matrix using the parameters learned at fit time."
   },
   "transformedBy" : {
     "signature" : "func transformedBy(_ matrix: [[Element]]) -> [Element]",
     "summary" : "Transforms this vector using a matrix (matrix-vector multiplication)."
+  },
+  "Transformer" : {
+    "signature" : "protocol Transformer : Sendable",
+    "summary" : "A fitted preprocessing stage that maps a feature matrix to a new one."
+  },
+  "transitionLoad" : {
+    "signature" : "let transitionLoad: Double",
+    "summary" : null
   },
   "transpose" : {
     "signature" : "func transpose() -> [[Element.Element]]",
@@ -1711,6 +2151,10 @@
     "signature" : "func trimmed() -> Polynomial",
     "summary" : "Returns a polynomial with trailing zero coefficients removed."
   },
+  "TrueEffortScore" : {
+    "signature" : "struct TrueEffortScore",
+    "summary" : "`TrueEffortScore` models a runner's effort using three components: a `Ridge` baseline to predict heart rate from workload, a `ResidualModel` to measure the gap, and a `Pipeline<KNearestNeighbors>` to classify effort. It tracks session history, scores runs in real time, and updates the baseline as new data is collected."
+  },
   "trueIndices" : {
     "signature" : "var trueIndices: [Int] { get }",
     "summary" : "Returns the indices of all `true` elements in the boolean array."
@@ -1727,9 +2171,13 @@
     "signature" : "let tStatistics: [Double]",
     "summary" : "One t-statistic per coefficient. Equal to `coefficient \/ standardError`."
   },
+  "u" : {
+    "signature" : "let u: [[Double]]",
+    "summary" : "Upper triangular factor."
+  },
   "underestimatedCount" : {
     "signature" : "var underestimatedCount: Int { get }",
-    "summary" : "A value less than or equal to the number of elements in the sequence, calculated nondestructively."
+    "summary" : null
   },
   "unique" : {
     "signature" : "func unique(column: String) -> [Double]?",
@@ -1751,9 +2199,17 @@
     "signature" : "static func variance(lambda: Double) -> Double?",
     "summary" : "Returns the variance of a Poisson distribution. Equal to the rate `lambda`."
   },
+  "varianceMultiplier" : {
+    "signature" : "let varianceMultiplier: Double",
+    "summary" : null
+  },
   "variances" : {
     "signature" : "let variances: [Double]",
     "summary" : "Variance of each feature for samples in this class."
+  },
+  "vector" : {
+    "signature" : "func vector(for label: Label) -> [Double]?",
+    "summary" : "The stored embedding for the first entry whose label equals `label`, or `nil` if no such entry exists."
   },
   "VectorForm" : {
     "signature" : "enum VectorForm",
@@ -1772,12 +2228,16 @@
     "summary" : "Calculates the vector projection of this vector onto another vector."
   },
   "vectors" : {
-    "signature" : "private let vectors: [String: [Double]] private let ranks: [String: Int]",
-    "summary" : null
+    "signature" : "var vectors: [[Double]] { get }",
+    "summary" : "The stored vectors, in ingest order — the corpus matrix. Pair any two to inspect their similarity directly, e.g. `index.vectors[i].cosineOfAngle(with: index.vectors[j])`."
   },
   "version" : {
     "signature" : "static let version: String",
     "summary" : "Library version. Keep in sync with the package tag at release time."
+  },
+  "verticalOscillation" : {
+    "signature" : "let verticalOscillation: Double",
+    "summary" : "Vertical oscillation, in standard deviations from the training mean."
   },
   "vocabulary" : {
     "signature" : "public let vocabulary: [String]",
@@ -1796,8 +2256,8 @@
     "summary" : "Each neighbor gets one vote regardless of distance."
   },
   "weight" : {
-    "signature" : "let weight: VoteWeight",
-    "summary" : "The weighting strategy for neighbor votes."
+    "signature" : "var weight: Double { get }",
+    "summary" : "The category's load weight. Public because the weights are published math — the raw score is `100 × Σ(weight·Δt) \/ 2700` — and a reader has to be able to reach them. Recovery is 0.1 because level walking costs roughly a third to a half of easy running per minute."
   },
   "weightedAverage" : {
     "signature" : "let weightedAverage: ClassMetrics",
@@ -1805,7 +2265,7 @@
   },
   "withContiguousStorageIfAvailable" : {
     "signature" : "func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Self.Element>) throws -> R) rethrows -> R?",
-    "summary" : "Executes a closure on the sequence’s contiguous storage."
+    "summary" : null
   },
   "within1Sigma" : {
     "signature" : "let within1Sigma: Double",
@@ -1819,8 +2279,28 @@
     "signature" : "let within3Sigma: Double",
     "summary" : "The observed fraction of values within three standard deviations of the mean."
   },
+  "Workout" : {
+    "signature" : "struct Workout",
+    "summary" : "A completed run, folded into history and the unit the baseline is fit on. Each moment is stored as raw signal values rather than a wrapper type, so a caller reads a workout back the same way they recorded it. Heart rate is stored as an outcome: the baseline's regression target and one of the classifier's inputs."
+  },
+  "WorkoutLocation" : {
+    "signature" : "enum WorkoutLocation",
+    "summary" : "Where a run takes place. The watch cannot sense treadmill incline: its barometric altimeter measures a change in altitude, and a runner on an inclined belt never rises. An indoor run is therefore scored at a fixed level-ground grade and kept out of the personal baseline, so a grade the model cannot trust never shapes the runner's outdoor expectations."
+  },
+  "WorkoutLocation.indoor" : {
+    "signature" : "case indoor",
+    "summary" : null
+  },
+  "WorkoutLocation.outdoor" : {
+    "signature" : "case outdoor",
+    "summary" : null
+  },
   "zeros" : {
     "signature" : "static func zeros(_ count: Int) -> [Element]",
     "summary" : "Creates a 1D array filled with zeros."
+  },
+  "zScore" : {
+    "signature" : "func zScore(of value: Element, ddof: Int = 1) -> Element?",
+    "summary" : "Standardizes a single value against this array's mean and standard deviation, returning how many standard deviations the value sits from the mean: `(value - mean) \/ standardDeviation`."
   }
 }
