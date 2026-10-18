@@ -80,33 +80,33 @@ extension Dataset {
         )
     }
 
-    /// 60 rows, 6 columns. Time series at 1 Hz. No label column.
+    /// 600 rows, 7 columns. Time series, one sample every 5 seconds. No label column.
     ///
-    /// A synthetic 60-second tempo run for a moderately trained 70 kg runner.
-    /// Heart rate climbs by about 6 BPM across the minute while pace and power
-    /// hold steady — heart-rate response lag at effort onset, not long-effort
-    /// cardiac drift. Pair with `simulatedRunAccel` for spectral analysis of the
-    /// same run.
+    /// A synthetic 50-minute first run with the six signals `TrueEffortScore`
+    /// records: heart rate, pace in min/km, cadence, grade, vertical
+    /// oscillation, and altitude. The course passes through every effort
+    /// category, from a cool-down walk to two hard climbs and descents, so
+    /// recording each row into `TrueEffortScore` gives a full breakdown.
     public static var simulatedRun: TabularDataset? {
         DatasetLoader.loadTabular(
             name: "simulatedRun",
             csvURL: bundledURL(for: "simulated-run.csv"),
-            description: "60 seconds of a synthetic tempo run for a moderately trained 70 kg runner, sampled at 1 Hz. Six columns: time (s), heartRate (BPM), pace (m/s), cadence (spm), power (W), altitude (m). Heart rate climbs +6 BPM across the minute while pace and power hold flat, showing heart-rate response lag at effort onset (not cardiac drift, which unfolds over much longer efforts). Generated deterministically from seed 42 against a published physiological constraint spec; see CLEANING.md for the generative model."
+            description: "50 minutes of a synthetic first run, sampled every 5 seconds (600 rows). Seven columns: time (s), heartRate (BPM), pace (min/km), cadence (spm), grade (%), verticalOscillation (cm), altitude (m), the six signals TrueEffortScore records. The course runs easy, then tempo, two climbs each followed by a descent, a threshold block, four strides, and a cool-down walk, so every effort category appears. Recorded into TrueEffortScore as a first run, it scores raw 58.4 and adjusted 81.7. Generated deterministically from seed 7; see CLEANING.md for the generative model."
         )
     }
 
     /// 3,000 rows, 2 columns. Time series at 50 Hz. No label column.
     ///
-    /// Wrist accelerometer magnitude for the same 60-second tempo run exposed
-    /// in `simulatedRun`. The dominant frequency is the runner's cadence
-    /// (≈2.83 Hz, 170 steps per minute). Designed for spectral-analysis demos
+    /// One minute of wrist accelerometer magnitude at a tempo running cadence.
+    /// The dominant frequency is the runner's cadence (≈2.83 Hz, 170 steps
+    /// per minute). Designed for spectral-analysis demos
     /// — `powerSpectralDensity`, dominant-frequency detection, and band-energy
     /// features for activity classification.
     public static var simulatedRunAccel: TabularDataset? {
         DatasetLoader.loadTabular(
             name: "simulatedRunAccel",
             csvURL: bundledURL(for: "simulated-run-accel.csv"),
-            description: "Wrist accelerometer magnitude in m/s² for the same 60-second tempo run as `simulatedRun`, sampled at 50 Hz (3,000 samples). Two columns: time (s) and magnitude (m/s²). Built from a footstrike fundamental at 2.833 Hz, its second harmonic at 5.667 Hz, and Gaussian noise around a 1g baseline. Generated deterministically from seed 42; the two simulated-run datasets describe the same underlying event at different sample rates."
+            description: "One minute of wrist accelerometer magnitude in m/s² at a tempo running cadence of 170 steps per minute, sampled at 50 Hz (3,000 samples). Two columns: time (s) and magnitude (m/s²). Built from a footstrike fundamental at 2.833 Hz, its second harmonic at 5.667 Hz, and Gaussian noise around a 1g baseline. Generated deterministically from seed 42 as a standalone signal for spectral analysis; it is not time-aligned with `simulatedRun`."
         )
     }
 
@@ -139,19 +139,31 @@ extension Dataset {
     /// written to standard error so the cause is visible in the Notebook
     /// console. Columns whose element type is none of (numeric, `String`,
     /// `Date`) are skipped with a warning rather than failing the load.
+    /// Text columns are converted to numeric codes, and the load prints one
+    /// line naming them so an identifier column doesn't pass for a feature.
+    ///
+    /// Declare the result with `var` to edit it with the column subscript,
+    /// `appendRow(_:)`, `removeRows(where:)`, and the other editing calls.
+    /// Notebook code runs at the top level of `main.swift`, so an early
+    /// exit uses `exit(0)` rather than `return`.
     ///
     /// Example:
     ///
-    ///     guard let dataset = Dataset.load(path: "~/Desktop/sales.csv") else {
-    ///         return
+    ///     guard var runs = Dataset.load(path: "~/Course/class-runs.csv") else {
+    ///         exit(0)
     ///     }
-    ///     dataset.toPanel().head()
+    ///     print(runs.head(n: 5))
     public static func load(path: String) -> TabularDataset? {
         let expanded = (path as NSString).expandingTildeInPath
         let url = URL(fileURLWithPath: expanded)
         let name = url.deletingPathExtension().lastPathComponent
         let description = "Loaded from \(url.lastPathComponent)"
-        return DatasetLoader.loadTabular(name: name, csvURL: url, description: description)
+        return DatasetLoader.loadTabular(
+            name: name,
+            csvURL: url,
+            description: description,
+            announcesTextColumns: true
+        )
     }
 
     // MARK: - Catalog

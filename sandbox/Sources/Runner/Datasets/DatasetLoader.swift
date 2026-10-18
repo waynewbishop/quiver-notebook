@@ -18,12 +18,22 @@ import Quiver
 /// `loadEmbeddings(name:csvURL:description:)`, which keeps `word` and
 /// `nearest` as strings and reads the dimension columns as raw `Double`.
 ///
+/// When `announcesTextColumns` is true, `loadTabular` prints one line naming
+/// every text column it converted to numeric codes, so an identifier or an
+/// unrecognized timestamp doesn't quietly become a feature. `Dataset.load(path:)`
+/// turns this on; the bundled datasets document their encodings instead.
+///
 /// Both methods return `nil` if the CSV cannot be parsed at all. Tabular
 /// columns whose element type is none of (numeric, String, Date) are skipped
 /// with a warning to stderr.
 internal enum DatasetLoader {
 
-    static func loadTabular(name: String, csvURL: URL, description: String) -> TabularDataset? {
+    static func loadTabular(
+        name: String,
+        csvURL: URL,
+        description: String,
+        announcesTextColumns: Bool = false
+    ) -> TabularDataset? {
         guard let dataFrame = try? DataFrame(contentsOfCSVFile: csvURL) else {
             FileHandle.standardError.write(Data(
                 "DatasetLoader: could not parse \(csvURL.lastPathComponent)\n".utf8
@@ -106,6 +116,13 @@ internal enum DatasetLoader {
                 "DatasetLoader: no usable columns parsed from \(csvURL.lastPathComponent)\n".utf8
             ))
             return nil
+        }
+
+        if announcesTextColumns {
+            let converted = encodedColumns.map(\.0).filter { categoricalMappings[$0] != nil }
+            if !converted.isEmpty {
+                print("\(csvURL.lastPathComponent): converted text columns to numeric codes: \(converted.joined(separator: ", ")). See categoricalMappings for the labels.")
+            }
         }
 
         let panel = Panel(encodedColumns)

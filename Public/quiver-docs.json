@@ -99,6 +99,10 @@
     "signature" : "func angleInDegrees(with other: [Double]) -> Double",
     "summary" : "Returns the angle between two vectors in degrees."
   },
+  "appendRow" : {
+    "signature" : "public mutating func appendRow(_ values: [String: Double])",
+    "summary" : "Adds a row to the end of the dataset."
+  },
   "arange" : {
     "signature" : "static func arange(_ start: Element, _ stop: Element, step: Element) -> [Element] where Element : Comparable",
     "summary" : "Creates a sequence of evenly spaced values within a half-open interval."
@@ -236,7 +240,7 @@
     "summary" : "Returns a human-readable listing of every bundled accessor."
   },
   "categoricalMappings" : {
-    "signature" : "public let categoricalMappings: [String: [String]]",
+    "signature" : "public private(set) var categoricalMappings: [String: [String]]",
     "summary" : "Maps an original column name to the ordered class names produced when that column's strings were alphabetically encoded into `Double` indices."
   },
   "cdf" : {
@@ -1683,6 +1687,22 @@
     "signature" : "mutating func removeAll()",
     "summary" : "Removes all entries, leaving the embedder in place."
   },
+  "removeColumn" : {
+    "signature" : "public mutating func removeColumn(_ column: String)",
+    "summary" : "Removes a column and its categorical mapping, if it has one."
+  },
+  "removeRow" : {
+    "signature" : "public mutating func removeRow(at index: Int)",
+    "summary" : "Removes one row. Rows after it shift up by one position."
+  },
+  "removeRows" : {
+    "signature" : "public mutating func removeRows(where mask: [Bool])",
+    "summary" : "Removes every row whose mask entry is `true`, all at once."
+  },
+  "renameColumn" : {
+    "signature" : "public mutating func renameColumn(_ column: String, to newName: String)",
+    "summary" : "Renames a column and keeps its position and values. A categorical column's mapping moves to the new name."
+  },
   "resampled" : {
     "signature" : "func resampled(iterations: Int = 1000, seed: UInt64, statistic: ([Double]) -> Double) -> [Double]",
     "summary" : "Returns the resampled distribution of a statistic."
@@ -1762,6 +1782,10 @@
   "rounded" : {
     "signature" : "func rounded(to places: Int) -> [Double]",
     "summary" : "Returns each element rounded to a specified number of decimal places."
+  },
+  "row" : {
+    "signature" : "public func row(at index: Int) -> [String: Double]",
+    "summary" : "Returns one row as a dictionary keyed by column name."
   },
   "rowCount" : {
     "signature" : "let rowCount: Int",
@@ -1861,7 +1885,7 @@
   },
   "simulatedRun" : {
     "signature" : "public static var simulatedRun: TabularDataset?",
-    "summary" : "60 rows, 6 columns. Time series at 1 Hz. No label column."
+    "summary" : "600 rows, 7 columns. Time series, one sample every 5 seconds. No label column."
   },
   "simulatedRunAccel" : {
     "signature" : "public static var simulatedRunAccel: TabularDataset?",
@@ -2182,6 +2206,10 @@
   "unique" : {
     "signature" : "func unique(column: String) -> [Double]?",
     "summary" : "Returns the unique values in a column, sorted ascending."
+  },
+  "updateRow" : {
+    "signature" : "public mutating func updateRow(at index: Int, with values: [String: Double])",
+    "summary" : "Changes the named columns of one row and leaves the other columns as they were."
   },
   "upper" : {
     "signature" : "let upper: Double",

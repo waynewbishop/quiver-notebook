@@ -41,9 +41,13 @@ public struct TabularDataset: CustomStringConvertible, Sendable {
     /// Numeric columns do not appear in this dictionary. Missing string cells
     /// are stored as `Double.nan` in the underlying panel rather than being
     /// assigned a mapping index.
-    public let categoricalMappings: [String: [String]]
+    ///
+    /// Editing keeps this dictionary in step with the columns: renaming a
+    /// categorical column moves its mapping, and removing or replacing one
+    /// drops it.
+    public private(set) var categoricalMappings: [String: [String]]
 
-    private let panel: Panel
+    private var panel: Panel
 
     internal init(
         name: String,
@@ -70,8 +74,11 @@ public struct TabularDataset: CustomStringConvertible, Sendable {
     /// not strings — decode them through `categoricalMappings` when a label
     /// name is needed:
     ///
-    ///     let label = panel["species"]![0]
+    ///     let label = panel["species"][0]
     ///     let name = dataset.categoricalMappings["species"]?[Int(label)]
+    ///
+    /// The panel is a snapshot. Later edits to the dataset don't change a
+    /// panel that was already returned.
     public func toPanel() -> Panel {
         panel
     }
@@ -94,18 +101,228 @@ public struct TabularDataset: CustomStringConvertible, Sendable {
         panel.columnNames
     }
 
-    /// Returns the values of a single column by name, or `nil` if the column
-    /// is not in the dataset. Categorical columns return `Double` indices —
-    /// decode them through `categoricalMappings`.
-    public subscript(column: String) -> [Double]? {
-        guard panel.columnNames.contains(column) else { return nil }
-        return panel[column]
+    /// Reads or replaces a single column by name.
+    ///
+    /// Reading a column that isn't in the dataset stops with a message, the
+    /// same way Quiver's `Panel` subscript does. Categorical columns return
+    /// `Double` indices — decode them through `categoricalMappings`.
+    ///
+    /// Assigning to a new name adds the column at the end; assigning to an
+    /// existing name replaces its values in place. The new values must have
+    /// one entry per row. Replacing a categorical column drops its mapping,
+    /// since the new values are plain numbers.
+    ///
+    ///     runs["pace"] = runs["minutes"].divide(runs["distanceKm"])
+    public subscript(column: String) -> [Double] {
+        get {
+            if let problem = columnProblem(column, in: "dataset[\"\(column)\"]") {
+                preconditionFailure(problem)
+            }
+            return panel[column]
+        }
+        set {
+            if let problem = lengthProblem(newValue.count, in: "dataset[\"\(column)\"] = ...") {
+                preconditionFailure(problem)
+            }
+            var columns = orderedColumns()
+            if let position = columns.firstIndex(where: { $0.0 == column }) {
+                columns[position].1 = newValue
+            } else {
+                columns.append((column, newValue))
+            }
+            categoricalMappings[column] = nil
+            panel = Panel(columns)
+        }
     }
 
     /// Returns the first rows of the dataset as a formatted table — the
     /// first thing to type after loading.
     public func head(n: Int = 10) -> String {
         panel.head(n: n)
+    }
+
+    /// Returns count, mean, standard deviation, min, quartiles, and max for
+    /// every column, the same summary `toPanel().describe()` gives.
+    public func describe() -> PanelSummary {
+        panel.describe()
+    }
+
+    // MARK: - Editing rows
+
+    /// Returns one row as a dictionary keyed by column name.
+    ///
+    ///     print(runs.row(at: 0))    // ["hr": 142.0, "pace": 5.4, ...]
+    public func row(at index: Int) -> [String: Double] {
+        if let problem = rowIndexProblem(index, in: "row(at:)") {
+            preconditionFailure(problem)
+        }
+        var values: [String: Double] = [:]
+        for name in panel.columnNames {
+            values[name] = panel[name][index]
+        }
+        return values
+    }
+
+    /// Adds a row to the end of the dataset.
+    ///
+    /// Columns left out of the dictionary are filled with `Double.nan`, the
+    /// same way the loader keeps missing CSV values. For a categorical
+    /// column, pass the numeric code from `categoricalMappings` (for example,
+    /// `2` for `"walk"` when the mapping is `["idle", "run", "walk"]`).
+    ///
+    ///     runs.appendRow(["distanceKm": 3.0, "minutes": 16.2])
+    public mutating func appendRow(_ values: [String: Double]) {
+        if let problem = unknownColumnsProblem(values, in: "appendRow(_:)") {
+            preconditionFailure(problem)
+        }
+        let columns = orderedColumns().map { name, existing in
+            (name, existing + [values[name] ?? Double.nan])
+        }
+        panel = Panel(columns)
+    }
+
+    /// Changes the named columns of one row and leaves the other columns as
+    /// they were.
+    ///
+    ///     runs.updateRow(at: 0, with: ["heartRate": 151])
+    public mutating func updateRow(at index: Int, with values: [String: Double]) {
+        if let problem = rowIndexProblem(index, in: "updateRow(at:with:)")
+            ?? unknownColumnsProblem(values, in: "updateRow(at:with:)") {
+            preconditionFailure(problem)
+        }
+        let columns = orderedColumns().map { name, existing -> (String, [Double]) in
+            guard let replacement = values[name] else { return (name, existing) }
+            var updated = existing
+            updated[index] = replacement
+            return (name, updated)
+        }
+        panel = Panel(columns)
+    }
+
+    /// Removes one row. Rows after it shift up by one position.
+    public mutating func removeRow(at index: Int) {
+        if let problem = rowIndexProblem(index, in: "removeRow(at:)") {
+            preconditionFailure(problem)
+        }
+        var mask = [Bool](repeating: false, count: count)
+        mask[index] = true
+        removeRows(where: mask)
+    }
+
+    /// Removes every row whose mask entry is `true`, all at once.
+    ///
+    /// The mask needs one entry per row, which is the shape that Quiver's
+    /// comparison and outlier calls return. Removing rows together avoids
+    /// the index shifting that happens when removing them one at a time
+    /// in a loop.
+    ///
+    ///     let mask = runs["heartRate"].outlierMask(threshold: 3.0)
+    ///     runs.removeRows(where: mask)
+    public mutating func removeRows(where mask: [Bool]) {
+        if let problem = maskProblem(mask) {
+            preconditionFailure(problem)
+        }
+        let columns = orderedColumns().map { name, existing -> (String, [Double]) in
+            var kept: [Double] = []
+            kept.reserveCapacity(existing.count)
+            for (value, remove) in zip(existing, mask) where !remove {
+                kept.append(value)
+            }
+            return (name, kept)
+        }
+        panel = Panel(columns)
+    }
+
+    // MARK: - Editing columns
+
+    /// Renames a column and keeps its position and values. A categorical
+    /// column's mapping moves to the new name.
+    ///
+    ///     runs.renameColumn("hr", to: "heartRate")
+    public mutating func renameColumn(_ column: String, to newName: String) {
+        if let problem = columnProblem(column, in: "renameColumn(_:to:)")
+            ?? renameProblem(column, to: newName) {
+            preconditionFailure(problem)
+        }
+        let columns = orderedColumns().map { name, values in
+            (name == column ? newName : name, values)
+        }
+        if let mapping = categoricalMappings.removeValue(forKey: column) {
+            categoricalMappings[newName] = mapping
+        }
+        panel = Panel(columns)
+    }
+
+    /// Removes a column and its categorical mapping, if it has one.
+    ///
+    ///     runs.removeColumn("minutes")
+    public mutating func removeColumn(_ column: String) {
+        if let problem = columnProblem(column, in: "removeColumn(_:)")
+            ?? lastColumnProblem(column) {
+            preconditionFailure(problem)
+        }
+        let columns = orderedColumns().filter { $0.0 != column }
+        categoricalMappings[column] = nil
+        panel = Panel(columns)
+    }
+
+    // MARK: - Input checks
+
+    // Each check returns the message to stop with, or nil when the input
+    // is valid. Keeping the checks separate from the stop lets the tests
+    // confirm every failure message without crashing the test run.
+
+    /// Returns the columns in their current order as name and value pairs.
+    private func orderedColumns() -> [(String, [Double])] {
+        panel.columnNames.map { ($0, panel[$0]) }
+    }
+
+    /// Returns a message when the column isn't in the dataset.
+    internal func columnProblem(_ column: String, in call: String) -> String? {
+        guard !panel.columnNames.contains(column) else { return nil }
+        return "\(call): no column named '\(column)'. Columns are: \(panel.columnNames.joined(separator: ", "))."
+    }
+
+    /// Returns a message when a row index falls outside the dataset.
+    internal func rowIndexProblem(_ index: Int, in call: String) -> String? {
+        guard index < 0 || index >= count else { return nil }
+        return "\(call): row \(index) is out of range. Valid rows are 0 through \(count - 1)."
+    }
+
+    /// Returns a message when a new column's length doesn't match the row count.
+    internal func lengthProblem(_ length: Int, in call: String) -> String? {
+        guard length != count else { return nil }
+        return "\(call): the new column has \(length) values but the dataset has \(count) rows."
+    }
+
+    /// Returns a message when a row dictionary names a column the dataset doesn't have.
+    internal func unknownColumnsProblem(_ values: [String: Double], in call: String) -> String? {
+        let unknown = values.keys.filter { !panel.columnNames.contains($0) }.sorted()
+        guard !unknown.isEmpty else { return nil }
+        return "\(call): no column named \(unknown.map { "'\($0)'" }.joined(separator: ", ")). Columns are: \(panel.columnNames.joined(separator: ", "))."
+    }
+
+    /// Returns a message when a mask has the wrong length or would remove every row.
+    internal func maskProblem(_ mask: [Bool]) -> String? {
+        if mask.count != count {
+            return "removeRows(where:): the mask has \(mask.count) values but the dataset has \(count) rows."
+        }
+        if mask.allSatisfy({ $0 }) {
+            return "removeRows(where:): the mask would remove every row. A dataset needs at least one row."
+        }
+        return nil
+    }
+
+    /// Returns a message when renaming would duplicate an existing column name.
+    internal func renameProblem(_ column: String, to newName: String) -> String? {
+        guard column != newName, panel.columnNames.contains(newName) else { return nil }
+        return "renameColumn(_:to:): a column named '\(newName)' already exists."
+    }
+
+    /// Returns a message when removing the column would leave the dataset empty.
+    internal func lastColumnProblem(_ column: String) -> String? {
+        guard panel.columnNames == [column] else { return nil }
+        return "removeColumn(_:): '\(column)' is the only column. A dataset needs at least one column."
     }
 }
 

@@ -55,6 +55,8 @@ let expectedKeys: Set<String> = [
     "californiaHousing",
     "bikeSharing",
     "studentPerformance",
+    "simulatedRun",
+    "simulatedRunAccel",
     "glove50d",
     "load",
     "catalog",
@@ -123,7 +125,8 @@ func extractSymbolName(from declaration: String) -> String? {
     let prefixesToStrip = ["public ", "internal ", "private ", "fileprivate ",
                            "open ", "static ", "final ", "override ",
                            "@inlinable ", "@inline(__always) ",
-                           "@discardableResult "]
+                           "@discardableResult ", "private(set) ",
+                           "mutating "]
     var working = trimmed
     var changed = true
     while changed {
@@ -281,6 +284,11 @@ for filename in sources {
     }
     let parsed = parse(source)
     for (name, entry) in parsed {
+        // Private and internal helper functions can't be called from Notebook
+        // code, so they stay out of autocomplete.
+        if entry.signature.hasPrefix("private func") || entry.signature.hasPrefix("internal func") {
+            continue
+        }
         if let existing = newEntries[name],
            (existing.summary?.count ?? 0) >= (entry.summary?.count ?? 0) {
             continue

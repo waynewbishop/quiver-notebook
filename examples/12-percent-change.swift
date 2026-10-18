@@ -9,11 +9,12 @@
 // bike-share system — exactly the shape of an on-device time series
 // an app would produce from its own usage data.
 
-guard let bikes = Dataset.bikeSharing,
-      let cnt = bikes["cnt"] else {
-    print("Couldn't load the cnt column from Dataset.bikeSharing.")
+guard let bikes = Dataset.bikeSharing else {
+    print("Couldn't load Dataset.bikeSharing.")
     exit(1)
 }
+
+let cnt = bikes["cnt"]
 
 // First three weeks of daily counts.
 let firstThreeWeeks = Array(cnt.prefix(21))

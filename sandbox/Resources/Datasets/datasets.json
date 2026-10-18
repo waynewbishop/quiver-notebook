@@ -32,13 +32,13 @@
   {
     "name": "simulatedRun",
     "kind": "time_series",
-    "description": "60 seconds of a synthetic tempo run for a moderately trained 70 kg runner, sampled at 1 Hz. Six columns: time (s), heartRate (BPM), pace (m/s), cadence (spm), power (W), altitude (m). Heart rate drifts +6 BPM across the minute while pace and power hold flat — the load-bearing physiological signal for multi-signal effort classification. Generated deterministically from seed 42 against a published physiological constraint spec; see CLEANING.md for the generative model.",
+    "description": "50 minutes of a synthetic first run, sampled every 5 seconds (600 rows). Seven columns: time (s), heartRate (BPM), pace (min/km), cadence (spm), grade (%), verticalOscillation (cm), altitude (m), the six signals TrueEffortScore records. The course runs easy, then tempo, two climbs each followed by a descent, a threshold block, four strides, and a cool-down walk, so every effort category appears. Recorded into TrueEffortScore as a first run, it scores raw 58.4 and adjusted 81.7. Generated deterministically from seed 7; see CLEANING.md for the generative model.",
     "csvFile": "simulated-run.csv"
   },
   {
     "name": "simulatedRunAccel",
     "kind": "time_series",
-    "description": "Wrist accelerometer magnitude in m/s² for the same 60-second tempo run as `simulatedRun`, sampled at 50 Hz (3,000 samples). Two columns: time (s) and magnitude (m/s²). Built from a footstrike fundamental at 2.833 Hz, a two-legged-gait harmonic at 5.667 Hz, and Gaussian noise around a 1g baseline. Generated deterministically from seed 42; the two simulated-run datasets describe the same underlying event at different sample rates.",
+    "description": "One minute of wrist accelerometer magnitude in m/s² at a tempo running cadence of 170 steps per minute, sampled at 50 Hz (3,000 samples). Two columns: time (s) and magnitude (m/s²). Built from a footstrike fundamental at 2.833 Hz, its second harmonic at 5.667 Hz, and Gaussian noise around a 1g baseline. Generated deterministically from seed 42 as a standalone signal for spectral analysis; it is not time-aligned with `simulatedRun`.",
     "csvFile": "simulated-run-accel.csv"
   },
   {

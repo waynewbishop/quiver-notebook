@@ -19,6 +19,13 @@ let package = Package(
                 .product(name: "Quiver", package: "quiver")
             ],
             path: "Sources/Runner"
+        ),
+        // Tests for the Dataset loading and editing calls. The Notebook builds
+        // only the Runner product, so this target never slows a student's run.
+        .testTarget(
+            name: "RunnerTests",
+            dependencies: ["Runner"],
+            path: "Tests/RunnerTests"
         )
     ]
 )

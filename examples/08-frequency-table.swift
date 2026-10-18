@@ -11,10 +11,14 @@
 // value. Re-sorting by count puts the most frequent values first —
 // and the mode falls out as the top row.
 
-guard let students = Dataset.studentPerformance,
-      let finalGrades = students["G3"],
-      let summary = finalGrades.summary() else {
-    print("Couldn't load or summarize the G3 column from Dataset.studentPerformance.")
+guard let students = Dataset.studentPerformance else {
+    print("Couldn't load Dataset.studentPerformance.")
+    exit(1)
+}
+
+let finalGrades = students["G3"]
+guard let summary = finalGrades.summary() else {
+    print("Couldn't summarize the G3 column.")
     exit(1)
 }
 
