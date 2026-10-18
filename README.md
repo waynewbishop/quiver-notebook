@@ -1,7 +1,7 @@
 # Quiver Notebook — A browser-based Swift editor for data science
 
 [![Swift](https://img.shields.io/badge/Swift-6-orange)](https://swift.org)
-[![Platform](https://img.shields.io/badge/platform-macOS%2015%2B-lightgrey)]()
+[![Platform](https://img.shields.io/badge/platform-macOS%2015%2B-lightgrey)](#quick-start)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 The Quiver Notebook is a local, browser-based Swift editor for exploring vectors, matrices, statistics, and machine learning with [Quiver](https://github.com/waynewbishop/quiver). One clone and one command produce a working editor with Quiver, Foundation, and a library of teaching datasets already wired in — no Xcode, no accounts, no telemetry, and nothing leaves your Mac.
@@ -12,9 +12,9 @@ The Quiver Notebook is a local, browser-based Swift editor for exploring vectors
 
 **Students** working through a course, textbook, or self-study get a Swift environment that does numerical work without installing additional binaries, configuring system packages, or downloading datasets separately. Vector and matrix results render in the output pane as legible math, not comma-separated arrays.
 
-**Educators** preparing lectures or assignments can fork the repository, drop custom example files into the `examples-custom/` folder, and distribute the URL to a class. The bundled stack covers an applied linear algebra unit, an introductory descriptive statistics segment, an applied regression module, and a short supervised-learning survey with k-nearest neighbors, k-means, and Naive Bayes.
+**Educators** preparing lectures or assignments can fork the repository, drop custom example files into the `examples-custom/` folder, and share the fork's URL with a class. The bundled stack covers an applied linear algebra unit, an introductory descriptive statistics segment, an applied regression module, and a short machine-learning survey with k-nearest neighbors, k-means, and Naive Bayes.
 
-**Apple-platform developers** prototyping a model or testing an idea get a focused editor without a project workspace. Code that runs here compiles unchanged on any Apple platform — iOS, watchOS, visionOS — and on server-side Swift. [True Effort Score](https://waynewbishop.github.io/quiver/documentation/quiver/true-effort-score), Quiver's training-load model for Apple Watch, shows where that path leads: prototype here, ship to the watch.
+**Apple-platform developers** prototyping a model or testing an idea get a focused editor without a project workspace. Quiver code that runs here compiles unchanged on any Apple platform — iOS, watchOS, visionOS — and on server-side Swift. [True Effort Score](https://waynewbishop.github.io/quiver/documentation/quiver/true-effort-score/), Quiver's training-load model for Apple Watch, can also be evaluated before implementing in Xcode or finalizing with the simulator.
 
 ## Quick Start
 
@@ -83,7 +83,7 @@ Open the URL in any browser and start writing snippets. Press `Ctrl+C` in the te
 
 ## Bundled datasets
 
-A small library of teaching datasets — iris, Titanic, California Housing, and others — loads by name with a single line of code: no download, no parsing, no setup. A separate loader reads any CSV from disk in the same shape, so a class can move from bundled data to its own data without changing the rest of a snippet. See [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets) for the full menu and loading API.
+A small library of teaching datasets — iris, Titanic, California Housing, and others — loads by name with a single line of code: no download, no parsing, no setup. A separate loader reads any CSV from disk in the same shape, so a class can move from bundled data to its own data without changing the rest of a snippet. See [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets/) for the full menu and loading API.
 
 ## Bundled examples
 
@@ -102,9 +102,9 @@ The Notebook is one stop on the Quiver learning path:
 - **[Quiver](https://github.com/waynewbishop/quiver)** — the framework powering every snippet.
 - **[Cookbook](https://github.com/waynewbishop/quiver-cookbook)** — 75 interactive recipes for the Xcode `#Playground` macro.
 - **[Documentation & primers](https://waynewbishop.github.io/quiver/documentation/quiver/)** — linear algebra, statistics, and ML primers, plus:
-  - [Quiver Notebook](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook) — setup, snippet rules, app handoff
-  - [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets) — the bundled library and CSV loader
-  - [Quiver Notebook for Classrooms](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook-for-classrooms) — fork-and-distribute, custom examples, version pinning
+  - [Quiver Notebook](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook/) — setup, snippet rules, app handoff
+  - [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets/) — the bundled library and CSV loader
+  - [Quiver Notebook for Classrooms](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook-for-classrooms/) — fork-and-distribute, custom examples, version pinning
 - **[Swift Algorithms & Data Structures](https://waynewbishop.github.io/swift-algorithms/)** — the free companion book for deeper foundations.
 
 ## Contributing
