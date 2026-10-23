@@ -100,7 +100,7 @@ Only the Notebook's own editor can run code. The local server answers on `127.0.
 The Notebook is one stop on the Quiver learning path:
 
 - **[Quiver](https://github.com/waynewbishop/quiver)** — the framework powering every snippet.
-- **[Cookbook](https://github.com/waynewbishop/quiver-cookbook)** — 75 interactive recipes for the Xcode `#Playground` macro.
+- **[Cookbook](https://github.com/waynewbishop/quiver-cookbook)** — 73 interactive recipes for the Xcode `#Playground` macro.
 - **[Documentation & primers](https://waynewbishop.github.io/quiver/documentation/quiver/)** — linear algebra, statistics, and ML primers, plus:
   - [Quiver Notebook](https://waynewbishop.github.io/quiver/documentation/quiver/quiver-notebook/) — setup, snippet rules, app handoff
   - [Notebook Datasets](https://waynewbishop.github.io/quiver/documentation/quiver/notebook-datasets/) — the bundled library and CSV loader
